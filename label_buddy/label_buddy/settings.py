@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 
+from label_buddy.keys import django_key
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -20,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-!(7v*kvxyuj+ldou)*6xy5)a%w*z=0&_%yw$t9l0e^oxo50*+-'
+SECRET_KEY = django_key
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

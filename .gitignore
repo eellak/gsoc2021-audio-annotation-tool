@@ -1,3 +1,4 @@
 bin/
 lib/
 *.pyc
+keys.py
