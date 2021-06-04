@@ -51,6 +51,9 @@ class Task(models.Model):
         if not self.file and not self.url:  # This will check for None or Empty
             raise ValidationError({'file': 'Even one of file or url should have a value.'})
 
+    def __str__(self):
+        return 'Task: %d - project: %s' % (self.id, self.project)
+
 
 #to create AssingedAudio class for future use
 
@@ -67,6 +70,9 @@ class Comment(models.Model):
     comment = models.TextField(blank=False, help_text='Comment for an annotation')
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, help_text='User creating the comment')
     created_at = models.DateTimeField(auto_now=True, help_text='Date and time of comment creation')
+
+    def __str__(self):
+        return 'Comment from %s' % (self.user)
 
 
 class Annotation(models.Model):
@@ -92,3 +98,6 @@ class Annotation(models.Model):
     hidden_by_user = models.BooleanField(default=False, help_text='Hidden by users true/false')
 
     comment = models.ManyToManyField(Comment, blank=True, related_name='annotation_comment', help_text='Comments done for the annotation')
+
+    def __str__(self):
+        return 'Annotation %d - project: %s' % (self.id, self.project)

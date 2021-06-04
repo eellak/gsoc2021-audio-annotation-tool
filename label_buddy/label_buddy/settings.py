@@ -39,6 +39,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
+
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -87,6 +88,7 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'label_buddy.wsgi.application'
 
+AUTH_USER_MODEL = "users.User"
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases

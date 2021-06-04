@@ -4,6 +4,7 @@ lib/
 
 migrations/
 *.pyc
+*.png
 
 
 #local settings and db ignonred

@@ -1,18 +1,19 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
-class User(models.Model):
 
+class User(AbstractUser):
+    
     '''
-    User class with basic attributes
+    User class inherited from Django User model
     '''
 
-    username = models.CharField(max_length=256, blank=False, primary_key=True)  #set the username as primary key
-    email = models.EmailField(unique=True, blank=False)                         #set email as unique
+    #remove unnecessary fields
+    groups = None
+    user_permissions = None
 
-    first_name = models.CharField(max_length=256, blank=False)
-    last_name = models.CharField(max_length=256, blank=False)
-    phone_number = models.CharField(max_length=256, blank=True)
-    avatar = models.ImageField(blank=True)
-
-    can_create_projects = models.BooleanField(default=False)                    #determines if a user is able to create projects (manager)
+    #additional fields
+    can_create_projects = models.BooleanField(default=False, help_text='True if the user can create projects (be a manager)')
+    phone_number = models.CharField(max_length=256, blank=True, help_text="User's phone number")
+    avatar = models.ImageField(blank=True, help_text="User's avatar (image)")

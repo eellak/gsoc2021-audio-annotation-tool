@@ -27,6 +27,10 @@ class Label(models.Model):
     parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='children', help_text='Parent label of the label (optional)')
     color = ColorField(blank=True, default='#FF0000', help_text='Color given to the label (optional)')
 
+    #How to display labels in admin
+    def __str__(self):
+        return '%s' % (self.name)
+
 
 
 class Project(models.Model):
@@ -52,4 +56,8 @@ class Project(models.Model):
     managers = models.ManyToManyField(User, blank=True, related_name='project_manager', help_text='Managers for the project')
 
     project_type = EnumChoiceField(Project_type, default=Project_type.audio, help_text='Specify the type of the annotation (Audio, image or Video)')
+
+    #How to display projects in admin
+    def __str__(self):
+        return '%s' % (self.title)
 
