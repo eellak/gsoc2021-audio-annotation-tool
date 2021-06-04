@@ -23,9 +23,9 @@ class Label(models.Model):
     Label class for labels created to annotate audio files
     '''
 
-    name = models.CharField(max_length=256, blank=False, primary_key=True)
-    parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='children')  #parent label
-    color = ColorField(blank=True, default='#FF0000')
+    name = models.CharField(max_length=256, blank=False, primary_key=True, help_text='Name of the label')
+    parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='children', help_text='Parent label of the label (optional)')
+    color = ColorField(blank=True, default='#FF0000', help_text='Color given to the label (optional)')
 
 
 
@@ -37,19 +37,19 @@ class Project(models.Model):
     '''
 
 
-    title = models.CharField(max_length=256, blank=False, null=False, default='', primary_key=True)
+    title = models.CharField(max_length=256, blank=False, null=False, default='', primary_key=True, help_text='Project title')
 
     description = models.TextField(blank=True, null=True, default='', help_text='Project description')
     instructions = models.TextField(blank=True, null=True, default='', help_text='Project instructions')
-    logo = models.ImageField(blank=True)
+    logo = models.ImageField(blank=True, help_text='Project logo')
     created_at = models.DateTimeField(auto_now=True, help_text='Date and time of project creation')
 
-    users_can_see_other_queues = models.BooleanField(default=False)                         #users can see which tasks are assinged to other users for this specific project
+    users_can_see_other_queues = models.BooleanField(default=False, help_text='If true, users can see which tasks are assinged to other users for this specific project')
 
-    labels = models.ManyToManyField(Label, blank=False)                                     #each project has a set of labels which can be used by annotators to annotate
-    reviewers = models.ManyToManyField(User, blank=True, related_name='project_reviewer')   #each project has a set of reviewers (users) who can review annotations
-    annotators = models.ManyToManyField(User, blank=True, related_name='project_annotator') #each project has a set of annotators who can annotate it's audio files
-    managers = models.ManyToManyField(User, blank=True, related_name='project_manager')     #each project has a set of managers who can change it's configurations
+    labels = models.ManyToManyField(Label, blank=False, help_text='Labels used by annotators to annotate')
+    reviewers = models.ManyToManyField(User, blank=True, related_name='project_reviewer', help_text='Reviewers who will review annotations')
+    annotators = models.ManyToManyField(User, blank=True, related_name='project_annotator', help_text='Annotators for the project')
+    managers = models.ManyToManyField(User, blank=True, related_name='project_manager', help_text='Managers for the project')
 
-    project_type = EnumChoiceField(Project_type, default=Project_type.audio)                #type of annoation (default audio annoation tool)
+    project_type = EnumChoiceField(Project_type, default=Project_type.audio, help_text='Specify the type of the annotation (Audio, image or Video)')
 
