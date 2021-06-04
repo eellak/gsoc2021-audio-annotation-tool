@@ -1,4 +1,9 @@
 bin/
 lib/
+migrations/
 *.pyc
-keys.py
+
+
+#local settings and db ignonred
+db.sqlite3
+local_settings.py

@@ -12,7 +12,14 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 
-from label_buddy.keys import django_key
+try:
+    # keep a local_settings.py file for local overrides
+    from .local_settings import *
+except ImportError:
+    # local_settings not in use
+    pass
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
