@@ -29,6 +29,7 @@ class UserAdmin(admin.ModelAdmin):
         "date_joined",
     ]
     list_filter = ["can_create_projects",]
+    ordering = ("id",)
 
 
 admin.site.register(User, UserAdmin)

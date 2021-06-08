@@ -1,12 +1,12 @@
-#virtual enviroment folders
+# virtual enviroment folders
 bin/
 lib/
 
-migrations/
+
 *.pyc
 *.png
 
 
-#local settings and db ignonred
+# local settings and db ignonred
 label_buddy/db.sqlite3
 label_buddy/label_buddy/local_settings.py

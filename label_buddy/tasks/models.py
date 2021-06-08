@@ -2,6 +2,8 @@ from django.db import models
 from enumchoicefield import ChoiceEnum, EnumChoiceField
 from url_or_relative_url_field.fields import URLOrRelativeURLField
 from django.core.exceptions import ValidationError
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 from users.models import User
 from projects.models import Project
@@ -54,6 +56,13 @@ class Task(models.Model):
     def __str__(self):
         return 'Task: %d - project: %s' % (self.id, self.project)
 
+#When a task is created it should be assigned to a random user
+@receiver(post_save, sender=Task)
+def task_assigned_ti_user(sender, instance, created, **kwargs):
+
+    if created:
+        task_created = Task.objects.get(pk=instance.pk)
+        task_created.assigned_to.add(User.objects.get(pk=1)) #to change
 
 #to create AssingedAudio class for future use
 
