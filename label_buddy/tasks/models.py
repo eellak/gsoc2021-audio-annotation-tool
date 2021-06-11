@@ -56,14 +56,15 @@ class Task(models.Model):
     def __str__(self):
         return 'Task: %d - project: %s' % (self.id, self.project)
 
+
 #When a task is created it should be assigned to a random user
-@receiver(post_save, sender=Task)
-def task_assigned_ti_user(sender, instance, created, **kwargs):
+# @receiver(post_save, sender=Task)
+# def task_assigned_to_user(sender, instance, created, **kwargs):
 
-    if created:
-        task_created = Task.objects.get(pk=instance.pk)
-        task_created.assigned_to.add(User.objects.get(pk=1)) #to change
-
+#     if created:
+#         random_user = User.objects.get(username="user1")
+#         instance.assigned_to.add(random_user)
+#         instance.save()
 #to create AssingedAudio class for future use
 
 
@@ -110,3 +111,13 @@ class Annotation(models.Model):
 
     def __str__(self):
         return 'Annotation %d - project: %s' % (self.id, self.project)
+
+
+#When an annotation is created, the task to which it belongs must be set a labeled (Task.status = labeled)
+@receiver(post_save, sender=Annotation)
+def make_task_labeled(sender, instance, created, **kwargs):
+
+    if created:
+        task = instance.task
+        task.status = Status.labeled
+        task.save()
