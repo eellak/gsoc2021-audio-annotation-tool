@@ -27,27 +27,27 @@ def projects_list(request):
         return JsonResponse(serializer.errors, status=400)
 
 @csrf_exempt
-def snippet_detail(request, pk):
+def edit_project(request, pk):
     """
-    Retrieve, update or delete a code snippet.
+    Retrieve, update or delete a code project.
     """
     try:
-        snippet = Snippet.objects.get(pk=pk)
-    except Snippet.DoesNotExist:
+        project = Project.objects.get(pk=pk)
+    except Project.DoesNotExist:
         return HttpResponse(status=404)
 
     if request.method == 'GET':
-        serializer = SnippetSerializer(snippet)
+        serializer = ProjectSerializer(project)
         return JsonResponse(serializer.data)
 
     elif request.method == 'PUT':
         data = JSONParser().parse(request)
-        serializer = SnippetSerializer(snippet, data=data)
+        serializer = ProjectSerializer(project, data=data)
         if serializer.is_valid():
             serializer.save()
             return JsonResponse(serializer.data)
         return JsonResponse(serializer.errors, status=400)
 
     elif request.method == 'DELETE':
-        snippet.delete()
+        project.delete()
         return HttpResponse(status=204)

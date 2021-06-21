@@ -4,4 +4,17 @@ from .models import Project
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
-        fields = ['title', 'description', 'instructions', 'logo', 'project_type']
+        read_only_fields = [
+            "users_can_see_other_queues",
+            "reviewers",
+            "annotators",
+            "managers",
+        ]
+        fields = [
+            "title", 
+            "description", 
+            "instructions", 
+            "logo", 
+            "project_type", 
+            "labels"
+        ]
