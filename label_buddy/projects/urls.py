@@ -1,14 +1,11 @@
 from django.urls import path
-from .views import (
-    projects_list,
-    edit_project,
-)
+from rest_framework.urlpatterns import format_suffix_patterns
+from . import views
 
-
-#API VIEWS
+# The API URLs are now determined automatically by the router.
 urlpatterns = [
-    path('api/v1/projects/', projects_list, name="projects_list"),
-    path('api/v1/projects', projects_list),
-    path('api/v1/projects/<pk>', edit_project, name="edit_project"),
-    #path('snippets/<int:pk>/', views.snippet_detail),
+    path('projects/', views.ProjectList.as_view()),
+
 ]
+
+urlpatterns = format_suffix_patterns(urlpatterns)

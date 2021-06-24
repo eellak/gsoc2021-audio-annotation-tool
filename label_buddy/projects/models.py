@@ -41,7 +41,7 @@ class Project(models.Model):
     '''
 
 
-    title = models.CharField(max_length=256, blank=False, null=False, default='', primary_key=True, help_text='Project title')
+    title = models.CharField(max_length=256, blank=False, null=False, default='', help_text='Project title')
 
     description = models.TextField(blank=True, null=True, default='', help_text='Project description')
     instructions = models.TextField(blank=True, null=True, default='', help_text='Project instructions')
