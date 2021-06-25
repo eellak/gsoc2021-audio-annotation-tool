@@ -4,8 +4,8 @@ from . import views
 
 # The API URLs are now determined automatically by the router.
 urlpatterns = [
-    path('projects/', views.ProjectList.as_view()),
-
+    path('projects/', views.ProjectList.as_view(), name="projects"),
+    path('projects/<int:pk>/', views.ProjectDetail.as_view(), name="specific_project"),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

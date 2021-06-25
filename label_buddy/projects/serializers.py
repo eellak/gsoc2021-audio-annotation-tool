@@ -6,9 +6,6 @@ class ProjectSerializer(serializers.ModelSerializer):
         model = Project
         read_only_fields = [
             "users_can_see_other_queues",
-            "reviewers",
-            "annotators",
-            "managers",
         ]
         fields = [
             "title", 
@@ -16,5 +13,8 @@ class ProjectSerializer(serializers.ModelSerializer):
             "instructions", 
             "logo", 
             "project_type", 
-            "labels"
+            "labels",
+            "reviewers",
+            "annotators",
+            "managers",
         ]

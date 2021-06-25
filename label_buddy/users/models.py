@@ -17,3 +17,7 @@ class User(AbstractUser):
     can_create_projects = models.BooleanField(default=False, help_text='True if the user can create projects (be a manager)')
     phone_number = models.CharField(max_length=256, blank=True, help_text="User's phone number")
     avatar = models.ImageField(blank=True, help_text="User's avatar (image)")
+
+    #How to display projects in admin
+    def __str__(self):
+        return '%s' % (self.username)

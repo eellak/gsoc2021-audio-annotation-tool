@@ -19,6 +19,7 @@ class UserAdmin(admin.ModelAdmin):
         "is_active",
     )
     list_display = [
+        "id",
         "username",
         "email",
         "first_name",

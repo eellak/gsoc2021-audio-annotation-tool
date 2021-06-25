@@ -7,7 +7,7 @@ from .models import Project, Label
 
 class ProjectAmdin(admin.ModelAdmin):
     search_fields = ["title"]
-    list_display = ["title", "created_at", "users_can_see_other_queues", "project_type"]
+    list_display = ["id", "title", "created_at", "users_can_see_other_queues", "project_type"]
     ordering = ("created_at",)
     list_filter = ["users_can_see_other_queues", "project_type"]
 
