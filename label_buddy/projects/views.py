@@ -1,14 +1,15 @@
 from django.shortcuts import render
 from rest_framework.response import Response
-from django.http import Http404
 from rest_framework.views import APIView
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.decorators import api_view
+from rest_framework.reverse import reverse
 from rest_framework import (
     permissions,
     status,
 )
 
-#
+
 from .models import Project
 from .serializers import ProjectSerializer
 from .permissions import UserCanCreateProject
@@ -25,7 +26,11 @@ class ProjectList(APIView):
     '''
     #get request
     def get(self, request, format=None):
-        projects = get_projects_of_user(request.user)
+        if request.user.is_authenticated:
+            projects = get_projects_of_user(request.user)
+        else:
+            projects = Project.objects.all()
+
         serializer = ProjectSerializer(projects, many=True)
         return Response(serializer.data)
 
@@ -39,26 +44,30 @@ class ProjectList(APIView):
 
 
 class ProjectDetail(APIView):
+
     '''
     Retrieve, update or delete a project instance.
     '''
-
 
     #User will be able to Post only if authenticated 
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, UserCanCreateProject,)
     serializer_class = ProjectSerializer
 
     def get_object(self, pk):
+
         try:
             return Project.objects.get(pk=pk)
         except PermissionDenied:
             return Response({"detail": "No permissions"}, status=status.HTTP_401_UNAUTHORIZED)
         except Project.DoesNotExist:
-            return Response({"detail": "project does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"detail": "Project does not exist"}, status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, pk, format=None):
         project = self.get_object(pk)
         serializer = ProjectSerializer(project)
+        if isinstance(project, Response):
+            return project
+
         return Response(serializer.data)
 
     def put(self, request, pk, format=None):
@@ -73,3 +82,11 @@ class ProjectDetail(APIView):
         project = self.get_object(pk)
         project.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+#root of out API. shows all objects
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'projects': reverse('project-list', request=request, format=format)
+    })
