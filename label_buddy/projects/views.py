@@ -9,13 +9,22 @@ from rest_framework import (
     status,
 )
 
-
+from tasks.models import Task
+from tasks.serializers import TaskSerializer
 from .models import Project
 from .serializers import ProjectSerializer
 from .permissions import UserCanCreateProject
 from .methods import get_projects_of_user
 
 
+def edit_project(request):
+    return render(request, "base.html", {})
+
+
+
+
+
+#API VIEWS
 class ProjectList(APIView):
 
     #User will be able to Post only if authenticated 
@@ -82,6 +91,36 @@ class ProjectDetail(APIView):
         project = self.get_object(pk)
         project.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+
+class ProjectTasks(APIView):
+    '''
+    List all project's tasks
+    '''
+
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly, UserCanCreateProject,)
+    serializer_class = TaskSerializer
+
+    def get_object(self, pk):
+        try:
+            return Project.objects.get(pk=pk)
+        except PermissionDenied:
+            return Response({"detail": "No permissions"}, status=status.HTTP_401_UNAUTHORIZED)
+        except Project.DoesNotExist:
+            return Response({"detail": "Project does not exist"}, status=status.HTTP_400_BAD_REQUEST)
+
+    #get all projects tasks
+    def get(self, request, pk, format=None):
+        project = self.get_object(pk)
+
+        if isinstance(project, Response):
+            return project
+
+        tasks = Task.objects.filter(project=project)
+        serializer = TaskSerializer(tasks, many=True)
+
+        return Response(serializer.data)
 
 
 #root of out API. shows all objects

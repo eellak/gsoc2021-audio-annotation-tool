@@ -8,11 +8,11 @@ class ProjectSerializer(serializers.ModelSerializer):
             "users_can_see_other_queues",
         ]
         fields = [
-            "title", 
-            "description", 
-            "instructions", 
-            "logo", 
-            "project_type", 
+            "title",
+            "description",
+            "instructions",
+            "logo",
+            "project_type",
             "labels",
             "reviewers",
             "annotators",
