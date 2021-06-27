@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     #third party
     'colorfield',
     'url_or_relative_url_field',
+    'crispy_forms',
 
     #own
     'users',

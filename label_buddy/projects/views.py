@@ -15,11 +15,24 @@ from .models import Project
 from .serializers import ProjectSerializer
 from .permissions import UserCanCreateProject
 from .methods import get_projects_of_user
+from .forms import ProjectForm
 
 
-def edit_project(request):
-    return render(request, "base.html", {})
+def project_create_view(request):
+    my_form = ProjectForm()
+    if request.method == "POST":
+        my_form = ProjectForm(request.data)
 
+        if my_form.is_valid():
+            print(my_form.cleaned_data)
+            #Project.objects.create(**my_form.cleaned_data)
+        else:
+            print(my_form.errors)
+
+    context = {
+        "form":my_form,
+    }
+    return render(request, "projects/create_project.html", context)
 
 
 

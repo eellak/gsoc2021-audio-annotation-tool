@@ -6,7 +6,7 @@ from . import views
 urlpatterns = [
 
 
-    path('projects/edit', views.edit_project, name="edit_project"),
+    path('projects/create', views.project_create_view, name="create_project"),
 
     #API VIEWS
     path('api/v1/projects/', views.ProjectList.as_view(), name="project-list"),
