@@ -19,18 +19,19 @@ from .forms import ProjectForm
 
 
 def project_create_view(request):
-    my_form = ProjectForm()
+    form = ProjectForm()
     if request.method == "POST":
-        my_form = ProjectForm(request.data)
+        #print(request.POST)
+        form = ProjectForm(request.POST)
 
-        if my_form.is_valid():
-            print(my_form.cleaned_data)
-            #Project.objects.create(**my_form.cleaned_data)
+        if form.is_valid():
+            #print(my_form.cleaned_data)
+            form.save()
         else:
-            print(my_form.errors)
+            print(form.errors)
 
     context = {
-        "form":my_form,
+        "form":form,
     }
     return render(request, "projects/create_project.html", context)
 
