@@ -44,11 +44,14 @@ ACCOUNT_EMAIL_VERIFICATION = "optional" # email should be verified in roder to l
 ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 10 # login attempts in order to prevent brute force attacks
 ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 5
 ACCOUNT_USERNAME_MIN_LENGTH = "4"
-
+ACCOUNT_FORMS = {
+    'signup': 'users.forms.ExtendedSignUpForm'
+}
 
 
 
 LOGIN_REDIRECT_URL = "/"
+ACCOUNT_LOGOUT_REDIRECT_URL = "/accounts/login/"
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',

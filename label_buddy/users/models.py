@@ -14,6 +14,7 @@ class User(AbstractUser):
     user_permissions = None
 
     #additional fields
+    name = models.CharField(max_length=256, default="", db_index=True, help_text='Users full name')
     can_create_projects = models.BooleanField(default=False, help_text='True if the user can create projects (be a manager)')
     phone_number = models.CharField(max_length=256, blank=True, help_text="User's phone number")
     avatar = models.ImageField(blank=True, help_text="User's avatar (image)")

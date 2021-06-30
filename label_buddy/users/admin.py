@@ -20,6 +20,7 @@ class UserAdmin(admin.ModelAdmin):
     )
     list_display = [
         "id",
+        "name",
         "username",
         "email",
         "first_name",
