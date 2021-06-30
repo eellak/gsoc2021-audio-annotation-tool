@@ -37,13 +37,34 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+#django-allauth settings
+ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 2
+ACCOUNT_EMAIL_REQUIRED = True # email adress must be verified in ordet to register
+ACCOUNT_EMAIL_VERIFICATION = "optional" # email should be verified in roder to log in
+ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 10 # login attempts in order to prevent brute force attacks
+ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 5
+ACCOUNT_USERNAME_MIN_LENGTH = "4"
+
+
+
+
+LOGIN_REDIRECT_URL = "/"
+
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+)
 
 # Application definition
 
 
 INSTALLED_APPS = [
     'django.contrib.admin',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
     'django.contrib.auth',
+    'django.contrib.sites',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -130,11 +151,9 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'UTC'
 
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
-
+SITE_ID = 1
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
@@ -145,3 +164,4 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# CRISPY_TEMPLATE_PACK = 'bootstrap4'
