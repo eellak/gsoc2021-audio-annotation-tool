@@ -9,6 +9,7 @@ from rest_framework import (
     status,
 )
 
+
 from tasks.models import Task
 from tasks.serializers import TaskSerializer
 from .models import Project
@@ -141,5 +142,6 @@ class ProjectTasks(APIView):
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({
-        'projects': reverse('project-list', request=request, format=format)
+        'projects': reverse('project-list', request=request, format=format),
+        'users': reverse('user-list', request=request, format=format),
     })
