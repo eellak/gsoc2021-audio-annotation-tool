@@ -7,6 +7,7 @@ urlpatterns = [
     
     #API VIEWS
     path('api/v1/users/', views.UserList.as_view(), name="user-list"),
+    path('api/v1/users/<int:pk>/', views.UserDetail.as_view(), name="specific_user"),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
