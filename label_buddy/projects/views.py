@@ -1,5 +1,6 @@
 from django.shortcuts import render
 from rest_framework.response import Response
+from django.contrib.auth.decorators import login_required
 from rest_framework.views import APIView
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.decorators import api_view
@@ -19,6 +20,7 @@ from .methods import get_projects_of_user
 from .forms import ProjectForm
 
 
+@login_required
 def project_create_view(request):
     form = ProjectForm()
     if request.method == "POST":
