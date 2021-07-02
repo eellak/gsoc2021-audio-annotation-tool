@@ -37,11 +37,9 @@ def index(request):
 def project_create_view(request):
     form = ProjectForm()
     if request.method == "POST":
-        #print(request.POST)
         form = ProjectForm(request.POST)
 
         if form.is_valid():
-            #print(my_form.cleaned_data)
             form.save()
         else:
             print(form.errors)
@@ -159,4 +157,5 @@ def api_root(request, format=None):
     return Response({
         'projects': reverse('project-list', request=request, format=format),
         'users': reverse('user-list', request=request, format=format),
+        'tasks': reverse('task-list', request=request, format=format),
     })
