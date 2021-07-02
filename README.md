@@ -44,4 +44,41 @@ We will try to develop a web application (audio annotation tool) which will prov
 * Submit tasks as annotated
 * Skip annotation process (for a specific task)
 
+#Steps to run
 
+Clone repository and cd to the folder
+~~~
+git clone https://github.com/eellak/gsoc2021-audio-annotation-tool/
+cd gsoc2021-audio-annotation-tool
+~~~
+
+Change to development branch
+~~~
+git checkout dev_branch
+~~~
+
+Create and activate a virtual enviroment
+~~~
+virtualenv . -p python3
+source bin/activate
+~~~
+
+Install requirements and cd to label_buddy/
+~~~
+pip install -r requirements.txt
+cd label_buddy
+~~~
+
+Make migrations for the Database and all dependencies
+~~~
+python manage.py makemigrations users projects tasks
+python manage.py migrate
+~~~
+
+After the above process create a super user and run server
+~~~
+python manage.py createsuperuser
+python manage.py runserver
+~~~
+
+Fianlly visit http://localhost:8000/admin and populate Database with data
