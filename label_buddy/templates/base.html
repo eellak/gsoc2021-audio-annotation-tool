@@ -1,12 +1,25 @@
 <!DOCTYPE html>
+{% load static %}
+
 <html>
 <head>
     <title>Label buddy</title>
 </head>
 <h1>Welcome to label buddy!</h1>
+
 <body>
+    {% block header %}
+    replace header
+    {% endblock %}
+
+	
     {% block content %}
     replace
     {% endblock %}
+
+   {% block footer %}
+    replace footer
+    {% endblock %}
+
 </body>
 </html>

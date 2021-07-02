@@ -13,15 +13,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 
-try:
-    # keep a local_settings.py file for local overrides
-    from .local_settings import *
-except ImportError:
-    # local_settings not in use
-    pass
-
-
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -30,7 +21,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = django_key
+SECRET_KEY = "django_key_long_random_key_here_12763523765&^!@$#%%^@#$%@#$"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -168,3 +159,13 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+
+
+try:
+    # keep a local_settings.py file for local overrides
+    from .local_settings import *
+except ImportError:
+    # local_settings not in use
+    pass
+

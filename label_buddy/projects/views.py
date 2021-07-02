@@ -20,6 +20,19 @@ from .methods import get_projects_of_user
 from .forms import ProjectForm
 
 
+def index(request):
+    """Index view"""
+    if request.user.is_authenticated:
+        projects = Project.objects.all()
+    else:
+        projects = []
+    context = {}
+    context['projects'] = projects
+    context['user'] = request.user
+
+    return render(request, "projects/index.html", context)
+
+
 @login_required
 def project_create_view(request):
     form = ProjectForm()

@@ -7,3 +7,7 @@ djangorestframework==3.12.4
 Pillow==8.2.0
 pytz==2021.1
 sqlparse==0.4.1
+
+django_crispy_forms==1.12
+django-allauth==0.44
+ipython==7.16.1
