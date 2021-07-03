@@ -19,7 +19,7 @@ from .permissions import UserCanCreateProject
 from .methods import get_projects_of_user
 from .forms import ProjectForm
 
-
+@login_required
 def index(request):
     """Index view"""
     if request.user.is_authenticated:
