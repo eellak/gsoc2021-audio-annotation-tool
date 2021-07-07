@@ -1,2 +1,16 @@
 @charset "UTF-8";
- 
+
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: rgb(245,245,245);
+    color: black;
+    text-align: center;
+}
+
+
+.myAction {
+    margin-left: 60%;
+}

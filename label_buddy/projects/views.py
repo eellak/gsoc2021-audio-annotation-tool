@@ -23,14 +23,14 @@ from .forms import ProjectForm
 def index(request):
     """Index view"""
     if request.user.is_authenticated:
-        projects = Project.objects.all()
+        projects = get_projects_of_user(request.user)
     else:
         projects = []
     context = {}
     context['projects'] = projects
     context['user'] = request.user
 
-    return render(request, "projects/index.html", context)
+    return render(request, "label_buddy/index.html", context)
 
 
 @login_required

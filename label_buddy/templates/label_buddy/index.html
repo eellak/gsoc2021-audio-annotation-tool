@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block title %} Label Buddy{% endblock %}
+
+{% block content %}
+	<h3>{{ user }} Dashboard</h3>
+
+	<ul>
+		{% for project in projects %}
+			<li><a href="/api/v1/projects/{{project.id}}">{{project.title}}</a></li>
+		{% endfor %}
+	</ul>
+	
+{% endblock %}
