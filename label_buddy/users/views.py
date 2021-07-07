@@ -1,4 +1,6 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.exceptions import PermissionDenied
@@ -9,10 +11,39 @@ from rest_framework import (
 )
 
 
-
 from .models import User
 from .serializers import UserSerializer
+from .forms import UserForm
 # Create your views here.
+
+def get_user(username):
+    try:
+        user = User.objects.get(username=username)
+        return user
+    except User.DoesNotExist:
+        return None
+
+
+@login_required
+def edit_profile(request, username):
+    context = {}
+    user = get_user(username)
+    print(user)
+    if not user or (user != request.user):
+        return HttpResponseRedirect("/")
+
+    if request.method == "POST":
+        form = UserForm(request.user, request.POST)
+        if form.is_valid():
+            #form.save()
+            print("Form ok")
+    else:
+        form = UserForm()
+
+    context["form"] = form
+    return render(request, "label_buddy/user_edit_profile.html", context)
+
+
 
 
 #API VIEWS
