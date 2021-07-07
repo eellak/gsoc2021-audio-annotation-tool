@@ -1,12 +1,15 @@
 {% extends 'base.html' %}
 
 {% load crispy_forms_tags %}
+
 {% block title %} &#9702; Sign in {% endblock %}
+
 {% block content %}
+
   <div class="container centered">
     <div class="row justify-content-center">
       <div class="col-6">
-        
+
         <h1 class="mt-2">Sign in</h1>
         <hr class="mt-0 mb-4">
         <p>If you do not have an account yet, then please <a href="{{ signup_url }}">sign up</a> first.</p>
@@ -14,11 +17,10 @@
           {% csrf_token %}
           {{ form | crispy }}
           <button type="submit" class="btn btn-success">Sign in</button>
-          <a href="{% url 'account_reset_password' %}">Forgot Password?</a>
+          <a class="myAction" href="{% url 'account_reset_password' %}">Forgot Password?</a>
         </form>
-        
+
       </div>
     </div>
   </div>
-
 {% endblock %}
