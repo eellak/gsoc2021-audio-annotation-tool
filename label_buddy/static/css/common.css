@@ -24,10 +24,12 @@
 }
 
 #allauth-image {
-    /* width: 100%;
-    height: 400px; */
     display:block;
     margin:auto;
+}
+
+.user-round-icon {
+    background-color:rgb(245,245,245);
 }
 
 .my-button {
@@ -37,3 +39,4 @@
 .my-link {
     color: rgb(116, 222, 237);
 }
+

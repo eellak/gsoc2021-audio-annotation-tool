@@ -28,17 +28,18 @@ def get_user(username):
 def edit_profile(request, username):
     context = {}
     user = get_user(username)
-    print(user)
+    
     if not user or (user != request.user):
         return HttpResponseRedirect("/")
 
     if request.method == "POST":
-        form = UserForm(request.user, request.POST)
+        form = UserForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
-            #form.save()
-            print("Form ok")
+            user = form.save(commit=False)
+            user.save()
+            return HttpResponseRedirect("/")
     else:
-        form = UserForm()
+        form = UserForm(instance=user)
 
     context["form"] = form
     return render(request, "label_buddy/user_edit_profile.html", context)

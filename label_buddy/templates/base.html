@@ -31,22 +31,35 @@
 <body>
   <nav class="navbar navbar-expand-md navbar bg-light">
     <a class="navbar-brand" href="/">
-      <img src="{% static '/images/favicons/logo_transparent_170x40.png' %}" alt="">
+      <img src="{% static '/images/favicons/logo_transparent_165x25.png' %}" alt="">
     </a>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav  ml-auto">
         {% if user.is_authenticated %}
+
           <div class="btn-group dropleft ">
-            <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Options
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-list-4" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="dropdown-menu">
-              <h3 class="dropdown-header">{{ user }}</h3>
-              <a class="dropdown-item" href="{% url 'edit_user' user.username %}">Edit profile</a>
-              <a class="dropdown-item" href="/accounts/password/change">Change password</a>
-              <div class="dropdown-divider"></div>
-              <a class="dropdown-item" href="/accounts/logout">Sign out</a>
-            </div>
+            <div class="collapse navbar-collapse" id="navbar-list-4">
+              <ul class="navbar-nav">
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% block avatar %}{% endblock %}
+                  </a>
+                  <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                    <h3 class="dropdown-header user-round-icon">
+                      {% block avatar_inner %}{% endblock %}
+                      <b> Hi, {{ user }}</b>
+                    </h3>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{% url 'edit_user' user.username %}">Edit profile</a>
+                    <a class="dropdown-item" href="/accounts/password/change">Change password</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="/accounts/logout">Sign out</a>
+                  </div>
+                </li>
+              </ul>
           </div>
         {% else %}
           <a class="nav-item nav-link my-link" href="{{ login_url }}">SIGN IN</a>

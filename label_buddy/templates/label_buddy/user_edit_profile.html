@@ -4,18 +4,26 @@
 
 {% load crispy_forms_tags %}
 
+{% block avatar %} 
+	<img src="https://s3.eu-central-1.amazonaws.com/bootstrapbaymisc/blog/24_days_bootstrap/fox.jpg" width="40" height="40" class="rounded-circle">
+{% endblock %}
+
+{% block avatar_inner %}
+	<img src="https://s3.eu-central-1.amazonaws.com/bootstrapbaymisc/blog/24_days_bootstrap/fox.jpg" width="40" height="40" class="rounded-circle">
+{% endblock %}
+
 {% block title %} &#9702; Edit profile{% endblock %}
 
 {% block content %}
     <div class="container centered">
         <div class="row justify-content-center">
-            <div class="col-6">
+            <div class="col-6 user-form-wrap">
                 <h1>Edit Profile</h1>
                 <hr class="mt-0 mb-4">
-                <form action="" method="POST">
+                <form enctype="multipart/form-data" action="" method="POST">
                 {% csrf_token %}
                 {{ form | crispy}}
-                <button class="btn btn-success" type="submit">Update Profile</button>
+                <button class="btn my-button" type="submit">Update Profile</button>
                 </form>
             </div>
         </div>
