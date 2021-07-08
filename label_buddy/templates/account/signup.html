@@ -7,14 +7,14 @@
 {% block content %}
   <div class="container centered">
     <div class="row justify-content-center">
-      <div class="col-6">
+      <div class="user-form-wrap col-6">
         <h1 class="mt-2">Sign Up</h1>
         <hr class="mt-0 mb-4">
-        <p>Already have an account? Then please <a href="{{ login_url }}">sign in</a>.</p>
+        <p>Already have an account? Then please <a class="my-link" href="{{ login_url }}">sign in</a>.</p>
         <form method="POST" action="{% url 'account_signup' %}">
           {% csrf_token %}
           {{ form | crispy }}
-          <button type="submit" class="btn btn-success">Sign Up</button>
+          <button type="submit" class="btn my-button">Sign Up</button>
         </form>
       </div>
     </div>

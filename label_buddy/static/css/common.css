@@ -14,3 +14,26 @@
 .myAction {
     margin-left: 60%;
 }
+
+.user-form-wrap {
+    background-color: rgb(245,245,245);
+    padding: 3%;
+    border-radius: 10px;
+    margin: 2%;
+
+}
+
+#allauth-image {
+    /* width: 100%;
+    height: 400px; */
+    display:block;
+    margin:auto;
+}
+
+.my-button {
+    background-color: rgb(116, 222, 237);
+}
+
+.my-link {
+    color: rgb(116, 222, 237);
+}

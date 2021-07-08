@@ -75,7 +75,7 @@
   <form method="post" class="container-fluid text-center" id="email_form" action="{% url 'account_email' %}">
       {% csrf_token %}
       {{ form.as_p }}
-      <button class="btn btn-outline-primary" name="action_add" type="submit">{% trans "Add E-mail" %}</button>
+      <button class="btn my-button" name="action_add" type="submit">{% trans "Add E-mail" %}</button>
   </form>
 
 {% endblock %}
