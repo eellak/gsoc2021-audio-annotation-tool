@@ -35,6 +35,8 @@ ACCOUNT_EMAIL_VERIFICATION = "optional" # email should be verified in roder to l
 ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 10 # login attempts in order to prevent brute force attacks
 ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 5
 ACCOUNT_USERNAME_MIN_LENGTH = "4"
+ACCOUNT_SIGNUP_PASSWORD_VERIFICATION = False # confirmation password isnt needed
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # on signup send messages to this email (print in terminal)
 ACCOUNT_FORMS = {
     'signup': 'users.forms.ExtendedSignUpForm'
 }
@@ -90,7 +92,7 @@ ROOT_URLCONF = 'label_buddy.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, "templates")],
+        'DIRS': [os.path.join(BASE_DIR, "templates"),],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

@@ -11,7 +11,7 @@
         <h1 class="mt-2">Sign Up</h1>
         <hr class="mt-0 mb-4">
         <p>Already have an account? Then please <a href="{{ login_url }}">sign in</a>.</p>
-        <form class="myform" method="POST" action="{% url 'account_signup' %}">
+        <form method="POST" action="{% url 'account_signup' %}">
           {% csrf_token %}
           {{ form | crispy }}
           <button type="submit" class="btn btn-success">Sign Up</button>
