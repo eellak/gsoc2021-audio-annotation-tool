@@ -47,7 +47,7 @@ def project_create_view(request):
     context = {
         "form":form,
     }
-    return render(request, "projects/create_project.html", context)
+    return render(request, "label_buddy/create_project.html", context)
 
 
 

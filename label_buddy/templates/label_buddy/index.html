@@ -2,23 +2,64 @@
 
 {% load static %}
 
-{% block avatar %} 
-	<img src="https://s3.eu-central-1.amazonaws.com/bootstrapbaymisc/blog/24_days_bootstrap/fox.jpg" width="40" height="40" class="rounded-circle">
-{% endblock %}
-
-{% block avatar_inner %}
-	<img src="https://s3.eu-central-1.amazonaws.com/bootstrapbaymisc/blog/24_days_bootstrap/fox.jpg" width="40" height="40" class="rounded-circle">
-{% endblock %}
-
 {% block title %} Label Buddy{% endblock %}
 
 {% block content %}
-	<h3>{{ user }} Dashboard</h3>
+	{% if projects %}
+		<h1 style="text-align:center">Projects you are envolved</h1>
+		<div class="my-custom-scrollbar table-wrapper-scroll-y">
+			<!--Table-->
+			<table class="table table-bordered table-striped">
+			<!--Table head-->
+			<thead>
+				<tr>
+				<th>Title</th>
+				<th>Creation date</th>
+				<th>Queues are public</th>
+				<th>Type</th>
+				<th>Manager</th>
+				<th>Annotator</th>
+				<th>Reviewer</th>
+				</tr>
+			</thead>
+			<!--Table head-->
 
-	<ul>
-		{% for project in projects %}
-			<li><a href="/api/v1/projects/{{project.id}}">{{project.title}}</a></li>
-		{% endfor %}
-	</ul>
-	
+			<!--Table body-->
+			<tbody>
+				{% for project in projects %}
+					<tr>
+						<td>{{ project.title }}</td>
+						<td>{{ project.created_at }}</td>
+						{% if project.users_can_see_other_queues%}
+							<td><i style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
+						{% else %}
+							<td><i style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
+						{% endif %}
+						<td>{{ project.project_type }}</td>
+
+						{% if user in project.managers.all %}
+							<td><i style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
+						{% else %}
+							<td><i style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
+						{% endif %}
+
+						{% if user in project.annotators.all %}
+							<td><i style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
+						{% else %}
+							<td><i style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
+						{% endif %}
+
+						{% if user in project.reviewers.all %}
+							<td><i style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
+						{% else %}
+							<td><i style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
+						{% endif %}
+					</tr>
+				{% endfor %}
+			</tbody>
+			<!--Table body-->
+			</table>
+		{% else %}
+			<h1 style="text-align:center">No projects for you yet</h1>
+		{% endif %}
 {% endblock %}

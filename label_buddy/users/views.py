@@ -28,7 +28,6 @@ def get_user(username):
 def edit_profile(request, username):
     context = {}
     user = get_user(username)
-    
     if not user or (user != request.user):
         return HttpResponseRedirect("/")
 
@@ -60,7 +59,6 @@ class UserList(APIView):
     def get(self, request, format=None):
         
         users = User.objects.all()
-
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
 

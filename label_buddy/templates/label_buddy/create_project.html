@@ -1,9 +1,21 @@
 {% extends 'base.html' %}
+
 {% load crispy_forms_tags %}
 
+{% block title %} &#9702; Create project {% endblock %}
+
 {% block content %}
-<form action='' method='POST'> {% csrf_token %}
-    {{ form | crispy}}
-    <input type='submit' value='save' />
-</form>
+    <div class="container centered">
+        <div class="row justify-content-center">
+            <div class="user-form-wrap col-8">
+                <h1 class="mt-2">Create project</h1>
+                <hr class="mt-0 mb-4">
+                <form action="" method="POST">
+                    {% csrf_token %}
+                    {{ form | crispy}}
+                    <button type="submit" class="btn my-button">Create</button>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}
