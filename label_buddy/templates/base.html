@@ -35,7 +35,7 @@
       <img src="{% static '/images/favicons/logo_transparent_165x25.png' %}" alt="">
     </a>
     {% if user.can_create_projects %}
-      <a href="{% url 'create_project' %}">
+      <a href="{% url 'create_project' user.username %}">
         <button class="btn my-button">Create project</button>
       </a>
     {% endif %}

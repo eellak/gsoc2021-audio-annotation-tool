@@ -1,6 +1,8 @@
 from django.shortcuts import render
-from rest_framework.response import Response
 from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
+
+from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.decorators import api_view
@@ -18,6 +20,14 @@ from .serializers import ProjectSerializer
 from .permissions import UserCanCreateProject
 from .methods import get_projects_of_user
 from .forms import ProjectForm
+from users.models import User
+
+def get_user(username):
+    try:
+        user = User.objects.get(username=username)
+        return user
+    except User.DoesNotExist:
+        return None
 
 @login_required
 def index(request):
@@ -26,24 +36,30 @@ def index(request):
         projects = get_projects_of_user(request.user)
     else:
         projects = []
-    context = {}
-    context['projects'] = projects
-    context['user'] = request.user
+
+    context = {
+        "projects": projects,
+        "user": request.user,
+    }
 
     return render(request, "label_buddy/index.html", context)
 
 
 @login_required
-def project_create_view(request):
+def project_create_view(request, username):
+    user = get_user(username)
     form = ProjectForm()
+    if not user or (user != request.user):
+        return HttpResponseRedirect("/")
     if request.method == "POST":
-        form = ProjectForm(request.POST)
-
+        form = ProjectForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            project = form.save()
+            # user who created project must be in the list of managers
+            project.managers.add(user)
+            return HttpResponseRedirect("/")
         else:
             print(form.errors)
-
     context = {
         "form":form,
     }
