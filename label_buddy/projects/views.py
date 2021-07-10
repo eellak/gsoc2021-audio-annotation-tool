@@ -18,16 +18,13 @@ from tasks.serializers import TaskSerializer
 from .models import Project
 from .serializers import ProjectSerializer
 from .permissions import UserCanCreateProject
-from .methods import get_projects_of_user
 from .forms import ProjectForm
-from users.models import User
+from .methods import (
+    get_projects_of_user,
+    get_user,
+    get_project,
+)
 
-def get_user(username):
-    try:
-        user = User.objects.get(username=username)
-        return user
-    except User.DoesNotExist:
-        return None
 
 @login_required
 def index(request):
@@ -46,11 +43,13 @@ def index(request):
 
 
 @login_required
-def project_create_view(request, username):
-    user = get_user(username)
+def project_create_view(request):
     form = ProjectForm()
-    if not user or (user != request.user):
+    user = get_user(request.user.username)
+
+    if not user or (user != request.user) or not user.can_create_projects:
         return HttpResponseRedirect("/")
+    
     if request.method == "POST":
         form = ProjectForm(request.POST, request.FILES)
         if form.is_valid():
@@ -59,11 +58,23 @@ def project_create_view(request, username):
             project.managers.add(user)
             return HttpResponseRedirect("/")
         else:
-            print(form.errors)
+            raise forms.ValidationError("Something is wrong")
     context = {
         "form":form,
     }
     return render(request, "label_buddy/create_project.html", context)
+
+@login_required
+def project_page_view(request, username, pk):
+    user = get_user(username)
+    project = get_project(pk)
+    if not user or (user != request.user) or not project:
+        return HttpResponseRedirect("/")
+    
+    context = {
+        "project": project,
+    }
+    return render(request, "label_buddy/project_page.html", context)
 
 
 

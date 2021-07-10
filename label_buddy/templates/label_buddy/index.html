@@ -6,13 +6,14 @@
 
 {% block content %}
 	{% if projects %}
-		<h1 style="text-align:center">Projects you are envolved</h1>
+		<h1 style="text-align:center">Projects you are involved</h1>
 		<div class="my-custom-scrollbar table-wrapper-scroll-y">
 			<!--Table-->
 			<table class="table table-bordered table-striped">
 			<!--Table head-->
 			<thead>
 				<tr>
+				<th>#</th>
 				<th>Title</th>
 				<th>Creation date</th>
 				<th>Queues are public</th>
@@ -28,7 +29,10 @@
 			<tbody>
 				{% for project in projects %}
 					<tr>
-						<td>{{ project.title }}</td>
+						<td>{{ project.id }}</td>
+						<td>
+						<a class="my-link" href="{% url 'project_page' user.username project.id %}">{{ project.title }}</a>
+						</td>
 						<td>{{ project.created_at }}</td>
 						{% if project.users_can_see_other_queues%}
 							<td><i style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>

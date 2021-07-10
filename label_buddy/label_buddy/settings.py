@@ -35,12 +35,30 @@ ACCOUNT_EMAIL_VERIFICATION = "optional" # email should be verified in roder to l
 ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 10 # login attempts in order to prevent brute force attacks
 ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 5
 ACCOUNT_USERNAME_MIN_LENGTH = "4"
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_SIGNUP_PASSWORD_VERIFICATION = False # confirmation password isnt needed
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # on signup send messages to this email (print in terminal)
 ACCOUNT_FORMS = {
     'signup': 'users.forms.ExtendedSignUpForm'
 }
 
+AUTH_PASSWORD_VALIDATORS = [
+    {
+        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        'OPTIONS': {
+            'min_length': 5,
+        },
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+    },
+    {
+        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+]
 
 
 LOGIN_REDIRECT_URL = "/"
