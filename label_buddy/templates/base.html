@@ -76,7 +76,7 @@
               </ul>
           </div>
         {% else %}
-          <a class="nav-item nav-link my-link" href="{{ login_url }}">SIGN IN</a>
+          <a class="nav-item nav-link my-link" href="/accounts/login">SIGN IN</a>
           <a class="nav-item nav-link my-link" href="/accounts/signup">REGISTER</a>
         {% endif %}
       </div>
@@ -93,9 +93,10 @@
     
   {% block extra_body %}
   {% endblock %}
-  <div class="footer bg-light">
+  
+  <div class="footer">
     <p>&copy;Powered by Google Summer of Code with <a class="my-link" href="https://gfoss.eu/" target="_blank">GFOSS</a>
-    <a style="color:black;" href="https://github.com/eellak/gsoc2021-audio-annotation-tool" target="_blank"><i class="fab fa-github fa-1x"></i></a>
+    <a class="my-link" href="https://github.com/eellak/gsoc2021-audio-annotation-tool" target="_blank"><i class="fab fa-github fa-1x"></i></a>
   </p>
   </div>
 </body>

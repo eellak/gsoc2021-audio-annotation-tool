@@ -5,65 +5,73 @@
 {% block title %} Label Buddy{% endblock %}
 
 {% block content %}
-	{% if projects %}
-		<h1 style="text-align:center">Projects you are involved</h1>
-		<div class="my-custom-scrollbar table-wrapper-scroll-y">
-			<!--Table-->
-			<table class="table table-bordered table-striped">
-			<!--Table head-->
-			<thead>
-				<tr>
-				<th>#</th>
-				<th>Title</th>
-				<th>Creation date</th>
-				<th>Queues are public</th>
-				<th>Type</th>
-				<th>Manager</th>
-				<th>Annotator</th>
-				<th>Reviewer</th>
-				</tr>
-			</thead>
-			<!--Table head-->
-
-			<!--Table body-->
-			<tbody>
-				{% for project in projects %}
+	{% if user.is_authenticated%}
+		{% if projects %}
+			<h1 style="text-align:center">Projects you are involved</h1>
+			<div class="my-custom-scrollbar table-wrapper-scroll-y">
+				<!--Table-->
+				<table class="table table-bordered table-striped">
+				<!--Table head-->
+				<thead>
 					<tr>
-						<td>{{ project.id }}</td>
-						<td>
-						<a class="my-link" href="{% url 'project_page' user.username project.id %}">{{ project.title }}</a>
-						</td>
-						<td>{{ project.created_at }}</td>
-						{% if project.users_can_see_other_queues%}
-							<td><i style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
-						{% else %}
-							<td><i style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
-						{% endif %}
-						<td>{{ project.project_type }}</td>
-
-						{% if user in project.managers.all %}
-							<td><i style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
-						{% else %}
-							<td><i style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
-						{% endif %}
-
-						{% if user in project.annotators.all %}
-							<td><i style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
-						{% else %}
-							<td><i style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
-						{% endif %}
-
-						{% if user in project.reviewers.all %}
-							<td><i style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
-						{% else %}
-							<td><i style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
-						{% endif %}
+					<th>#</th>
+					<th>Title</th>
+					<th>Creation date</th>
+					<th>Queues are public</th>
+					<th>Type</th>
+					<th>Manager</th>
+					<th>Annotator</th>
+					<th>Reviewer</th>
 					</tr>
-				{% endfor %}
-			</tbody>
-			<!--Table body-->
-			</table>
+				</thead>
+				<!--Table head-->
+
+				<!--Table body-->
+				<tbody>
+					{% for project in projects %}
+						<tr>
+							<td>{{ project.id }}</td>
+							<td>
+							<a class="my-link" href="{% url 'project_page' user.username project.id %}">{{ project.title }}</a>
+							</td>
+							<td>{{ project.created_at }}</td>
+							{% if project.users_can_see_other_queues%}
+								<td><i style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
+							{% else %}
+								<td><i style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
+							{% endif %}
+							<td>{{ project.project_type }}</td>
+
+							{% if user in project.managers.all %}
+								<td><i style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
+							{% else %}
+								<td><i style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
+							{% endif %}
+
+							{% if user in project.annotators.all %}
+								<td><i style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
+							{% else %}
+								<td><i style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
+							{% endif %}
+
+							{% if user in project.reviewers.all %}
+								<td><i style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
+							{% else %}
+								<td><i style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
+							{% endif %}
+						</tr>
+					{% endfor %}
+				</tbody>
+				<!--Table body-->
+				</table>
+			{% else %}
+				<h1 style="text-align:center">No projects for you yet</h1>
+			{% endif %}
 		{% else %}
-			<h1 style="text-align:center">No projects for you yet</h1>
+			<div class="center-screen welcome">
+				<h1>Welcome to Label Buddy</h1>
+				<p>Please <a class="my-link" href="/accounts/login">sign in</a> to continue
+				</p>
+			</div>
 		{% endif %}
 {% endblock %}

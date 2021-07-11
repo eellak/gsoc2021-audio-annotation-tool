@@ -26,7 +26,7 @@ from .methods import (
 )
 
 
-@login_required
+
 def index(request):
     """Index view"""
     if request.user.is_authenticated:

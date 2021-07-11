@@ -1,12 +1,17 @@
 @charset "UTF-8";
 
+:root {
+    --basic_color: #74deed;
+}
+
+
 .footer {
     position: fixed;
     left: 0;
     bottom: 0;
     width: 100%;
-    background-color: rgb(245,245,245);
-    color: black;
+    background-color: black;
+    color: white;
     text-align: center;
 }
 
@@ -33,9 +38,19 @@
 }
 
 .my-button {
-    background-color: rgb(116, 222, 237);
+    background-color: var(--basic_color);
 }
 
 .my-link {
-    color: rgb(116, 222, 237);
+    color: var(--basic_color);
 }
+
+
+.center-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 90vh;
+  }
