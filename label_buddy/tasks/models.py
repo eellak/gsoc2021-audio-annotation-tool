@@ -97,6 +97,9 @@ class Annotation(models.Model):
 
     comment = models.ManyToManyField(Comment, blank=True, related_name='annotation_comment', help_text='Comments done for the annotation')
 
+    class Meta:
+        unique_together = ('user', 'task',)
+
     def __str__(self):
         return 'Annotation %d - project: %s' % (self.id, self.project)
 
