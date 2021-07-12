@@ -56,18 +56,6 @@ class Task(models.Model):
     def __str__(self):
         return 'Task: %d - project: %s' % (self.id, self.project)
 
-
-#When a task is created it should be assigned to a random user
-# @receiver(post_save, sender=Task)
-# def task_assigned_to_user(sender, instance, created, **kwargs):
-
-#     if created:
-#         random_user = User.objects.get(username="user1")
-#         instance.assigned_to.add(random_user)
-#         instance.save()
-#to create AssingedAudio class for future use
-
-
 #Classes for Annotation and Comments by reviewers
 
 class Comment(models.Model):

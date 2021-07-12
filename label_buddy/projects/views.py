@@ -23,6 +23,8 @@ from .methods import (
     get_projects_of_user,
     get_user,
     get_project,
+    get_num_of_tasks,
+    get_num_of_annotations,
 )
 
 
@@ -37,6 +39,8 @@ def index(request):
     context = {
         "projects": projects,
         "user": request.user,
+        "tasks_count": get_num_of_tasks(projects),
+        "annotations_count": get_num_of_annotations(projects),
     }
 
     return render(request, "label_buddy/index.html", context)
@@ -65,18 +69,17 @@ def project_create_view(request):
     return render(request, "label_buddy/create_project.html", context)
 
 @login_required
-def project_page_view(request, username, pk):
-    user = get_user(username)
+def project_page_view(request, pk):
+    user = get_user(request.user.username)
     project = get_project(pk)
     if not user or (user != request.user) or not project:
         return HttpResponseRedirect("/")
     
+    
     context = {
-        "project": project,
+        "project": project
     }
     return render(request, "label_buddy/project_page.html", context)
-
-
 
 
 #API VIEWS

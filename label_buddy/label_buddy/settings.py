@@ -193,7 +193,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 
-
 try:
     # keep a local_settings.py file for local overrides
     from .local_settings import *

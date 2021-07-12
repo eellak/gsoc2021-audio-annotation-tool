@@ -32,11 +32,11 @@
 <body>
   <nav class="navbar navbar-expand-md navbar bg-light">
     <a class="navbar-brand" href="/">
-      <img src="{% static '/images/favicons/logo_transparent_165x25.png' %}" alt="">
+      <img src="{% static '/images/favicons/logo_transparent_165x25.png' %}" title="Label Buddy">
     </a>
     {% if user.can_create_projects %}
       <a href="{% url 'create_project'%}">
-        <button class="btn my-button">Create project</button>
+        <button class="btn my-button">Create</button>
       </a>
     {% endif %}
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
@@ -58,14 +58,14 @@
                     {% endif %}
                   </a>
                   <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <h3 class="dropdown-header user-round-icon">
+                    <h6 class="dropdown-header user-round-icon">
                       {% if user.avatar %}
                         <img src="{{ user.avatar.url }}" width="40" height="40" class="rounded-circle">
                       {% else %}
                         <img src="{% static '/images/user/user.jpg' %}" width="40" height="40" class="rounded-circle">
                       {% endif %}
                       <b> Hi, {{ user }}</b>
-                    </h3>
+                    </h6>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="{% url 'edit_user' user.username %}">Edit profile</a>
                     <a class="dropdown-item" href="/accounts/password/change">Change password</a>
@@ -76,8 +76,8 @@
               </ul>
           </div>
         {% else %}
-          <a class="nav-item nav-link my-link" href="/accounts/login">SIGN IN</a>
-          <a class="nav-item nav-link my-link" href="/accounts/signup">REGISTER</a>
+          <a class="nav-item nav-link my-link" href="{% url 'account_login' %}">SIGN IN</a>
+          <a class="nav-item nav-link my-link" href="{% url 'account_signup' %}">REGISTER</a>
         {% endif %}
       </div>
     </div>
