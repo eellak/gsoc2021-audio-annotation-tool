@@ -19,10 +19,11 @@
 					<th>Creation date</th>
 					<th>Queues are public</th>
 					<th title="Number of tasks"><i title="Number of tasks" class="fa fa-tasks" aria-hidden="true"></i></th>
-					<th title="NUmber of annotations"><i title="NUmber of annotations" class="fa fa-paint-brush" aria-hidden="true"></i></th>
+					<th title="Number of annotations"><i title="Number of annotations" class="fa fa-paint-brush" aria-hidden="true"></i></th>
 					<th>Manager</th>
 					<th>Annotator</th>
 					<th>Reviewer</th>
+					<th>Managers</th>
 					</tr>
 				</thead>
 				<!--Table head-->
@@ -59,6 +60,15 @@
 								<td><i style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
 							{% else %}
 								<td><i style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
+								<td>
+									{% for user in project.managers.all %}
+										{% if user.avatar %}
+											<img src="{{ user.avatar.url }}" width="25" height="25" title="{{ user.username }}" class="rounded-circle">
+										{% else %}
+											<img src="{% static '/images/user/user.jpg' %}" width="25" height="25" title="{{ user.username }}" class="rounded-circle">
+										{% endif %}
+									{% endfor %}
+								</td>
 							{% endif %}
 						</tr>
 						

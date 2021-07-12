@@ -16,8 +16,8 @@ class Status(ChoiceEnum):
     Enum class for task status
     '''
 
-    labeled = "Labeled task"
-    unlabeled = "Unlabeled task"
+    labeled = "Labeled"
+    unlabeled = "Unlabeled"
 
 class Review_status(ChoiceEnum):
 
@@ -25,9 +25,9 @@ class Review_status(ChoiceEnum):
     Enum class for task review_status
     '''
 
-    unreviewed = "Unreviewed task"
-    reviewed = "Reviewed task"
-    commented = "Commented task"
+    unreviewed = "Unreviewed"
+    reviewed = "Reviewed"
+    commented = "Commented"
 
 
 class Task(models.Model):

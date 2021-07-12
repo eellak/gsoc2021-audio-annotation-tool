@@ -1,9 +1,49 @@
 {% extends 'base.html' %}
 
+{% load static%}
+
 {% load crispy_forms_tags %}
 
 {% block title %} &#9702; {{project.title}}{% endblock %}
 
 {% block content %}
-
+    <h1 style="text-align:center">Tasks for {{ project.title }}</h1>
+    <div class="my-custom-scrollbar table-wrapper-scroll-y ">
+        <!--Table-->
+        <table class="table table-bordered table-striped">
+        <!--Table head-->
+        <thead>
+            <tr>
+            <th>#</th>
+            <th title="Annotations for this task"><i title="Annotations for this task" class="fa fa-paint-brush" aria-hidden="true"></i></th>
+            <th>Annotated by</th>
+            <th title="Audio file"><i title="Audio file" class="fa fa-file" aria-hidden="true"></i></th>
+            <th>Status</th>
+            <th>Review status</th>
+            </tr>
+        </thead>
+        <!--Table head-->
+        {% for task in tasks %}
+            <!--Table body-->
+            <tbody>
+                <tr>
+                    <td>{{ task.id }}</td>
+                    <td><b>{{ count_annotations_for_task|get_item:task.id }}</b></td>
+                    <td>
+                        {% for user in users_annotated|get_item:task.id %}
+                            {% if user.avatar %}
+                                <img src="{{ user.avatar.url }}" width="25" height="25"  title="{{ user.username }}" class="rounded-circle">
+                            {% else %}
+                                <img src="{% static '/images/user/user.jpg' %}" width="25" height="25" title="{{ user.username }}" class="rounded-circle">
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>xxxx</td>
+                    <td>{{ task.status }}</td>
+                    <td>{{ task.review_status }}</td>
+                </tr>
+            </tbody>
+            <!--Table body-->
+        {% endfor %}
+    </table>
 {% endblock %}

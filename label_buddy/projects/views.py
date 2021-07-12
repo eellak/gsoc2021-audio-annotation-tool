@@ -19,12 +19,15 @@ from .models import Project
 from .serializers import ProjectSerializer
 from .permissions import UserCanCreateProject
 from .forms import ProjectForm
-from .methods import (
+from .helpers import (
     get_projects_of_user,
     get_user,
     get_project,
     get_num_of_tasks,
-    get_num_of_annotations,
+    project_annotations_count,
+    task_annotations_count,
+    get_project_tasks,
+    users_annotated_task,
 )
 
 
@@ -40,7 +43,7 @@ def index(request):
         "projects": projects,
         "user": request.user,
         "tasks_count": get_num_of_tasks(projects),
-        "annotations_count": get_num_of_annotations(projects),
+        "annotations_count": project_annotations_count(projects),
     }
 
     return render(request, "label_buddy/index.html", context)
@@ -68,16 +71,20 @@ def project_create_view(request):
     }
     return render(request, "label_buddy/create_project.html", context)
 
+
 @login_required
 def project_page_view(request, pk):
     user = get_user(request.user.username)
     project = get_project(pk)
+    tasks = get_project_tasks(project)
     if not user or (user != request.user) or not project:
         return HttpResponseRedirect("/")
     
-    
     context = {
-        "project": project
+        "project": project,
+        "tasks": tasks,
+        "count_annotations_for_task": task_annotations_count(tasks),
+        "users_annotated": users_annotated_task(tasks),
     }
     return render(request, "label_buddy/project_page.html", context)
 
