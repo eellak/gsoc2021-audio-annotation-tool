@@ -1,8 +1,11 @@
+import os
+
 from django.db import models
+from django.db.models.signals import pre_save
+from django.dispatch import receiver
 from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
-
 class User(AbstractUser):
     
     '''
@@ -22,3 +25,25 @@ class User(AbstractUser):
     #How to display projects in admin
     def __str__(self):
         return '%s' % (self.username)
+
+@receiver(pre_save, sender=User)
+def auto_delete_file_on_change(sender, instance, **kwargs):
+    """
+    Deletes old file from filesystem
+    when corresponding user object is updated
+    with new file.
+    """
+    pk = instance.pk
+    if not pk:
+        return False
+
+    try:
+        old_avatar = User.objects.get(pk=pk).avatar
+    except User.DoesNotExist:
+        return False
+
+    if old_avatar:
+        new_avatar = instance.avatar
+        if not old_avatar == new_avatar:
+            if os.path.isfile(old_avatar.path):
+                os.remove(old_avatar.path)
