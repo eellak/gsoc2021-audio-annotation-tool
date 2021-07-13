@@ -5,6 +5,7 @@ lib/
 
 *.pyc
 label_buddy/*.png
+label_buddy/media/
 
 
 # local settings and db ignonred

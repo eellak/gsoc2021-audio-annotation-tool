@@ -4,6 +4,11 @@
     --basic_color: #74deed;
 }
 
+table
+{
+    table-layout: fixed;
+    width: 100px;
+}
 
 .footer {
     position: fixed;
@@ -40,6 +45,11 @@
     background-color: var(--basic_color);
 }
 
+.my-table-button {
+    background-color: var(--basic_color);
+    height: 30px;
+}
+
 .my-link {
     color: var(--basic_color);
 }
@@ -52,4 +62,17 @@
     text-align: center;
     min-height: 90vh;
 }
+
+.my-custom-scrollbar {
+    margin-left: 1%;
+    margin-right: 1%;
+    /* position: relative;
+    height: 500px;
+    overflow: auto; */
+}
+
+.table-wrapper-scroll-y {
+    display: block;
+}
+
 

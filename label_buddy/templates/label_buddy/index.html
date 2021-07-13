@@ -2,6 +2,11 @@
 
 {% load static %}
 
+{% block head_files%}
+    {{ block.super }}
+    <link href="{% static 'css/index.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
 {% block title %} Label Buddy{% endblock %}
 
 {% block content %}
@@ -20,7 +25,6 @@
 					<th>Queues are public</th>
 					<th title="Number of tasks"><i title="Number of tasks" class="fa fa-tasks" aria-hidden="true"></i></th>
 					<th title="Number of annotations"><i title="Number of annotations" class="fa fa-paint-brush" aria-hidden="true"></i></th>
-					<th>Manager</th>
 					<th>Annotator</th>
 					<th>Reviewer</th>
 					<th>Managers</th>
@@ -44,11 +48,14 @@
 							{% endif %}
 							<td><b>{{ tasks_count|get_item:project.id }}</b></td>
 							<td><b>{{ annotations_count|get_item:project.id }}</b></td>
+
+							{% comment %}
 							{% if user in project.managers.all %}
 								<td><i style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
 							{% else %}
 								<td><i style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
 							{% endif %}
+							{% endcomment %}
 
 							{% if user in project.annotators.all %}
 								<td><i style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
@@ -61,11 +68,19 @@
 							{% else %}
 								<td><i style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
 								<td>
-									{% for user in project.managers.all %}
-										{% if user.avatar %}
-											<img src="{{ user.avatar.url }}" width="25" height="25" title="{{ user.username }}" class="rounded-circle">
+									{% for obj in project.managers.all %}
+										{% if obj.avatar %}
+											{% if obj == user %}
+												<img style="border: 2px solid #74deed;" src="{{ obj.avatar.url }}" width="27" height="27" title="You" class="rounded-circle">
+											{% else %}
+												<img src="{{ obj.avatar.url }}" width="25" height="25" title="{{ obj.username }}" class="rounded-circle">
+											{% endif %}
 										{% else %}
-											<img src="{% static '/images/user/user.jpg' %}" width="25" height="25" title="{{ user.username }}" class="rounded-circle">
+											{% if obj == user%}
+												<img style="border: 2px solid #74deed;" src="{% static '/images/user/user.jpg' %}" width="27" height="27" title="You" class="rounded-circle">
+											{% else %}
+												<img src="{% static '/images/user/user.jpg' %}" width="25" height="25" title="{{ obj.username }}" class="rounded-circle">
+											{% endif %}
 										{% endif %}
 									{% endfor %}
 								</td>
@@ -80,10 +95,11 @@
 				<h1 style="text-align:center">No projects for you yet</h1>
 			{% endif %}
 		{% else %}
-			<div class="center-screen welcome">
+			<div class="center-screen">
 				<h1>Welcome to Label Buddy</h1>
 				<p>Please <a class="my-link" href="/accounts/login">sign in</a> to continue
 				</p>
 			</div>
 		{% endif %}
+		
 {% endblock %}
