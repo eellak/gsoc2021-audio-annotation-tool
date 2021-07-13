@@ -7,10 +7,9 @@ from django.contrib.auth.models import AbstractUser
 
 # Create your models here.
 class User(AbstractUser):
-    
-    '''
+    """
     User class inherited from Django User model
-    '''
+    """
 
     #remove unnecessary fields
     groups = None

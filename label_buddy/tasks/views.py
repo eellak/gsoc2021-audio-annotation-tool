@@ -22,9 +22,9 @@ class TaskList(APIView):
 
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = TaskSerializer
-    '''
+    """
     List all tasks or create a new one
-    '''
+    """
 
     #get request
     def get(self, request, format=None):

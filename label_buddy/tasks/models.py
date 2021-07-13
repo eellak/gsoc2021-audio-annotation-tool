@@ -1,9 +1,9 @@
 from django.db import models
-from enumchoicefield import ChoiceEnum, EnumChoiceField
-from url_or_relative_url_field.fields import URLOrRelativeURLField
 from django.core.exceptions import ValidationError
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from enumchoicefield import ChoiceEnum, EnumChoiceField
+from url_or_relative_url_field.fields import URLOrRelativeURLField
 
 from users.models import User
 from projects.models import Project
@@ -11,19 +11,17 @@ from projects.models import Project
 # Create your models here.
 
 class Status(ChoiceEnum):
-
-    '''
+    """
     Enum class for task status
-    '''
+    """
 
     labeled = "Labeled"
     unlabeled = "Unlabeled"
 
 class Review_status(ChoiceEnum):
-
-    '''
+    """
     Enum class for task review_status
-    '''
+    """
 
     unreviewed = "Unreviewed"
     reviewed = "Reviewed"
@@ -31,11 +29,10 @@ class Review_status(ChoiceEnum):
 
 
 class Task(models.Model):
-
-    '''
+    """
     Task class to store audio (image or video) files for each project.
     Tasks will be completed (annotated) by annotatos
-    '''
+    """
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE, help_text='Project to which the task belongs')
     file = models.FileField(blank=True, null=True, help_text='Local file uploaded')
@@ -59,11 +56,10 @@ class Task(models.Model):
 #Classes for Annotation and Comments by reviewers
 
 class Comment(models.Model):
-
-    '''
+    """
     Comment class for comments done by reviewers
     Annotators will be able to see the comments on their annotations
-    '''
+    """
 
     comment = models.TextField(blank=False, help_text='Comment for an annotation')
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, help_text='User creating the comment')
@@ -74,11 +70,10 @@ class Comment(models.Model):
 
 
 class Annotation(models.Model):
-
-    '''
+    """
     Annotation class for annotations done by annotators
     Annotation format will be in JSON format
-    '''
+    """
 
     task = models.ForeignKey(Task, on_delete=models.CASCADE, blank=False, help_text='Task to which the annotation belongs')
     project = models.ForeignKey(Project, on_delete=models.CASCADE, blank=False, help_text='Project to which the annotation belongs')

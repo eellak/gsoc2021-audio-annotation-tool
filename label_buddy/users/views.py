@@ -48,13 +48,14 @@ def edit_profile(request, username):
 
 #API VIEWS
 class UserList(APIView):
+    """
+    List all users or create a new one
+    """
 
     #User will be able to Post only if authenticated 
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = UserSerializer
-    '''
-    List all users or create a new one
-    '''
+    
     #get request
     def get(self, request, format=None):
         
@@ -73,10 +74,9 @@ class UserList(APIView):
 
 
 class UserDetail(APIView):
-
-    '''
+    """
     Retrieve, update or delete a user instance.
-    '''
+    """
 
     #User will be able to Post only if authenticated 
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
