@@ -38,7 +38,13 @@
 						<tr>
 							<td>{{ project.id }}</td>
 							<td>
-							<a class="my-link" href="{% url 'project_page' project.id %}">{{ project.title }}</a>
+							<a class="my-link" href="{% url 'project_page' project.id %}">
+								{% if project.logo %}
+								<img style="margin-right: 10%;" src="{{ project.logo.url }}" width="27" height="27" title="You" class="rounded-circle">
+								{% else %}
+								<img style="margin-right: 10%;" src="{% static '/images/project_logo_not_found.png' %}" width="27" height="27" title="{{ project.title }}" class="rounded-circle">
+								{% endif %}
+								{{ project.title }}</a>
 							</td>
 							<td>{{ project.created_at|date:"d-m-y"}}</td>
 							{% if project.users_can_see_other_queues%}
