@@ -29,8 +29,6 @@
     <title>
       {% block title %}{% endblock %}
     </title>
-    {% block head_links %}
-    {% endblock %}
 </head>
 
 <body>
@@ -39,9 +37,11 @@
       <img src="{% static '/images/favicons/logo_transparent_165x25.png' %}" title="Label Buddy">
     </a>
     {% if user.can_create_projects %}
-      <a href="{% url 'create_project'%}">
-        <button class="btn my-button">Create</button>
-      </a>
+      {% block navbar_buttons %}
+        <a href="{% url 'create_project'%}">
+          <button class="btn my-button">Create</button>
+        </a>
+      {% endblock %}
     {% endif %}
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       

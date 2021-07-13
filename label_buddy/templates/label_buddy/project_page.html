@@ -4,13 +4,24 @@
 
 {% load crispy_forms_tags %}
 
-{% block head_files%}
+{% block head_files %}
     {{ block.super }}
     <link href="{% static 'css/project_page.css' %}" rel="stylesheet" type="text/css">
     <script src="{% static '/js/project_page.js'%}" defer></script>
 {% endblock %}
 
-{% block title %} &#9702; {{project.title}}{% endblock %}
+{% block title %} &#9702; {{project.title}} {% endblock %}
+
+{% block navbar_buttons %}
+    {% if user in project.managers.all%}
+        <a href="{% url 'edit_project' project.id %}">
+            <button class="btn my-button">Edit</button>
+        </a>
+        <a style="margin-left: .5%;" href="">
+            <button class="btn my-button">Import</button>
+        </a>
+    {% endif %}
+{% endblock %}
 
 {% block content %}
     {% if tasks%}
@@ -76,10 +87,22 @@
                 <!--Table body-->
             {% endfor %}
         </table>
+        <div class="grid-container">
+            <div class="grid-child">
+                <h3 style="text-align: center;">Description</h3>
+                <p>{{ project.description }}</p>
+            </div>
+            
+            <div class="grid-child">
+                <h3 style="text-align: center;">Instructions</h3>
+                <p>{{ project.instructions }}</p>
+            </div>
+        </div>
     {% else %}
         <div class="center-screen">
             <p>No tasks for {{ project.title }}. Please <a class="my-link" href="">import</a> some data.
             </p>
         </div>
     {% endif%}
+    
 {% endblock %}

@@ -52,7 +52,7 @@ def index(request):
 @login_required
 def project_create_view(request):
     form = ProjectForm()
-    user = get_user(request.user.username)
+    user = request.user
 
     if not user or (user != request.user) or not user.can_create_projects:
         return HttpResponseRedirect("/")
@@ -71,16 +71,30 @@ def project_create_view(request):
     }
     return render(request, "label_buddy/create_project.html", context)
 
+@login_required
+def project_edit_view(request, pk):
+    project = get_project(pk)
+    user = request.user
+
+    """
+    to fix. prevent users from editing manually by url
+    """
+    context = {
+        "project": project
+    }
+    return render(request, "label_buddy/edit_project.html", context)
+
 
 @login_required
 def project_page_view(request, pk):
-    user = get_user(request.user.username)
+    user = request.user
     project = get_project(pk)
     tasks = get_project_tasks(project)
     if not user or (user != request.user) or not project:
         return HttpResponseRedirect("/")
     
     context = {
+        "user": user,
         "project": project,
         "tasks": tasks,
         "count_annotations_for_task": task_annotations_count(tasks),

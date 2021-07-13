@@ -22,7 +22,7 @@ table
 
 
 .myAction {
-    margin-left: 60%;
+    margin-left: 55%;
 }
 
 .user-form-wrap {
@@ -42,6 +42,7 @@ table
 }
 
 .my-button {
+    width: 100px;
     background-color: var(--basic_color);
 }
 

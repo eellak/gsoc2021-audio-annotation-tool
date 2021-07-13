@@ -3,3 +3,18 @@
     height: 30px; 
     outline: 0;
 }
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+}
+
+.grid-child {
+    background-color: rgb(245,245,245);
+    border-radius: 4px;
+}
+
+p {
+    margin-left: 3%;
+}
