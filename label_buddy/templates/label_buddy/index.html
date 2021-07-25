@@ -13,21 +13,25 @@
 	{% if user.is_authenticated%}
 		{% if projects %}
 			<h1 style="text-align:center">Projects you are involved</h1>
+			{% if user.can_create_projects %}
+				<a href="{% url 'create_project'%}">
+					<button class="btn my-button my-button-page">Create</button>
+				</a>
+			{% endif %}
+			
 			<div class="my-custom-scrollbar table-wrapper-scroll-y ">
 				<!--Table-->
 				<table class="table table-bordered table-striped">
 				<!--Table head-->
 				<thead>
 					<tr>
-					<th>#</th>
-					<th>Title</th>
-					<th>Creation date</th>
-					<th>Queues are public</th>
-					<th title="Number of tasks"><i title="Number of tasks" class="fa fa-tasks" aria-hidden="true"></i></th>
-					<th title="Number of annotations"><i title="Number of annotations" class="fa fa-paint-brush" aria-hidden="true"></i></th>
-					<th>Annotator</th>
-					<th>Reviewer</th>
-					<th>Managers</th>
+					<th><i class="fa fa-caret-right my-table-header" aria-hidden="true"></i> Title</th>
+					<th><i class="fa fa-calendar my-table-header" aria-hidden="true"></i> Date of Creation</th>
+					<th><i class="fa fa-tasks my-table-header" aria-hidden="true"></i> Number of tasks</th>
+					<th><i class="fa fa-paint-brush my-table-header" aria-hidden="true"></i> Number of annotations</th>
+					<th><i class="fa fa-user my-table-header" aria-hidden="true"></i> Annotator</th>
+					<th><i class="fa fa-user my-table-header" aria-hidden="true"></i> Reviewer</th>
+					<th><i class="fa fa-users my-table-header" aria-hidden="true"></i> Managers</th>
 					</tr>
 				</thead>
 				<!--Table head-->
@@ -36,32 +40,19 @@
 				<tbody>
 					{% for project in projects %}
 						<tr>
-							<td>{{ project.id }}</td>
 							<td>
-							<a class="my-link" href="{% url 'project_page' project.id %}">
-								{% if project.logo %}
-								<img style="margin-right: 10%;" src="{{ project.logo.url }}" width="27" height="27" title="You" class="rounded-circle">
-								{% else %}
-								<img style="margin-right: 10%;" src="{% static '/images/project_logo_not_found.png' %}" width="27" height="27" title="{{ project.title }}" class="rounded-circle">
-								{% endif %}
-								{{ project.title }}</a>
+								<a class="my-link" href="{% url 'project_page' project.id %}">
+									{% if project.logo %}
+									<img style="margin-right: 10%;" src="{{ project.logo.url }}" width="27" height="27" title="You" class="rounded-circle">
+									{% else %}
+									<img style="margin-right: 10%;" src="{% static '/images/project_logo_not_found.png' %}" width="27" height="27" title="{{ project.title }}" class="rounded-circle">
+									{% endif %}
+									{{ project.title }}
+								</a>
 							</td>
 							<td>{{ project.created_at|date:"d-m-y"}}</td>
-							{% if project.users_can_see_other_queues%}
-								<td><i style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
-							{% else %}
-								<td><i style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
-							{% endif %}
 							<td><b>{{ tasks_count|get_item:project.id }}</b></td>
 							<td><b>{{ annotations_count|get_item:project.id }}</b></td>
-
-							{% comment %}
-							{% if user in project.managers.all %}
-								<td><i style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
-							{% else %}
-								<td><i style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
-							{% endif %}
-							{% endcomment %}
 
 							{% if user in project.annotators.all %}
 								<td><i style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>

@@ -12,21 +12,17 @@
 
 {% block title %} &#9702; {{project.title}} {% endblock %}
 
-{% block navbar_buttons %}
-    {% if user in project.managers.all%}
-        <a href="{% url 'edit_project' project.id %}">
-            <button class="btn my-button">Edit</button>
-        </a>
-        <a style="margin-left: .5%;" href="">
-            <button class="btn my-button">Import</button>
-        </a>
-    {% endif %}
-{% endblock %}
-
 {% block content %}
     {% if tasks%}
-        <h1 style="text-align:center">Tasks for {{ project.title }}
-        </h1>
+        <h1 style="text-align:center">Tasks for {{ project.title }}</h1>
+        {% if user in project.managers.all%}
+            <a href="{% url 'edit_project' project.id %}">
+                <button class="btn my-button my-button-page">Edit</button>
+            </a>
+            <a href="">
+                <button style="margin-right: .1%;" class="btn my-button my-button-page">Import</button>
+            </a>
+        {% endif %}
         <div class="my-custom-scrollbar table-wrapper-scroll-y ">
             <!--Table-->
             <table class="table table-bordered">
