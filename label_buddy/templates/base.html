@@ -65,10 +65,10 @@
                       <b> Hi, {{ user }}</b>
                     </h6>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="{% url 'edit_user' user.username %}">Edit profile</a>
-                    <a class="dropdown-item" href="/accounts/password/change">Change password</a>
+                    <a class="dropdown-item" href="{% url 'edit_user' user.username %}"> <i class="fas fa-user-edit drop-down"></i> Edit profile</a>
+                    <a class="dropdown-item" href="/accounts/password/change"> <i class="fa fa-lock drop-down" aria-hidden="true"></i> Change password</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="/accounts/logout">Sign out</a>
+                    <a class="dropdown-item" href="/accounts/logout"> <i class="fas fa-sign-out-alt drop-down"></i> Sign out</a>
                   </div>
                 </li>
               </ul>
