@@ -56,6 +56,9 @@ def get_project_tasks(project):
 
 # functions for project page
 
+# return project's page url
+def get_project_url(pk):
+    return "/projects/" + str(pk) + "/data"
 # return dictionary dict[id] = number of annotations for task, for all tasks
 def task_annotations_count(tasks):
     context = {}

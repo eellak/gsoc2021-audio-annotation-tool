@@ -36,7 +36,7 @@
     <a class="navbar-brand" href="/">
       <img src="{% static '/images/favicons/logo_transparent_165x25.png' %}" title="Label Buddy">
     </a>
-    
+    {% block navbar_buttons %}{% endblock %}
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       
       <div class="navbar-nav  ml-auto">
@@ -58,9 +58,9 @@
                   <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                     <h6 class="dropdown-header user-round-icon">
                       {% if user.avatar %}
-                        <img src="{{ user.avatar.url }}" width="40" height="40" class="rounded-circle">
+                        <img style="margin-right: 8%;" src="{{ user.avatar.url }}" width="40" height="40" class="rounded-circle">
                       {% else %}
-                        <img src="{% static '/images/user/user.jpg' %}" width="40" height="40" class="rounded-circle">
+                        <img style="margin-right: 8%;" src="{% static '/images/user/user.jpg' %}" width="40" height="40" class="rounded-circle">
                       {% endif %}
                       <b> Hi, {{ user }}</b>
                     </h6>

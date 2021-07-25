@@ -28,6 +28,7 @@ from .helpers import (
     task_annotations_count,
     get_project_tasks,
     users_annotated_task,
+    get_project_url,
 )
 
 
@@ -76,11 +77,22 @@ def project_edit_view(request, pk):
     project = get_project(pk)
     user = request.user
 
-    """
-    to fix. prevent users from editing manually by url
-    """
+    # check if user is manager of current project
+    if not user or (user != request.user) or not user in project.managers.all():
+        return HttpResponseRedirect("/")
+    
+    if request.method == "POST":
+        form = ProjectForm(request.POST, request.FILES, instance=project)
+        if form.is_valid():
+            project = form.save(commit=False)
+            project.save()
+            return HttpResponseRedirect(get_project_url(project.id))
+    else:
+        form = ProjectForm(instance=project)
+
     context = {
-        "project": project
+        "project": project,
+        "form": form,
     }
     return render(request, "label_buddy/edit_project.html", context)
 

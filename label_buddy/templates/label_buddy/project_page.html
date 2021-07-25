@@ -12,16 +12,25 @@
 
 {% block title %} &#9702; {{project.title}} {% endblock %}
 
+{% block navbar_buttons %}
+    <a title="Project instructions" style="margin-top: .7%;" class="my-button-page my-link" data-toggle="modal" data-target="#instructionsModal" href=""><i class="fas fa-info"></i></a>
+    <a title="Project description" style="margin-top: .7%;" class="my-button-page my-link" data-toggle="modal" data-target="#descriptionModal" href=""><i class="fas fa-question-circle"></i></a>
+{% endblock %}
+
 {% block content %}
+    
     {% if tasks%}
         <h1 style="text-align:center">Tasks for {{ project.title }}</h1>
         {% if user in project.managers.all%}
-            <a href="{% url 'edit_project' project.id %}">
-                <button class="btn my-button my-button-page">Edit</button>
-            </a>
             <a href="">
-                <button style="margin-right: .1%;" class="btn my-button my-button-page">Import</button>
+                <button class="btn my-button my-button-page">Import</button>
             </a>
+            <a href="{% url 'edit_project' project.id %}">
+                <button style="margin-right: .1%;" class="btn my-button my-button-page">Edit</button>
+            </a>
+            <button style="margin-right: .1%;" class="btn my-button my-button-page"><i style="margin-right: 10%;" class="fas fa-filter"></i> Filters</button>
+        {% else %}
+            <button class="btn my-button my-button-page"><i style="margin-right: 10%;" class="fas fa-filter"></i> Filters</button>
         {% endif %}
         <div class="my-custom-scrollbar table-wrapper-scroll-y ">
             <!--Table-->
@@ -29,12 +38,12 @@
             <!--Table head-->
             <thead>
                 <tr>
-                <th>#</th>
-                <th title="Annotations for this task"><i title="Annotations for this task" class="fa fa-paint-brush" aria-hidden="true"></i></th>
-                <th>Annotated by</th>
-                <th title="Audio file"><i title="Audio file" class="fa fa-file" aria-hidden="true"></i></th>
-                <th>Status</th>
-                <th>Review status</th>
+                <th title="Task ID"><i class="fas fa-hashtag my-table-header"></i> ID</th>
+                <th><i class="fa fa-paint-brush my-table-header" aria-hidden="true"></i> Annotations completed</th>
+                <th><i class="fas fa-users my-table-header"></i> Annotated by</th>
+                <th><i class="fas fa-file-audio my-table-header"></i> Audio file</th>
+                <th><i class="fas fa-check-circle my-table-header"></i> Status</th>
+                <th><i class="fas fa-check-circle my-table-header"></i> Review status</th>
                 </tr>
             </thead>
             <!--Table head-->
@@ -42,7 +51,7 @@
                 <!--Table body-->
                 <tbody>
                     <tr>
-                        <td>{{ task.id }}</td>
+                        <td>{{ forloop.counter }}</td>
                         <td><b>{{ count_annotations_for_task|get_item:task.id }}</b></td>
                         <td>
                             {% if users_annotated|get_item:task.id%}
@@ -83,22 +92,45 @@
                 <!--Table body-->
             {% endfor %}
         </table>
-        <div class="grid-container">
-            <div class="grid-child">
-                <h3 style="text-align: center;">Description</h3>
-                <p>{{ project.description }}</p>
-            </div>
-            
-            <div class="grid-child">
-                <h3 style="text-align: center;">Instructions</h3>
-                <p>{{ project.instructions }}</p>
-            </div>
-        </div>
     {% else %}
         <div class="center-screen">
             <p>No tasks for {{ project.title }}. Please <a class="my-link" href="">import</a> some data.
             </p>
         </div>
     {% endif%}
+
+    <!-- Description Modal -->
+    <div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="descriptionModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Project description</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+            {{ project.description }}
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- Instructions Modal -->
+    <div class="modal fade" id="instructionsModal" tabindex="-1" role="dialog" aria-labelledby="instructionsModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Project instructions</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+            {{ project.instructions }}
+            </div>
+        </div>
+        </div>
+    </div>
     
 {% endblock %}
