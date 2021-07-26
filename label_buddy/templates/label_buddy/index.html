@@ -22,7 +22,7 @@
 			
 			<div class="my-custom-scrollbar table-wrapper-scroll-y ">
 				<!--Table-->
-				<table class="table table-bordered table-striped">
+				<table class="table table-bordered table-striped table-hover">
 				<!--Table head-->
 				<thead>
 					<tr>
@@ -40,16 +40,15 @@
 				<!--Table body-->
 				<tbody>
 					{% for project in projects %}
-						<tr>
+					
+						<tr href="{% url 'project_page' project.id %}">
 							<td>
-								<a class="my-link" href="{% url 'project_page' project.id %}">
-									{% if project.logo %}
-									<img style="margin-right: 4%;" src="{{ project.logo.url }}" width="27" height="27" title="You" class="rounded-circle">
-									{% else %}
-									<img style="margin-right: 4%;" src="{% static '/images/project_logo_not_found.png' %}" width="27" height="27" title="{{ project.title }}" class="rounded-circle">
-									{% endif %}
-									{{ project.title }}
-								</a>
+								{% if project.logo %}
+								<img style="margin-right: 4%;" src="{{ project.logo.url }}" width="27" height="27" title="You" class="rounded-circle">
+								{% else %}
+								<img style="margin-right: 4%;" src="{% static '/images/project_logo_not_found.png' %}" width="27" height="27" title="{{ project.title }}" class="rounded-circle">
+								{% endif %}
+								{{ project.title }}
 							</td>
 							<td>{{ project.created_at|date:"d-m-y"}}</td>
 							<td><b>{{ tasks_count|get_item:project.id }}</b></td>
@@ -84,7 +83,7 @@
 								</td>
 							{% endif %}
 						</tr>
-						
+					
 					{% endfor %}
 				</tbody>
 				<!--Table body-->
