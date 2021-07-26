@@ -7,7 +7,7 @@ from . import views
 urlpatterns = [
     url(r"^$", views.index),
     url(r"^projects/create$", views.project_create_view, name="create_project"),
-    url(r"^projects/(?P<pk>\d+)/data$", views.project_page_view, name="project_page"), # to fix
+    url(r"^projects/(?P<pk>\d+)/tasks$", views.project_page_view, name="project_page"),
     url(r"^projects/(?P<pk>\d+)/edit$", views.project_edit_view, name="edit_project"),
     #API VIEWS
     path('api/v1/projects/', views.ProjectList.as_view(), name="project-list"),

@@ -4,7 +4,12 @@ from django.template.defaulttags import register
 
 from .models import Project
 from users.models import User
-from tasks.models import Task, Annotation
+from tasks.models import (
+    Task,
+    Annotation,
+    Status,
+    Review_status,
+)
 
 # Functions
 
@@ -56,9 +61,57 @@ def get_project_tasks(project):
 
 # functions for project page
 
+# return boolean of string. If it returns noe then the string is not boolean (true or false)
+def str_to_bool(string):
+    string = string.lower()
+    if string == "true":
+        return True
+    elif string == "false":
+        return False
+    return None
+
+
+# return filtered tasks
+def filter_tasks(project, labeled, reviewed):
+
+    bool_labeled = str_to_bool(labeled)
+    bool_reviewed = str_to_bool(reviewed)
+    tasks = get_project_tasks(project)
+
+    # set status and review_status to correct values
+    if bool_labeled is not None:
+        if bool_labeled:
+            status = Status.labeled
+        else:
+            status = Status.unlabeled
+    
+    if bool_reviewed is not None:
+        if bool_reviewed:
+            review_status = Review_status.reviewed
+        else:
+            review_status = Review_status.unreviewed
+    
+    # if no filters applied
+    if bool_labeled is None and bool_reviewed is None:
+        return tasks
+
+    # if both filters applied
+    if bool_labeled is not None and bool_reviewed is not None:
+        return tasks.filter(status=status, review_status=review_status)
+    
+    # if status filter is applied
+    if bool_labeled is not None:
+        return tasks.filter(status=status)
+
+    # if review filter is applied
+    if bool_reviewed is not None:
+        return tasks.filter(review_status=review_status)
+
+
 # return project's page url
 def get_project_url(pk):
     return "/projects/" + str(pk) + "/data"
+
 # return dictionary dict[id] = number of annotations for task, for all tasks
 def task_annotations_count(tasks):
     context = {}

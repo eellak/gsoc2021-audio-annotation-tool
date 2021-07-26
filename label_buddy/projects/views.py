@@ -26,9 +26,10 @@ from .helpers import (
     get_num_of_tasks,
     project_annotations_count,
     task_annotations_count,
-    get_project_tasks,
     users_annotated_task,
+    get_project_tasks,
     get_project_url,
+    filter_tasks,
 )
 
 
@@ -99,15 +100,20 @@ def project_edit_view(request, pk):
 
 @login_required
 def project_page_view(request, pk):
+    # read filter parameters
+    labeled = request.GET.get('labeled', '')
+    reviewed = request.GET.get('reviewed', '')
+
     user = request.user
     project = get_project(pk)
-    tasks = get_project_tasks(project)
+    tasks = filter_tasks(project, labeled, reviewed)
     if not user or (user != request.user) or not project:
         return HttpResponseRedirect("/")
     
     context = {
         "user": user,
         "project": project,
+        "tasks_count": get_project_tasks(project).count(),
         "tasks": tasks,
         "count_annotations_for_task": task_annotations_count(tasks),
         "users_annotated": users_annotated_task(tasks),

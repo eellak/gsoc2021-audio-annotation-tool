@@ -19,7 +19,7 @@
 
 {% block content %}
     
-    {% if tasks%}
+    {% if tasks_count > 0 %}
         <h1 style="text-align:center">Tasks for {{ project.title }}</h1>
         {% if user in project.managers.all%}
             <a href="">
@@ -28,7 +28,41 @@
             <a href="{% url 'edit_project' project.id %}">
                 <button style="margin-right: .1%;" class="btn my-button my-button-page">Edit</button>
             </a>
-            <button style="margin-right: .1%;" class="btn my-button my-button-page"><i style="margin-right: 10%;" class="fas fa-filter"></i> Filters</button>
+            <div class="dropdown show">
+                <a style="margin-right: .1%; color: black;" class="btn my-button my-button-page" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i style="margin-right: 10%;" class="fas fa-filter"></i> Filters
+                </a>
+              
+                <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <div style="margin-left: 10%;" class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="labeled">
+                        <label class="form-check-label" for="flexCheckDefault">
+                          Labeled
+                        </label>
+                    </div>
+                    <div style="margin-left: 10%;" class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="unlabeled">
+                        <label class="form-check-label" for="flexCheckChecked">
+                          Unlabeled
+                        </label>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <div style="margin-left: 10%;" class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="reviewed">
+                        <label class="form-check-label" for="flexCheckDefault">
+                            Reviewed
+                        </label>
+                    </div>
+                    <div style="margin-left: 10%;" class="form-check">
+                        <input class="form-check-input" type="checkbox" value="" id="unreviewed">
+                        <label class="form-check-label" for="flexCheckChecked">
+                            Unreviewed
+                        </label>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <a onclick="filter_tasks()" style="text-align: center;" class="dropdown-item" href="javascript:void(0);"><b>Filter</b></a>
+                </div>
+              </div>
         {% else %}
             <button class="btn my-button my-button-page"><i style="margin-right: 10%;" class="fas fa-filter"></i> Filters</button>
         {% endif %}

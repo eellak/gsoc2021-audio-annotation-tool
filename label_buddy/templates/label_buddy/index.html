@@ -41,7 +41,7 @@
 				<tbody>
 					{% for project in projects %}
 					
-						<tr href="{% url 'project_page' project.id %}">
+						<tr class="clickable-row" href="{% url 'project_page' project.id %}">
 							<td>
 								{% if project.logo %}
 								<img style="margin-right: 4%;" src="{{ project.logo.url }}" width="27" height="27" title="You" class="rounded-circle">
