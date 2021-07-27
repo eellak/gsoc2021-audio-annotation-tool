@@ -22,7 +22,7 @@
     {% if tasks_count > 0 %}
         <h1 style="text-align:center">Tasks for {{ project.title }}</h1>
         {% if user in project.managers.all%}
-            <a href="">
+            <a data-toggle="modal" data-target="#importModal" href="">
                 <button class="btn my-button my-button-page">Import</button>
             </a>
             <a href="{% url 'edit_project' project.id %}">
@@ -110,13 +110,13 @@
                         </td>
                         <td>
                             {% if task.file %}
-                                <audio class="audio-player" controls
+                                <audio title="{{ task.file }}" class="audio-player" controls
                                     src="{{ task.file.url }}">
                                         Your browser does not support the
                                         <code>audio</code> element.
                                 </audio>
                             {% else %}
-                                <p>Something is wrong</p>
+                                <p>No audio yet</p>
                             {% endif %}
                         </td>
                         <td>{{ task.status }}</td>
@@ -128,7 +128,7 @@
         </table>
     {% else %}
         <div class="center-screen">
-            <p>No tasks for {{ project.title }}. Please <a class="my-link" href="">import</a> some data.
+            <p>No tasks for {{ project.title }}. Please <a class="my-link" data-toggle="modal" data-target="#importModal" href="">import</a> some data.
             </p>
         </div>
     {% endif%}
@@ -162,6 +162,27 @@
             </div>
             <div class="modal-body">
             {{ project.instructions }}
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModal" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle">Import data</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+                <form enctype="multipart/form-data" action="" method="POST">
+                    {% csrf_token %}
+                    {{ task_form | crispy}}
+                    <button class="btn my-button" type="submit">Upload</button>
+                </form>
             </div>
         </div>
         </div>

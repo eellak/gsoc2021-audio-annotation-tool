@@ -14,6 +14,7 @@ from rest_framework import (
 
 
 from tasks.models import Task
+from tasks.forms import TaskForm
 from tasks.serializers import TaskSerializer
 from .models import Project
 from .serializers import ProjectSerializer
@@ -110,6 +111,16 @@ def project_page_view(request, pk):
     if not user or (user != request.user) or not project:
         return HttpResponseRedirect("/")
     
+    if request.method == "POST":
+        task_form = TaskForm(request.POST, request.FILES)
+        if task_form.is_valid():
+            new_task = task_form.save(commit=False)
+            new_task.project = project
+            new_task.save()
+            return HttpResponseRedirect(get_project_url(project.id))
+    else:
+        task_form = TaskForm()
+    
     context = {
         "user": user,
         "project": project,
@@ -117,6 +128,7 @@ def project_page_view(request, pk):
         "tasks": tasks,
         "count_annotations_for_task": task_annotations_count(tasks),
         "users_annotated": users_annotated_task(tasks),
+        "task_form": task_form,
     }
     return render(request, "label_buddy/project_page.html", context)
 

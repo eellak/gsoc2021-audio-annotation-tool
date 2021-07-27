@@ -110,7 +110,7 @@ def filter_tasks(project, labeled, reviewed):
 
 # return project's page url
 def get_project_url(pk):
-    return "/projects/" + str(pk) + "/data"
+    return "/projects/" + str(pk) + "/tasks"
 
 # return dictionary dict[id] = number of annotations for task, for all tasks
 def task_annotations_count(tasks):

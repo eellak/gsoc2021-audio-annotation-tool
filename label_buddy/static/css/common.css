@@ -75,14 +75,14 @@ table
 .my-custom-scrollbar {
     margin-left: 1%;
     margin-right: 1%;
-    /* position: relative;
-    height: 500px;
-    overflow: auto; */
+    max-height: 750px;
+    overflow: auto;
+    display:inline-block;
 }
 
-.table-wrapper-scroll-y {
+/* .table-wrapper-scroll-y {
     display: block;
-}
+} */
 
 .drop-down {
     margin-right: 8%;
@@ -99,5 +99,9 @@ table
     border-radius: 50%;
     border: 1px solid red;
     
+}
+
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+    background-color: var(--basic_color);
 }
 
