@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block head_files %}
+    {{ block.super }}
+    <link href="{% static 'css/annotation_page.css' %}" rel="stylesheet" type="text/css">
+
+    <!-- wavesurfer.js -->
+    <script src="https://unpkg.com/wavesurfer.js"></script>
+
+    
+
+    <script type="text/javascript"> var audio_url = "{{ task.file.url }}"; </script>
+    <script src="{% static '/js/annotation_page.js'%}" defer></script>
+{% endblock %}
+
+{% block title %} &#9702; Annotation{% endblock %}
+
+{% block content %}
+    <h1 style="text-align:center">Annotate task {{ task.id }}</h1>
+    <div id="waveform"></div>
+    <button id="play-pause-button" class="btn my-button" onclick="wavesurfer.playPause(); toggleIcon(this);"> <i class="fas fa-play"></i> Play</button>
+{% endblock %}

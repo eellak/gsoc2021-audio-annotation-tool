@@ -7,7 +7,7 @@
 {% block head_files %}
     {{ block.super }}
     <link href="{% static 'css/project_page.css' %}" rel="stylesheet" type="text/css">
-    <script src="{% static '/js/project_page.js'%}" defer></script>
+    <script src="{% static '/js/project_page.js'%}"></script>
 {% endblock %}
 
 {% block title %} &#9702; {{project.title}} {% endblock %}
@@ -68,7 +68,7 @@
         {% endif %}
         <div class="my-custom-scrollbar table-wrapper-scroll-y ">
             <!--Table-->
-            <table class="table table-bordered">
+            <table class="table table-bordered table-hover">
             <!--Table head-->
             <thead>
                 <tr>
@@ -84,7 +84,7 @@
             {% for task in tasks %}
                 <!--Table body-->
                 <tbody>
-                    <tr>
+                    <tr class="clickable-row" href="{% url 'annotation_page' project.id task.id %}">
                         <td>{{ forloop.counter }}</td>
                         <td><b>{{ count_annotations_for_task|get_item:task.id }}</b></td>
                         <td>

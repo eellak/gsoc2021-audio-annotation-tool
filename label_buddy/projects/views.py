@@ -24,6 +24,7 @@ from .helpers import (
     get_projects_of_user,
     get_user,
     get_project,
+    get_task,
     get_num_of_tasks,
     project_annotations_count,
     task_annotations_count,
@@ -80,7 +81,7 @@ def project_edit_view(request, pk):
     user = request.user
 
     # check if user is manager of current project
-    if not user or (user != request.user) or not user in project.managers.all():
+    if not user or (user != request.user) or not project or not user in project.managers.all():
         return HttpResponseRedirect("/")
     
     if request.method == "POST":
@@ -132,6 +133,23 @@ def project_page_view(request, pk):
     }
     return render(request, "label_buddy/project_page.html", context)
 
+@login_required
+def annotate_task_view(request, pk, task_pk):
+    user = request.user
+    project = get_project(pk)
+    task = get_task(task_pk)
+
+    # check if valid url
+    if not user or (user != request.user) or not project or not task:
+        if project:
+            return HttpResponseRedirect(get_project_url(project.id))
+        else:
+            return HttpResponseRedirect("/")
+    context = {
+        "task": task,
+    }
+
+    return render(request, "label_buddy/annotation_page.html", context)
 
 #API VIEWS
 class ProjectList(APIView):

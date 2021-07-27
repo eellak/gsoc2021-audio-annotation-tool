@@ -33,6 +33,14 @@ def get_project(pk):
     except Project.DoesNotExist:
         return None
 
+# get task by id
+def get_task(pk):
+    try:
+        task = Task.objects.get(pk=pk)
+        return task
+    except Task.DoesNotExist:
+        return None
+
 # functions for index page
 
 # return a dictionary id: number of tasks for every project
