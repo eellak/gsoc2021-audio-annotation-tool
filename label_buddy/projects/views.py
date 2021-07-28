@@ -147,6 +147,7 @@ def annotate_task_view(request, pk, task_pk):
             return HttpResponseRedirect("/")
     context = {
         "task": task,
+        "project": project,
     }
 
     return render(request, "label_buddy/annotation_page.html", context)

@@ -11,16 +11,23 @@
     <!-- wavesurfer.js -->
     <script src="https://unpkg.com/wavesurfer.js"></script>
 
-    
-
     <script type="text/javascript"> var audio_url = "{{ task.file.url }}"; </script>
     <script src="{% static '/js/annotation_page.js'%}" defer></script>
 {% endblock %}
 
 {% block title %} &#9702; Annotation{% endblock %}
 
+{% block navbar_buttons %}
+    <a title="Project instructions" style="margin-top: .7%;" class="my-button-page my-link" data-toggle="modal" data-target="#instructionsModal" href=""><i class="fas fa-info"></i></a>
+    <a title="Project description" style="margin-top: .7%;" class="my-button-page my-link" data-toggle="modal" data-target="#descriptionModal" href=""><i class="fas fa-question-circle"></i></a>
+{% endblock %}
+
 {% block content %}
     <h1 style="text-align:center">Annotate task {{ task.id }}</h1>
     <div id="waveform"></div>
     <button id="play-pause-button" class="btn my-button" onclick="wavesurfer.playPause(); toggleIcon(this);"> <i class="fas fa-play"></i> Play</button>
+
+
+
+    {% include "project_modals.html" %}
 {% endblock %}

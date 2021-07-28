@@ -70,6 +70,20 @@ function filter_tasks() {
     window.location.href = url;
 }
 
+function checkExtension(filePath) {
+    var valid_extensions = [".mp3", ".wav", ".mp4"];
+
+    var file = filePath.value;
+    var files_extension = file.substr(file.length - 4, 4);
+    
+    if(!valid_extensions.includes(files_extension)) {
+        document.getElementById("import-file").value = "";
+        alert("The format " + files_extension + " is not accepted. Please upload another file.");
+    }
+}
+// $("#import-file").change(function(){
+    
+// });
 
 window.onload = fixFilters;
 

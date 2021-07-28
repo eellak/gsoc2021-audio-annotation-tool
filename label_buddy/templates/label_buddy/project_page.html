@@ -66,18 +66,18 @@
         {% else %}
             <button class="btn my-button my-button-page"><i style="margin-right: 10%;" class="fas fa-filter"></i> Filters</button>
         {% endif %}
-        <div class="my-custom-scrollbar table-wrapper-scroll-y ">
+        <div class="my-custom-scrollbar table-wrapper-scroll-y">
             <!--Table-->
             <table class="table table-bordered table-hover">
             <!--Table head-->
             <thead>
                 <tr>
-                <th title="Task ID"><i class="fas fa-hashtag my-table-header"></i> ID</th>
-                <th><i class="fa fa-paint-brush my-table-header" aria-hidden="true"></i> Annotations completed</th>
-                <th><i class="fas fa-users my-table-header"></i> Annotated by</th>
-                <th><i class="fas fa-file-audio my-table-header"></i> Audio file</th>
-                <th><i class="fas fa-check-circle my-table-header"></i> Status</th>
-                <th><i class="fas fa-check-circle my-table-header"></i> Review status</th>
+                    <th title="Task ID"><i class="fas fa-hashtag my-table-header"></i> ID</th>
+                    <th><i class="fa fa-paint-brush my-table-header" aria-hidden="true"></i> Annotations completed</th>
+                    <th><i class="fas fa-users my-table-header"></i> Annotated by</th>
+                    <th><i class="fas fa-file-audio my-table-header"></i> Audio file</th>
+                    <th><i class="fas fa-check-circle my-table-header"></i> Status</th>
+                    <th><i class="fas fa-check-circle my-table-header"></i> Review status</th>
                 </tr>
             </thead>
             <!--Table head-->
@@ -133,39 +133,7 @@
         </div>
     {% endif%}
 
-    <!-- Description Modal -->
-    <div class="modal fade" id="descriptionModal" tabindex="-1" role="dialog" aria-labelledby="descriptionModal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Project description</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            </div>
-            <div class="modal-body">
-            {{ project.description }}
-            </div>
-        </div>
-        </div>
-    </div>
-
-    <!-- Instructions Modal -->
-    <div class="modal fade" id="instructionsModal" tabindex="-1" role="dialog" aria-labelledby="instructionsModal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Project instructions</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            </div>
-            <div class="modal-body">
-            {{ project.instructions }}
-            </div>
-        </div>
-        </div>
-    </div>
+    {% include "project_modals.html" %}
 
     <!-- Import Modal -->
     <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModal" aria-hidden="true">
@@ -177,11 +145,12 @@
                 <span aria-hidden="true">&times;</span>
             </button>
             </div>
+            <p>This file is for the annotation process. The accepted formats are: <b>.wav, .mp3 and .mp4</b></p>
             <div class="modal-body">
                 <form enctype="multipart/form-data" action="" method="POST">
                     {% csrf_token %}
                     {{ task_form | crispy}}
-                    <button class="btn my-button" type="submit">Upload</button>
+                    <button id="import-btn" class="btn my-button" type="submit">Upload</button>
                 </form>
             </div>
         </div>
