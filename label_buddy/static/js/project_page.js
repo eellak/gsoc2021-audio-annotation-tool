@@ -1,12 +1,28 @@
-// var wavesurfer = WaveSurfer.create({
-//     container: null
-// });
+// fix filters after page reload
+function fixFilters() {
+    var parameters = window.location.href.split('?')[1];
+    if(parameters) {
+        for(let param of parameters.split('&')) {
+            name = param.split('=')[0];
+            value = param.split('=')[1].toLowerCase();
 
-// wavesurfer.load('http://ia902606.us.archive.org/35/items/shortpoetry_047_librivox/song_cjrg_teasdale_64kb.mp3');
+            if(name == 'labeled') {
+                if(value == 'true') {
+                    document.getElementById("labeled").checked = true;
+                } else if(value == 'false') {
+                    document.getElementById("unlabeled").checked = true;
+                }
+            } else if(name == 'reviewed') {
+                if(value == 'true') {
+                    document.getElementById("reviewed").checked = true;
+                } else if(value == 'false') {
+                    document.getElementById("unreviewed").checked = true;
+                }
+            }
+        }
+    }
 
-// wavesurfer.on('ready', function () {
-//     wavesurfer.play();
-// });
+}
 
 function filter_tasks() {
     var url = window.location.href;
@@ -54,4 +70,6 @@ function filter_tasks() {
     window.location.href = url;
 }
 
+
+window.onload = fixFilters;
 
