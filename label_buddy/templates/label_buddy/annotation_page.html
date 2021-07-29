@@ -25,9 +25,13 @@
 {% block content %}
     <h1 style="text-align:center">Annotate task {{ task.id }}</h1>
     <div id="waveform"></div>
-    <button id="play-pause-button" class="btn my-button" onclick="wavesurfer.playPause(); toggleIcon(this);"> <i class="fas fa-play"></i> Play</button>
-
-
-
+    <button id="play-pause-button" class="btn my-button" onclick="wavesurfer.playPause(); toggleIcon(this);"> <i style="margin-right: 10%;" class="fas fa-play"></i> Play</button>
+    {% if next_unlabeled_task_id == -1 %}
+        <a title="Next unlabeled task" href="{% url 'annotation_page' project.id task.id %}"><button class="btn my-button annotation-buttons">Next <i style="margin-left: 10%;" class="fas fa-caret-right"></i></button></a>
+    {% else %}
+        <a title="Next unlabeled task" href="{% url 'annotation_page' project.id next_unlabeled_task_id %}"><button class="btn my-button annotation-buttons">Next <i style="margin-left: 10%;" class="fas fa-caret-right"></i></button></a>
+    {% endif %}
+    <a title="Skip annotation" href="#"><button class="btn my-button annotation-buttons"><i style="margin-right: 10%;" class="fas fa-forward"></i> Skip</button></a>
+    <a title="Back to project page" href="{% url 'project_page' project.id %}"><button class="btn my-button annotation-buttons"><i style="margin-right: 10%;" class="fas fa-caret-left"></i> Back</button></a>
     {% include "project_modals.html" %}
 {% endblock %}

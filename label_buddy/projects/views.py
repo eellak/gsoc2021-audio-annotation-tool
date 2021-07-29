@@ -34,6 +34,7 @@ from .helpers import (
     get_project_url,
     filter_tasks,
     add_labels_to_project,
+    next_unlabeled_task_id,
 )
 
 
@@ -181,6 +182,7 @@ def annotate_task_view(request, pk, task_pk):
     context = {
         "task": task,
         "project": project,
+        "next_unlabeled_task_id": next_unlabeled_task_id(task.id, project),
     }
 
     return render(request, "label_buddy/annotation_page.html", context)

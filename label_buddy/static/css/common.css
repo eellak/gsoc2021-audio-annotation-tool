@@ -96,9 +96,12 @@ table
 
 .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
     background-color: var(--basic_color);
+    cursor: pointer;
+
 }
 
 .page-item.active .page-link {
+    border: none;
     color: black !important;
     background: var(--basic_color) !important;
 }

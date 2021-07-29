@@ -166,6 +166,21 @@ def users_annotated_task(tasks):
         context[task.id] = annotators
     return context
 
+
+# functions for annotation page
+
+# return next unlabeled task
+def next_unlabeled_task_id(current_task_id, project):
+    ordered_tasks = Task.objects.all().order_by("-id")
+    min_id = ordered_tasks.reverse()[0].id
+    max_id = ordered_tasks[0].id
+
+    for task_id in range(min_id, max_id+1):
+        task = get_task(task_id)
+        if task and task.file and task_id != current_task_id and task.status == Status.unlabeled:
+            return task_id
+    return -1
+
 # in order to access dictionary in templates as dict[key]
 @register.filter
 def get_item(dictionary, key):

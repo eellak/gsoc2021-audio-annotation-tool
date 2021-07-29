@@ -5,12 +5,22 @@
 }
 
 #play-pause-button {
-    float: right;
-    margin-right: 1%;
-    margin-top: 1%;
+    float: left;
+    margin-left: 1%;
+    margin-top: .5%;
 }
 
 #play-pause-button:focus {
     outline: none;
     box-shadow: none;
+}
+
+.annotation-buttons:focus {
+    outline: none;
+    box-shadow: none;
+}
+.annotation-buttons {
+    float: right;
+    margin-right: 1%;
+    margin-top: .5%;
 }
