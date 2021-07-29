@@ -170,3 +170,8 @@ def users_annotated_task(tasks):
 @register.filter
 def get_item(dictionary, key):
     return dictionary.get(key)
+
+# calculate correct id for table in project page
+@register.simple_tag
+def get_table_id(current_page, objects_per_page, loop_counter):
+    return ((current_page - 1)*objects_per_page) + loop_counter

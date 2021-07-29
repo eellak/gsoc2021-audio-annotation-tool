@@ -75,9 +75,6 @@ table
 .my-custom-scrollbar {
     margin-left: 1%;
     margin-right: 1%;
-    max-height: 750px;
-    overflow: auto;
-    display:inline-block;
 }
 
 .drop-down {
@@ -99,4 +96,9 @@ table
 
 .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
     background-color: var(--basic_color);
+}
+
+.page-item.active .page-link {
+    color: black !important;
+    background: var(--basic_color) !important;
 }

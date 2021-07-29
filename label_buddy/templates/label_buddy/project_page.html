@@ -19,7 +19,7 @@
 
 {% block content %}
     
-    {% if tasks_count > 0 %}
+    {% if tasks_count_no_filter > 0 %}
         <h1 style="text-align:center">Tasks for {{ project.title }}</h1>
         {% if user in project.managers.all%}
             <a data-toggle="modal" data-target="#importModal" href="">
@@ -81,11 +81,11 @@
                 </tr>
             </thead>
             <!--Table head-->
-            {% for task in tasks %}
+            {% for task in page_obj %}
                 <!--Table body-->
                 <tbody>
                     <tr class="clickable-row" href="{% url 'annotation_page' project.id task.id %}">
-                        <td>{{ forloop.counter }}</td>
+                        <td>{% get_table_id page_obj.number tasks_per_page forloop.counter %}</td>
                         <td><b>{{ count_annotations_for_task|get_item:task.id }}</b></td>
                         <td>
                             {% if users_annotated|get_item:task.id%}
@@ -142,6 +142,10 @@
             </p>
         </div>
     {% endif%}
+
+    {% if tasks_count_filtered > tasks_per_page %}
+        {% include "pagination.html" %}
+    {% endif %}
 
     {% include "project_modals.html" %}
 

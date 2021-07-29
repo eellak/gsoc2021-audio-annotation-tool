@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
@@ -44,7 +45,17 @@ def index(request):
     else:
         projects = []
 
+    projects_per_page = 15
+    paginator = Paginator(projects, projects_per_page) # Show 10 projects per page
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
+        "page_obj": page_obj,
+        "projects_count": projects.count(),
+        "projects_per_page": projects_per_page,
+        "list_num_of_pages": range(1, paginator.num_pages+1),
         "projects": projects,
         "user": request.user,
         "tasks_count": get_num_of_tasks(projects),
@@ -72,7 +83,7 @@ def project_create_view(request):
             project.managers.add(user)
             project.annotators.add(user)
             project.reviewers.add(user)
-            
+
             return HttpResponseRedirect("/")
         else:
             raise forms.ValidationError("Something is wrong")
@@ -132,17 +143,26 @@ def project_page_view(request, pk):
     else:
         task_form = TaskForm()
     
+    tasks_per_page = 10
+    paginator = Paginator(tasks, tasks_per_page) # Show 15 tasks per page
+
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
     context = {
+        "page_obj": page_obj,
+        "list_num_of_pages": range(1, paginator.num_pages+1),
         "user": user,
         "project": project,
-        "tasks_count": get_project_tasks(project).count(),
+        "tasks_per_page": tasks_per_page,
+        "tasks_count_filtered": tasks.count(),
+        "tasks_count_no_filter": get_project_tasks(project).count(),
         "tasks": tasks,
         "count_annotations_for_task": task_annotations_count(tasks),
         "users_annotated": users_annotated_task(tasks),
         "task_form": task_form,
         "labeled": Status.labeled,
         "reviewed": Review_status.reviewed,
-
     }
     return render(request, "label_buddy/project_page.html", context)
 

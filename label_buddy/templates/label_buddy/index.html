@@ -10,7 +10,6 @@
 {% block title %} Label Buddy {% endblock %}
 
 {% block content %}
-
 	{% if user.is_authenticated%}
 		{% if projects %}
 			<h1 style="text-align:center">Projects you are involved</h1>
@@ -39,7 +38,7 @@
 
 				<!--Table body-->
 				<tbody>
-					{% for project in projects %}
+					{% for project in page_obj %}
 					
 						<tr class="clickable-row" href="{% url 'project_page' project.id %}">
 							<td>
@@ -91,11 +90,15 @@
 			{% else %}
 				<h1 style="text-align:center">No projects for you yet</h1>
 			{% endif %}
-		{% else %}
-			<div class="center-screen">
-				<h1>Welcome to Label Buddy</h1>
-				<p>Please <a class="my-link" href="/accounts/login">sign in</a> to continue
-				</p>
-			</div>
-		{% endif %}
+	{% else %}
+		<div class="center-screen">
+			<h1>Welcome to Label Buddy</h1>
+			<p>Please <a class="my-link" href="/accounts/login">sign in</a> to continue
+			</p>
+		</div>
+	{% endif %}
+	
+	{% if projects_count > projects_per_page %}
+		{% include "pagination.html" %}
+	{% endif %}
 {% endblock %}

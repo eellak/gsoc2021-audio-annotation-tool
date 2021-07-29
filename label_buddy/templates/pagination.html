@@ -1,0 +1,22 @@
+<nav aria-label="Page navigation example">
+    <ul class="pagination justify-content-center">
+        {% if page_obj.has_previous %}
+            <li title="First page" class="page-item"><a class="page-link" href="?page=1">&laquo;</a></li>
+            <li title="Previous" class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+        {% endif %}
+
+        {% for i in list_num_of_pages %}
+
+            {% if page_obj.number == i %}
+                <li title="Page {{ i }}"class="page-item active"><a class="bg-warning page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% else %}
+                <li title="Page {{ i }}"class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <li title="Next" class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+            <li title="Last page" class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">&raquo;</a></li>
+        {% endif %}
+    </ul>
+</nav>
