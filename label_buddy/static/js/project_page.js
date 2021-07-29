@@ -24,6 +24,7 @@ function fixFilters() {
 
 }
 
+// filter tasks on project page
 function filter_tasks() {
     var url = window.location.href;
     url = url.split('?')[0]
@@ -70,6 +71,7 @@ function filter_tasks() {
     window.location.href = url;
 }
 
+// when a file is uploaded
 function checkExtension(filePath) {
     var valid_extensions = [".mp3", ".wav", ".mp4"];
 
@@ -81,9 +83,6 @@ function checkExtension(filePath) {
         alert("The format " + files_extension + " is not accepted. Please upload another file.");
     }
 }
-// $("#import-file").change(function(){
-    
-// });
 
 window.onload = fixFilters;
 

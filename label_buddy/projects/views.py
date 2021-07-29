@@ -32,6 +32,7 @@ from .helpers import (
     get_project_tasks,
     get_project_url,
     filter_tasks,
+    add_labels_to_project,
 )
 
 
@@ -65,6 +66,8 @@ def project_create_view(request):
         form = ProjectForm(request.POST, request.FILES)
         if form.is_valid():
             project = form.save()
+            # add labels to project
+            add_labels_to_project(project, form.cleaned_data['new_labels'])
             # user who created project must be in the list of managers
             project.managers.add(user)
             return HttpResponseRedirect("/")
@@ -89,9 +92,13 @@ def project_edit_view(request, pk):
         if form.is_valid():
             project = form.save(commit=False)
             project.save()
+            add_labels_to_project(project, form.cleaned_data['new_labels'])
             return HttpResponseRedirect(get_project_url(project.id))
     else:
-        form = ProjectForm(instance=project)
+        labels_names = []
+        for lbl in project.labels.all():
+            labels_names.append(lbl.name)
+        form = ProjectForm(instance=project, initial={'new_labels': ",".join(labels_names)})
 
     context = {
         "project": project,

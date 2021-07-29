@@ -1,7 +1,6 @@
 from django import forms
 
-from .models import Project
-
+from .models import Project, Label
 
 class ProjectForm(forms.ModelForm):
 
@@ -9,15 +8,16 @@ class ProjectForm(forms.ModelForm):
     description = forms.CharField(required=False, widget=forms.Textarea(
         attrs = {
             "placeholder": "Description",
-            "rows": 5,
+            "rows": 4,
         }
     ))
     instructions = forms.CharField(required=False, widget=forms.Textarea(
         attrs = {
-            "placeholder": "Description",
-            "rows": 5,
+            "placeholder": "Instructions",
+            "rows": 4,
         }
     ))
+    new_labels = forms.CharField(label="Labels", required=False, widget=forms.TextInput(attrs={"placeholder": "A comma separated list of new labels"}))
     class Meta:
         model = Project
         fields = [
@@ -25,8 +25,8 @@ class ProjectForm(forms.ModelForm):
             "description",
             "instructions",
             "logo",
+            "new_labels",
             "users_can_see_other_queues",
-            "labels",
             "reviewers",
             "annotators",
         ]

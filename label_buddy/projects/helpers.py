@@ -1,8 +1,9 @@
 #functions used for views
+import random
 from django.db.models import Q
 from django.template.defaulttags import register
 
-from .models import Project
+from .models import Project, Label
 from users.models import User
 from tasks.models import (
     Task,
@@ -41,6 +42,19 @@ def get_task(pk):
     except Task.DoesNotExist:
         return None
 
+# get label by name
+def get_label(name):
+    try:
+        label = Label.objects.get(pk=name)
+        return label
+    except Label.DoesNotExist:
+        return None
+
+# get random color
+def random_color():
+    random_number = random.randint(0,16777215)
+    hex_number = str(hex(random_number))
+    return '#'+ hex_number[2:]
 # functions for index page
 
 # return a dictionary id: number of tasks for every project
@@ -63,6 +77,20 @@ def project_annotations_count(projects):
 # get all tasks of a project and return them
 def get_project_tasks(project):
     return Task.objects.filter(project=project)
+
+# create labels that dont exist and add all of them to the project
+def add_labels_to_project(project, labels):
+    new_labels = labels.split(',')
+
+    for new in new_labels:
+        name = new.strip()
+        label = get_label(name)
+        if not label:
+            color = random_color()
+            label = Label.objects.create(name=name, color=color)
+        if label not in project.labels.all():
+            project.labels.add(label)
+
 
 
 
