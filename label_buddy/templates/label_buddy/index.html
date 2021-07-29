@@ -55,33 +55,33 @@
 							<td><b>{{ annotations_count|get_item:project.id }}</b></td>
 
 							{% if user in project.annotators.all %}
-								<td><i style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
+								<td title="Annotator for this project"><i title="Annotator for this project" style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
 							{% else %}
-								<td><i style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
+								<td title="Not an annotator for this project"><i title="Not an annotator for this project" style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
 							{% endif %}
 
 							{% if user in project.reviewers.all %}
-								<td><i style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
+								<td title="Reviewer for this project"><i title="Reviewer for this project" style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
 							{% else %}
-								<td><i style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
-								<td>
-									{% for obj in project.managers.all %}
-										{% if obj.avatar %}
-											{% if obj == user %}
-												<img style="border: 2px solid #74deed;" src="{{ obj.avatar.url }}" width="27" height="27" title="You" class="rounded-circle">
-											{% else %}
-												<img src="{{ obj.avatar.url }}" width="25" height="25" title="{{ obj.username }}" class="rounded-circle">
-											{% endif %}
-										{% else %}
-											{% if obj == user%}
-												<img style="border: 2px solid #74deed;" src="{% static '/images/user/user.jpg' %}" width="27" height="27" title="You" class="rounded-circle">
-											{% else %}
-												<img src="{% static '/images/user/user.jpg' %}" width="25" height="25" title="{{ obj.username }}" class="rounded-circle">
-											{% endif %}
-										{% endif %}
-									{% endfor %}
-								</td>
+								<td title="Not a reviewer for this project"><i title="Not a reviewer for this project" style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
 							{% endif %}
+							<td>
+								{% for obj in project.managers.all %}
+									{% if obj.avatar %}
+										{% if obj == user %}
+											<img style="border: 2px solid #74deed;" src="{{ obj.avatar.url }}" width="27" height="27" title="You" class="rounded-circle">
+										{% else %}
+											<img src="{{ obj.avatar.url }}" width="25" height="25" title="{{ obj.username }}" class="rounded-circle">
+										{% endif %}
+									{% else %}
+										{% if obj == user%}
+											<img style="border: 2px solid #74deed;" src="{% static '/images/user/user.jpg' %}" width="27" height="27" title="You" class="rounded-circle">
+										{% else %}
+											<img src="{% static '/images/user/user.jpg' %}" width="25" height="25" title="{{ obj.username }}" class="rounded-circle">
+										{% endif %}
+									{% endif %}
+								{% endfor %}
+							</td>
 						</tr>
 					
 					{% endfor %}

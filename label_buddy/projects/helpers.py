@@ -81,14 +81,14 @@ def get_project_tasks(project):
 # create labels that dont exist and add all of them to the project
 def add_labels_to_project(project, labels):
     new_labels = labels.split(',')
-
+    labels_of_project = project.labels.all()
     for new in new_labels:
         name = new.strip()
         label = get_label(name)
         if not label:
             color = random_color()
             label = Label.objects.create(name=name, color=color)
-        if label not in project.labels.all():
+        if label not in labels_of_project:
             project.labels.add(label)
 
 

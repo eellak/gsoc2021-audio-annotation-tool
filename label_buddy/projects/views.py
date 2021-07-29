@@ -13,7 +13,7 @@ from rest_framework import (
 )
 
 
-from tasks.models import Task
+from tasks.models import Task, Status, Review_status
 from tasks.forms import TaskForm
 from tasks.serializers import TaskSerializer
 from .models import Project
@@ -68,8 +68,11 @@ def project_create_view(request):
             project = form.save()
             # add labels to project
             add_labels_to_project(project, form.cleaned_data['new_labels'])
-            # user who created project must be in the list of managers
+            # user who created project must be in the list of managers, annotators and reviewers
             project.managers.add(user)
+            project.annotators.add(user)
+            project.reviewers.add(user)
+            
             return HttpResponseRedirect("/")
         else:
             raise forms.ValidationError("Something is wrong")
@@ -137,6 +140,9 @@ def project_page_view(request, pk):
         "count_annotations_for_task": task_annotations_count(tasks),
         "users_annotated": users_annotated_task(tasks),
         "task_form": task_form,
+        "labeled": Status.labeled,
+        "reviewed": Review_status.reviewed,
+
     }
     return render(request, "label_buddy/project_page.html", context)
 

@@ -105,7 +105,7 @@
                                     {% endif %}
                                 {% endfor %}
                             {% else %}
-                                <b>No annotations done yet</b>
+                                <b>-</b>
                             {% endif %}
                         </td>
                         <td>
@@ -116,11 +116,21 @@
                                         <code>audio</code> element.
                                 </audio>
                             {% else %}
-                                <p>No audio yet</p>
+                                <b>-</b>
                             {% endif %}
                         </td>
-                        <td>{{ task.status }}</td>
-                        <td>{{ task.review_status }}</td>
+                        {% if task.status == labeled %}
+                            <td title="Labeled"><i title="Labeled" style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
+                        {% else %}
+                            <td title="Unlabeled"><i title="Unlabeled" style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
+                        {% endif %}
+                        
+                        {% if task.review_status == reviewed %}
+                            <td title="Reviewed"><i title="Reviewed" style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
+                        {% else %}
+                            <td title="Unreviewed"><i title="Unreviewed" style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
+                        {% endif %}
+                        
                     </tr>
                 </tbody>
                 <!--Table body-->

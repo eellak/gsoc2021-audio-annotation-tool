@@ -17,7 +17,11 @@ class ProjectForm(forms.ModelForm):
             "rows": 4,
         }
     ))
-    new_labels = forms.CharField(label="Labels", required=False, widget=forms.TextInput(attrs={"placeholder": "A comma separated list of new labels"}))
+    new_labels = forms.CharField(label="Labels", required=False, widget=forms.TextInput(
+        attrs = {
+            "placeholder": "A comma separated list of new labels"
+        }
+    ))
     class Meta:
         model = Project
         fields = [
