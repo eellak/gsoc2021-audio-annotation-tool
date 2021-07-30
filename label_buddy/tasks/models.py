@@ -1,6 +1,8 @@
+import os
+
 from django.db import models
 from django.core.exceptions import ValidationError
-from django.db.models.signals import post_save
+from django.db.models.signals import post_save, pre_delete
 from django.dispatch import receiver
 from enumchoicefield import ChoiceEnum, EnumChoiceField
 from url_or_relative_url_field.fields import URLOrRelativeURLField
@@ -44,6 +46,8 @@ class Task(models.Model):
 
     assigned_to = models.ManyToManyField(User, blank=True, related_name='task_annotators', help_text='Annotators who will annotate the task')
 
+    class Meta:
+        ordering = ['-id']
 
     #We ensure that even one of file or url should have a value
     def clean(self):
@@ -107,3 +111,18 @@ def make_task_labeled(sender, instance, created, **kwargs):
         task = instance.task
         task.status = Status.labeled
         task.save()
+
+@receiver(pre_delete, sender=Task)
+def auto_delete_files(sender, instance, **kwargs):
+    """
+    Delete task's file from system after delete
+    """
+
+    try:
+        task_file = instance.file
+    except Task.DoesNotExist:
+        return False
+
+    if task_file:
+        if os.path.isfile(task_file.path):
+            os.remove(task_file.path)

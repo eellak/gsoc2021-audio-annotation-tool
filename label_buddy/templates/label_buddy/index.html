@@ -89,6 +89,11 @@
 			</table>
 			{% else %}
 				<h1 style="text-align:center">No projects for you yet</h1>
+				{% if user.can_create_projects %}
+					<a href="{% url 'create_project'%}">
+						<button class="btn my-button my-button-page">Create</button>
+					</a>
+				{% endif %}
 			{% endif %}
 
 			{% if projects_count > projects_per_page %}

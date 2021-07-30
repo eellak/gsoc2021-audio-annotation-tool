@@ -33,4 +33,5 @@ class ProjectForm(forms.ModelForm):
             "users_can_see_other_queues",
             "reviewers",
             "annotators",
+            "managers",
         ]
