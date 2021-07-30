@@ -1,23 +1,23 @@
 {% extends "base.html" %}
 
-{% block title %} &#9702; Sign Out {% endblock %}
+{% block title %} &#9702; Delete {{ project.title }} {% endblock %}
 
 {% block content %}
 
   <div class="container centered">
     <div class="row justify-content-center">
       <div class="user-form-wrap col-6">
-        <h3>Sign Out</h3>
+        <h1>Delete {{ project.title }}</h1>
         <hr class="mt-0 mb-4">
-        <p>Are you sure you want to sign out?</p>
-        <form method="POST" action="{% url 'account_logout' %}">
+        <p>Are you sure you want to delete {{ project.title }}?</p>
+        <form method="POST" action="{% url 'delete_project' project.id %}">
           {% csrf_token %}
           {% if redirect_field_value %}
             <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
           {% endif %}
           
-          <button class="btn my-button" type="submit">Sign Out</button>
-          <a class="btn btn-danger my-button" href="/">No</a>
+          <button class="btn my-button" type="submit">Yes</button>
+          <a class="btn btn-danger my-button" href="{% url 'project_page' project.id %}">No</a>
         </form>
       </div>
     </div>
