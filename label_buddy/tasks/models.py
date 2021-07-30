@@ -44,7 +44,7 @@ class Task(models.Model):
     status = EnumChoiceField(Status, default=Status.unlabeled, help_text='If the task is annotated status must be labeled else unlabeled')
     review_status = EnumChoiceField(Review_status, default=Review_status.unreviewed, help_text='Status for reviews')
 
-    assigned_to = models.ManyToManyField(User, blank=True, related_name='task_annotators', help_text='Annotators who will annotate the task')
+    # assigned_to = models.ManyToManyField(User, blank=True, related_name='task_annotators', help_text='Annotators who will annotate the task')
 
     class Meta:
         ordering = ['-id']

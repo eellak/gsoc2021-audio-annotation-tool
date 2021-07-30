@@ -10,7 +10,13 @@
 {% block title %} Label Buddy {% endblock %}
 
 {% block content %}
-	{% if user.is_authenticated%}
+	{% if user.is_authenticated %}
+		<div class="alert alert-success alert-dismissible fade show" role="alert">
+			<strong>Successfully singed in as {{ user.username }}!</strong>
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+			<span aria-hidden="true">&times;</span>
+			</button>
+	  	</div>
 		{% if projects %}
 			<h1 style="text-align:center">Projects you are involved</h1>
 			{% if user.can_create_projects %}
@@ -90,10 +96,10 @@
 			{% else %}
 				<h1 style="text-align:center">No projects for you yet</h1>
 				{% if user.can_create_projects %}
-					<a href="{% url 'create_project'%}">
-						<button class="btn my-button my-button-page">Create</button>
-					</a>
-				{% endif %}
+				<a href="{% url 'create_project'%}">
+					<button class="btn my-button my-button-page">Create</button>
+				</a>
+			{% endif %}
 			{% endif %}
 
 			{% if projects_count > projects_per_page %}

@@ -18,7 +18,6 @@
 {% endblock %}
 
 {% block content %}
-    
     {% if tasks_count_no_filter > 0 %}
         <h1 style="text-align:center">Tasks for {{ project.title }}</h1>
         {% if user in project.managers.all%}
@@ -145,7 +144,7 @@
                 <span aria-hidden="true">&times;</span>
             </button>
             </div>
-            <p>This file is for the annotation process. The accepted formats are: <b>.wav, .mp3 and .mp4</b></p>
+            <p>This file is for the annotation process. The accepted formats are: <b>.wav, .mp3, .mp4 and .zip</b></p>
             <div class="modal-body">
                 <form enctype="multipart/form-data" action="" method="POST">
                     {% csrf_token %}

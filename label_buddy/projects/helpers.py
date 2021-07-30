@@ -1,10 +1,14 @@
 #functions used for views
 import random
+
+from zipfile import ZipFile
+from django.core.files import File
 from django.db.models import Q
 from django.template.defaulttags import register
 
 from .models import Project, Label
 from users.models import User
+from tasks.forms import TaskForm
 from tasks.models import (
     Task,
     Annotation,
@@ -176,6 +180,24 @@ def users_annotated_task(tasks):
             annotators.append(annotation.user)
         context[task.id] = annotators
     return context
+
+
+# unzip file and add tasks
+def add_tasks_from_compressed_file(compressed_file, project):
+    archive = ZipFile(compressed_file, 'r')
+    files_names = archive.namelist()
+
+    skipped_files = 0
+    for filename in files_names:
+        new_file = archive.open(filename, "r")
+        # for every file that has an extension in [.wav, .mp3, .mp4] create a task
+        if filename[-4:] in ['.wav', '.mp3', '.mp4']:
+            # create task
+            new_task = Task.objects.create(project=project)
+            new_task.file.save(filename, File(new_file))
+        else:
+            skipped_files += 1
+    return skipped_files
 
 
 # functions for annotation page

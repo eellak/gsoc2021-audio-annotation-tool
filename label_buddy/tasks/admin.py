@@ -11,7 +11,7 @@ from .models import (
 
 class TaskAdmin(admin.ModelAdmin):
     search_fields = ["project"]
-    list_display = ["id", "project", "status", "review_status"]
+    list_display = ["id", "project", "file", "status", "review_status"]
     ordering = ("id",)
     list_filter = ["status", "review_status"]
 

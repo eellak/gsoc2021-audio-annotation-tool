@@ -16,8 +16,8 @@
             <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
           {% endif %}
           
-          <button class="btn my-button" type="submit">Yes</button>
-          <a class="btn btn-danger my-button" href="{% url 'project_page' project.id %}">No</a>
+          <button class="btn btn-danger my-button" type="submit">Yes</button>
+          <a style="color: white;" class="btn my-button" href="{% url 'project_page' project.id %}">No</a>
         </form>
       </div>
     </div>

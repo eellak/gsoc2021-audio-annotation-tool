@@ -35,6 +35,7 @@ from .helpers import (
     filter_tasks,
     add_labels_to_project,
     next_unlabeled_task_id,
+    add_tasks_from_compressed_file,
 )
 
 
@@ -43,6 +44,8 @@ def index(request):
     """Index view"""
     projects_count = 0
     if request.user.is_authenticated:
+        if request.session.get('first_login'):
+            print("First!!")
         projects = get_projects_of_user(request.user)
         projects_count = projects.count()
     else:
@@ -156,23 +159,30 @@ def project_page_view(request, pk):
     tasks = filter_tasks(project, labeled, reviewed)
     if not user or (user != request.user) or not project:
         return HttpResponseRedirect("/")
-    
+
     if request.method == "POST":
+        
         task_form = TaskForm(request.POST, request.FILES)
         if task_form.is_valid():
             new_task = task_form.save(commit=False)
-            new_task.project = project
-            new_task.save()
+            file_extension = str(new_task.file)[-4:]
+            # if file uploaded is a zip add new tasks
+            if file_extension in ['.zip']:
+                # unzip file and add as many tasks as the files in the zip/rar file
+                skipped_files = add_tasks_from_compressed_file(new_task.file, project)
+            else:
+                new_task.project = project
+                new_task.save()
             return HttpResponseRedirect(get_project_url(project.id))
     else:
         task_form = TaskForm()
     
     tasks_per_page = 10
     paginator = Paginator(tasks, tasks_per_page) # Show 15 tasks per page
-
+    
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-
+    
     context = {
         "page_obj": page_obj,
         "list_num_of_pages": range(1, paginator.num_pages+1),

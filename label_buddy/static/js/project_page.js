@@ -73,7 +73,7 @@ function filter_tasks() {
 
 // when a file is uploaded
 function checkExtension(filePath) {
-    var valid_extensions = [".mp3", ".wav", ".mp4"];
+    var valid_extensions = [".mp3", ".wav", ".mp4", ".zip"];
 
     var file = filePath.value;
     var files_extension = file.substr(file.length - 4, 4);

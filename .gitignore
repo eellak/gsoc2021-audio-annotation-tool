@@ -3,10 +3,11 @@ bin/
 lib/
 
 
+
 *.pyc
 label_buddy/*.png
 label_buddy/media/
-
+extract_folder/
 
 # local settings and db ignonred
 label_buddy/db.sqlite3
