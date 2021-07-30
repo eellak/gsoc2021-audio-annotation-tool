@@ -10,6 +10,7 @@ urlpatterns = [
     url(r"^projects/(?P<pk>\d+)/tasks$", views.project_page_view, name="project_page"),
     url(r"^projects/(?P<pk>\d+)/tasks/(?P<task_pk>\d+)/annotate$", views.annotate_task_view, name="annotation_page"),
     url(r"^projects/(?P<pk>\d+)/edit$", views.project_edit_view, name="edit_project"),
+    url(r"^projects/(?P<pk>\d+)/delete$", views.project_delete_view, name="delete_project"),
     #API VIEWS
     path('api/v1/projects/', views.ProjectList.as_view(), name="project-list"),
     path('api/v1/projects/<int:pk>/', views.ProjectDetail.as_view(), name="specific_project"),

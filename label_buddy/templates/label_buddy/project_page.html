@@ -29,7 +29,13 @@
                 <button style="margin-right: .1%;" class="btn my-button my-button-page">Edit</button>
             </a>
             {% include "filters.html" %}
+            <a href="{% url 'delete_project' project.id %}">
+                <button style="margin-right: .1%;" class="btn btn-danger my-button my-button-page">Delete</button>
+            </a>
         {% else %}
+            <a data-toggle="modal" data-target="#importModal" href="">
+                <button class="btn my-button my-button-page">Import</button>
+            </a>
             {% include "filters.html" %}
         {% endif %}
         <div class="my-custom-scrollbar table-wrapper-scroll-y">
@@ -39,6 +45,7 @@
             <thead>
                 <tr>
                     <th title="Task ID"><i class="fas fa-hashtag my-table-header"></i> ID</th>
+                    <th><i class="fa fa-caret-right my-table-header" aria-hidden="true"></i> Title</th>
                     <th><i class="fa fa-paint-brush my-table-header" aria-hidden="true"></i> Annotations completed</th>
                     <th><i class="fas fa-users my-table-header"></i> Annotated by</th>
                     <th><i class="fas fa-file-audio my-table-header"></i> Audio file</th>
@@ -52,6 +59,11 @@
                 <tbody>
                     <tr class="clickable-row" href="{% url 'annotation_page' project.id task.id %}">
                         <td>{% get_table_id page_obj.number tasks_per_page forloop.counter %}</td>
+                        {% if task.file %}
+                            <td title="{{ task.file }}" class="table-title">{{ task.file }}</td>
+                        {% else %}
+                            <td><b>-</b></td>
+                        {% endif %}
                         <td><b>{{ count_annotations_for_task|get_item:task.id }}</b></td>
                         <td>
                             {% if users_annotated|get_item:task.id%}
@@ -103,6 +115,14 @@
             {% endfor %}
         </table>
     {% else %}
+        {% if user in project.managers.all%}
+            <a href="{% url 'edit_project' project.id %}">
+                <button style="margin-right: 1%; margin-top: 1%;" class="btn my-button my-button-page">Edit</button>
+            </a>
+            <a href="{% url 'delete_project' project.id %}">
+                <button style="margin-right: .1%; margin-top: 1%;" class="btn btn-danger my-button my-button-page">Delete</button>
+            </a>
+        {% endif %}
         <div class="center-screen">
             <p>No tasks for {{ project.title }}. Please <a class="my-link" data-toggle="modal" data-target="#importModal" href="">import</a> some data.
             </p>

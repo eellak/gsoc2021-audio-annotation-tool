@@ -7,3 +7,11 @@
 p {
     margin-left: 3%;
 }
+
+.table-title {
+    font-size: 13px;
+    /**Major Properties**/
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}

@@ -48,7 +48,7 @@ def index(request):
     else:
         projects = []
 
-    projects_per_page = 15
+    projects_per_page = 10
     paginator = Paginator(projects, projects_per_page) # Show 10 projects per page
 
     page_number = request.GET.get('page')
@@ -127,6 +127,23 @@ def project_edit_view(request, pk):
     }
     return render(request, "label_buddy/edit_project.html", context)
 
+@login_required
+def project_delete_view(request, pk):
+    project = get_project(pk)
+    user = request.user
+
+    # check if user is manager of current project
+    if not user or (user != request.user) or not project or not user in project.managers.all():
+        return HttpResponseRedirect("/")
+
+    if request.method == "POST":
+        project.delete()
+        return HttpResponseRedirect("/")
+    
+    context = {
+        "project": project,
+    }
+    return render(request, "label_buddy/delete_project.html", context)
 
 @login_required
 def project_page_view(request, pk):

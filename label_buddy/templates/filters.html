@@ -1,13 +1,7 @@
 <div class="dropdown show">
-    {% if user in project.managers.all%}
-        <a style="margin-right: .1%; color: black;" class="btn my-button my-button-page" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i style="margin-right: 10%;" class="fas fa-filter"></i> Filters
-        </a>
-    {% else %}
-        <a style="margin-right: 1%; color: black;" class="btn my-button my-button-page" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i style="margin-right: 10%;" class="fas fa-filter"></i> Filters
-        </a>
-    {% endif %}
+    <a style="margin-right: .1%; color: black;" class="btn my-button my-button-page" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i style="margin-right: 10%;" class="fas fa-filter"></i> Filters
+    </a>
     <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
         <div style="margin-left: 10%;" class="form-check">
             <input class="form-check-input" type="checkbox" value="" id="labeled">
