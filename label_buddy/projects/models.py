@@ -25,7 +25,7 @@ class Label(models.Model):
 
     name = models.CharField(max_length=256, blank=False, primary_key=True, help_text='Name of the label')
     parent = models.ForeignKey('self', on_delete=models.CASCADE, blank=True, null=True, related_name='children', help_text='Parent label of the label (optional)')
-    color = ColorField(blank=True, default='#FF0000', help_text='Color given to the label (optional)')
+    color = ColorField(blank=True, unique=True, default='#FF0000', help_text='Color given to the label (optional)')
 
     #How to display labels in admin
     def __str__(self):

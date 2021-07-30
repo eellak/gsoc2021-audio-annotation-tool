@@ -50,6 +50,13 @@ def get_label(name):
     except Label.DoesNotExist:
         return None
 
+def get_label_by_color(color):
+    try:
+        label = Label.objects.get(color=color)
+        return label
+    except Label.DoesNotExist:
+        return None
+
 # get random color
 def random_color():
     random_number = random.randint(0,16777215)
@@ -87,8 +94,12 @@ def add_labels_to_project(project, labels):
         label = get_label(name)
         if not label:
             color = random_color()
-            label = Label.objects.create(name=name, color=color)
-        if label not in labels_of_project:
+            # make sure the color does not already exist
+            while get_label_by_color(color):
+                color = random_color()
+            if name != "":
+                label = Label.objects.create(name=name, color=color)
+        if label and label not in labels_of_project:
             project.labels.add(label)
 
 

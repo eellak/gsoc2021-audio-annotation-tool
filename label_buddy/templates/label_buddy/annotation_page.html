@@ -10,6 +10,10 @@
 
     <!-- wavesurfer.js -->
     <script src="https://unpkg.com/wavesurfer.js"></script>
+    <!-- plugins -->
+    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.timeline.js"></script>
+    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.regions.js"></script>
+    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.minimap.js"></script>
 
     <script type="text/javascript"> var audio_url = "{{ task.file.url }}"; </script>
     <script src="{% static '/js/annotation_page.js'%}" defer></script>
@@ -24,7 +28,9 @@
 
 {% block content %}
     <h1 style="text-align:center">Annotate task {{ task.id }}</h1>
+    <div id="wave-timeline"></div>
     <div id="waveform"></div>
+    
     <button id="play-pause-button" class="btn my-button" onclick="wavesurfer.playPause(); toggleIcon(this);"> <i style="margin-right: 10%;" class="fas fa-play"></i> Play</button>
     {% if next_unlabeled_task_id == -1 %}
         <a title="Next unlabeled task" href="{% url 'annotation_page' project.id task.id %}"><button class="btn my-button annotation-buttons">Next <i style="margin-left: 10%;" class="fas fa-caret-right"></i></button></a>

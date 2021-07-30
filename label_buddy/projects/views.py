@@ -41,8 +41,10 @@ from .helpers import (
 
 def index(request):
     """Index view"""
+    projects_count = 0
     if request.user.is_authenticated:
         projects = get_projects_of_user(request.user)
+        projects_count = projects.count()
     else:
         projects = []
 
@@ -54,7 +56,7 @@ def index(request):
 
     context = {
         "page_obj": page_obj,
-        "projects_count": projects.count(),
+        "projects_count": projects_count,
         "projects_per_page": projects_per_page,
         "list_num_of_pages": range(1, paginator.num_pages+1),
         "projects": projects,
@@ -105,9 +107,13 @@ def project_edit_view(request, pk):
     if request.method == "POST":
         form = ProjectForm(request.POST, request.FILES, instance=project)
         if form.is_valid():
-            project = form.save(commit=False)
-            project.save()
+            project = form.save()
+            # add labels to project
             add_labels_to_project(project, form.cleaned_data['new_labels'])
+            # user who created project must be in the list of managers, annotators and reviewers
+            project.managers.add(user)
+            project.annotators.add(user)
+            project.reviewers.add(user)
             return HttpResponseRedirect(get_project_url(project.id))
     else:
         labels_names = []
