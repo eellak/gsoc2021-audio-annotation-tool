@@ -28,13 +28,13 @@
 
 {% block content %}
     <h1 style="text-align:center">Annotate task {{ task.id }}</h1>
-    <div id="labels-div">
-        <a style="background-color: #7eee;" href="#" class="badge my-badge badge-pill">Primary</a>
-        <a style="background-color: blueviolet; color: white;" href="#" class="badge">Secondary</a>
-        <a href="#" class="badge badge-success">Success</a>
-        <a href="#" class="badge badge-danger">Danger</a>
-        <a href="#" class="badge badge-warning">Warning</a>
-    </div>
+    {% if labels_count %}
+        <div id="labels-div">
+            {% for label in labels.all %}
+                <button style="background-color: {{ label.color }};" class="badge my-badge badge-pill" onclick="selectedLabel(this)">{{ label.name }}</button>
+            {% endfor %}
+        </div>
+    {% endif %}
     <div id="wave-timeline"></div>
     <div id="waveform"></div>
     <button id="play-pause-button" class="btn my-button" onclick="wavesurfer.playPause(); toggleIcon(this);"> <i style="margin-right: 10%;" class="fas fa-play"></i> Play</button>

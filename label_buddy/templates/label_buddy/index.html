@@ -38,6 +38,7 @@
 					<th><i class="fa fa-calendar my-table-header" aria-hidden="true"></i> Date of Creation</th>
 					<th><i class="fa fa-tasks my-table-header" aria-hidden="true"></i> Number of tasks</th>
 					<th><i class="fa fa-paint-brush my-table-header" aria-hidden="true"></i> Number of annotations</th>
+					<th><i class="fas fa-tag my-table-header"></i> Number of labels</th>
 					<th><i class="fa fa-user my-table-header" aria-hidden="true"></i> Annotator</th>
 					<th><i class="fa fa-user my-table-header" aria-hidden="true"></i> Reviewer</th>
 					<th><i class="fa fa-users my-table-header" aria-hidden="true"></i> Managers</th>
@@ -61,7 +62,13 @@
 							<td>{{ project.created_at|date:"d-m-y"}}</td>
 							<td><b>{{ tasks_count|get_item:project.id }}</b></td>
 							<td><b>{{ annotations_count|get_item:project.id }}</b></td>
-
+							
+							{% if project.labels.count > 0 %}
+								<td title="You can annotate tasks for this project"><b style="color: green;">{{ project.labels.count }}</b></td>
+							{% else %}
+								<td title="Add labels in order to annotate"><b style="color: red;">{{ project.labels.count }}</b></td>
+							{% endif %}
+							
 							{% if user in project.annotators.all %}
 								<td title="Annotator for this project"><i title="Annotator for this project" style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
 							{% else %}

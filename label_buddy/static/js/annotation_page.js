@@ -1,3 +1,6 @@
+var selected_label = null;
+var selected_label_color = null;
+
 function toggleIcon(button){
     $(button).find('i').remove();
     if (wavesurfer.backend.isPaused()) {
@@ -8,20 +11,30 @@ function toggleIcon(button){
     }
 }
 
+function selectedLabel(button) {
+
+    // if label already selected, unselect it
+    if(selected_label) {
+        selected_label.style.border = 'none';
+        selected_label.style.background = selected_label_color;
+    }
+
+    // set new selected label
+    selected_label = button;
+    selected_label_color = button.style.backgroundColor;
+
+    button.style.border = '3px solid #74deed';
+    button.style.background = 'grey'
+}
 //----------------------------------------------------------------------------------------------
-/**
- * Create a WaveSurfer instance.
- */
+
 var wavesurfer; // eslint-disable-line no-var
 
-/**
- * Init & load.
- */
 document.addEventListener('DOMContentLoaded', function() {
     // Init wavesurfer
     wavesurfer = WaveSurfer.create({
         container: '#waveform',
-        height: 150,
+        height: 200,
         pixelRatio: 1,
         scrollParent: true,
         normalize: true,
