@@ -106,7 +106,10 @@ def add_labels_to_project(project, labels):
         if label and label not in labels_of_project:
             project.labels.add(label)
 
-
+# used for edit project
+def delete_old_labels(project):
+    for label in project.labels.all():
+        project.labels.remove(label)
 
 
 

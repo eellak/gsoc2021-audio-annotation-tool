@@ -1,10 +1,11 @@
 #waveform {
-    border: 1px solid black;
+    /* border: 1px solid black; */
     margin-left: 1%;
     margin-right: 1%;
 }
 
 #wave-timeline {
+    margin-top: 1%;
     margin-left: 1%;
     margin-right: 1%;
 }
@@ -20,6 +21,16 @@
     box-shadow: none;
 }
 
+#labels-div {
+    margin-top: 5%;
+    margin-left: 1%;
+    margin-right: 1%;
+    border: 1px solid black;
+}
+
+.my-badge {
+    color: white;
+}
 .annotation-buttons:focus {
     outline: none;
     box-shadow: none;

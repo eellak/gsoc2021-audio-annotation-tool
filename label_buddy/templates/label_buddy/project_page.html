@@ -21,7 +21,7 @@
 {% block content %}
     {% if num_of_skipped_files > 0%}
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <strong>{{ num_of_skipped_files }} files were ignored during the import process!</strong>
+            <i style="margin-right: .5%;" class="fas fa-times-circle"></i><strong>{{ num_of_skipped_files }} files were ignored during the import process!</strong>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
             </button>

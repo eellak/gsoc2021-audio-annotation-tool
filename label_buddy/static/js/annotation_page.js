@@ -1,11 +1,3 @@
-// var wavesurfer = WaveSurfer.create({
-//     container: '#waveform',
-//     waveColor: 'rgb(245,245,245)',
-//     progressColor: '#74deed'
-// });
-
-
-
 function toggleIcon(button){
     $(button).find('i').remove();
     if (wavesurfer.backend.isPaused()) {
@@ -29,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Init wavesurfer
     wavesurfer = WaveSurfer.create({
         container: '#waveform',
-        height: 100,
+        height: 150,
         pixelRatio: 1,
         scrollParent: true,
         normalize: true,
@@ -102,17 +94,17 @@ document.addEventListener('DOMContentLoaded', function() {
  */
 function saveRegions() {
     
-    // localStorage.regions = JSON.stringify(
-    //     Object.keys(wavesurfer.regions.list).map(function(id) {
-    //         let region = wavesurfer.regions.list[id];
-    //         return {
-    //             start: region.start,
-    //             end: region.end,
-    //             attributes: region.attributes,
-    //             data: region.data
-    //         };
-    //     })
-    // );
+    localStorage.regions = JSON.stringify(
+        Object.keys(wavesurfer.regions.list).map(function(id) {
+            let region = wavesurfer.regions.list[id];
+            return {
+                start: region.start,
+                end: region.end,
+                attributes: region.attributes,
+                data: region.data
+            };
+        })
+    );
 }
 
 /**

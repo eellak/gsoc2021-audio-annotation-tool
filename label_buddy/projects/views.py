@@ -36,6 +36,7 @@ from .helpers import (
     add_labels_to_project,
     next_unlabeled_task_id,
     add_tasks_from_compressed_file,
+    delete_old_labels,
 )
 
 
@@ -117,6 +118,9 @@ def project_create_view(request):
 
 @login_required
 def project_edit_view(request, pk):
+    # if redirected for project with no labels
+    project_has_no_labels = True if request.GET.get('no_labels', '') == 'true' else False
+
     project = get_project(pk)
     user = request.user
 
@@ -128,6 +132,8 @@ def project_edit_view(request, pk):
         form = ProjectForm(request.POST, request.FILES, instance=project)
         if form.is_valid():
             project = form.save()
+            # delete all labels and add only written ones
+            delete_old_labels(project)
             # add labels to project
             add_labels_to_project(project, form.cleaned_data['new_labels'])
             # user who created project must be in the list of managers, annotators and reviewers
@@ -141,7 +147,11 @@ def project_edit_view(request, pk):
             labels_names.append(lbl.name)
         form = ProjectForm(instance=project, initial={'new_labels': ",".join(labels_names)})
 
+    message = None 
+    if project_has_no_labels:
+        message = "Add some labels to project " + project.title + " in order to annotate!"
     context = {
+        "message": message,
         "project": project,
         "form": form,
     }
@@ -236,13 +246,21 @@ def annotate_task_view(request, pk, task_pk):
             return HttpResponseRedirect(get_project_url(project.id))
         else:
             return HttpResponseRedirect("/")
+
+    labels = project.labels
+    if labels.count() == 0:
+        print("Hello")
+        return HttpResponseRedirect("/projects/" + str(project.id) + "/edit?no_labels=true")
     context = {
+        "labels": labels,
+        "labels_count": labels.count(),
         "task": task,
         "project": project,
         "next_unlabeled_task_id": next_unlabeled_task_id(task.id, project),
     }
 
     return render(request, "label_buddy/annotation_page.html", context)
+
 
 #API VIEWS
 class ProjectList(APIView):

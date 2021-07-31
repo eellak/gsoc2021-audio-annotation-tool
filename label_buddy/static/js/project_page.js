@@ -94,5 +94,5 @@ document.addEventListener('DOMContentLoaded', function() {
             window.history.pushState({}, '', "/projects/" + project_id + "/tasks");
     }
 });
-window.onload = fixFilters;
 
+window.onload = fixFilters;

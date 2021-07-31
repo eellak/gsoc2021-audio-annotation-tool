@@ -2,11 +2,25 @@
 
 {% load static %}
 
+{% block head_files%}
+    {{ block.super }}
+    <script type="text/javascript"> var project_id = "{{ project.id }}"; </script>
+    <script src="{% static '/js/edit_project.js'%}"></script>
+{% endblock %}
+
 {% load crispy_forms_tags %}
 
 {% block title %} &#9702; Edit {{ project.title }}{% endblock %}
 
 {% block content %}
+    {% if message %}
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i style="margin-right: .5%;" class="fas fa-times-circle"></i><strong>{{ message }}</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endif %}
     <div class="container centered">
         <div class="row justify-content-center">
             <div class="col-6 user-form-wrap">
