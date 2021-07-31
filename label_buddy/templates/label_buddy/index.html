@@ -4,19 +4,22 @@
 
 {% block head_files%}
     {{ block.super }}
-    <link href="{% static 'css/index.css' %}" rel="stylesheet" type="text/css">
+	<link href="{% static 'css/index.css' %}" rel="stylesheet" type="text/css">
+	<script src="{% static '/js/index.js'%}"></script>
 {% endblock %}
 
 {% block title %} Label Buddy {% endblock %}
 
 {% block content %}
 	{% if user.is_authenticated %}
-		<div class="alert alert-success alert-dismissible fade show" role="alert">
-			<strong>Successfully singed in as {{ user.username }}!</strong>
-			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
-			<span aria-hidden="true">&times;</span>
-			</button>
-	  	</div>
+		{% if message %}
+			<div class="alert alert-success alert-dismissible fade show" role="alert">
+				<strong>{{ message }}</strong>
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+		{% endif %}
 		{% if projects %}
 			<h1 style="text-align:center">Projects you are involved</h1>
 			{% if user.can_create_projects %}

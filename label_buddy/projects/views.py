@@ -42,10 +42,17 @@ from .helpers import (
 
 def index(request):
     """Index view"""
+    # if redirected from login
+    from_login = True if request.GET.get('login', '') == 'true' else False
+    # if redirected from delete
+    from_delete = True if request.GET.get('delete', '') == 'true' else False
+    project_deleted = request.GET.get('title', '') if request.GET.get('delete', '') else ""
+    # if redirected from create
+    project_created = True if request.GET.get('create', '') == 'true' else False
+    project_created_title = request.GET.get('title_created', '') if request.GET.get('title_created', '') else ""
+
     projects_count = 0
     if request.user.is_authenticated:
-        if request.session.get('first_login'):
-            print("First!!")
         projects = get_projects_of_user(request.user)
         projects_count = projects.count()
     else:
@@ -57,7 +64,17 @@ def index(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    # send correct message
+    message = None
+    if request.user.is_authenticated and from_login:
+        message = "Successfully singed in as " + request.user.username + "!"
+    if from_delete:
+        message = "Successful deletion of project " + project_deleted + "!"
+    if project_created:
+        message = "Successful creation of project " + project_created_title + "!"
+    
     context = {
+        "message": message,
         "page_obj": page_obj,
         "projects_count": projects_count,
         "projects_per_page": projects_per_page,
@@ -90,7 +107,7 @@ def project_create_view(request):
             project.annotators.add(user)
             project.reviewers.add(user)
 
-            return HttpResponseRedirect("/")
+            return HttpResponseRedirect("/?create=true&title_created=" + project.title)
         else:
             raise forms.ValidationError("Something is wrong")
     context = {
@@ -140,8 +157,9 @@ def project_delete_view(request, pk):
         return HttpResponseRedirect("/")
 
     if request.method == "POST":
+        project_title = project.title
         project.delete()
-        return HttpResponseRedirect("/")
+        return HttpResponseRedirect("/?delete=true&title=" + project_title)
     
     context = {
         "project": project,
@@ -153,6 +171,9 @@ def project_page_view(request, pk):
     # read filter parameters
     labeled = request.GET.get('labeled', '')
     reviewed = request.GET.get('reviewed', '')
+
+    # skipped files from import
+    num_of_skipped_files = int(request.GET.get('skipped', '')) if request.GET.get('skipped', '') else 0
 
     user = request.user
     project = get_project(pk)
@@ -173,6 +194,8 @@ def project_page_view(request, pk):
             else:
                 new_task.project = project
                 new_task.save()
+            if skipped_files != 0:
+                return HttpResponseRedirect(get_project_url(project.id) + '?skipped=' + str(skipped_files))
             return HttpResponseRedirect(get_project_url(project.id))
     else:
         task_form = TaskForm()
@@ -197,6 +220,7 @@ def project_page_view(request, pk):
         "task_form": task_form,
         "labeled": Status.labeled,
         "reviewed": Review_status.reviewed,
+        "num_of_skipped_files": num_of_skipped_files,
     }
     return render(request, "label_buddy/project_page.html", context)
 
