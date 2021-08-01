@@ -4,7 +4,7 @@ from .models import Project, Label
 
 class ProjectForm(forms.ModelForm):
 
-    title = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={"placeholder": "Title"}))
+    title = forms.CharField(label='Tile', required=False, widget=forms.TextInput(attrs={"placeholder": "Title"}))
     description = forms.CharField(required=False, widget=forms.Textarea(
         attrs = {
             "placeholder": "Description",

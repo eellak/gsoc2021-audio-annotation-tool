@@ -4,22 +4,19 @@
     --basic_color: #74deed;
 }
 
+body {
+    padding-bottom: 4%;
+}
+
 table
 {
     table-layout: fixed;
     width: 100px;
 }
 
-.footer {
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    background-color: black;
-    color: white;
-    text-align: center;
+.footer-div {
+    background-color: rgb(245,245,245);
 }
-
 
 .myAction {
     margin-left: 55%;
