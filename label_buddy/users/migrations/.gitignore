@@ -1,3 +1,4 @@
 # exclude all files 
 *
+# Except this file
 !.gitignore

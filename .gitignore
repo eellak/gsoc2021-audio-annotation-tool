@@ -6,8 +6,6 @@ lib/
 
 *.pyc
 label_buddy/*.png
-label_buddy/media/audio/*
-label_buddy/media/images/*
 extract_folder/
 
 # local settings and db ignonred
