@@ -4,7 +4,7 @@ from .models import Project, Label
 
 class ProjectForm(forms.ModelForm):
 
-    title = forms.CharField(label='', widget=forms.TextInput(attrs={"placeholder": "Title"}))
+    title = forms.CharField(label='', required=False, widget=forms.TextInput(attrs={"placeholder": "Title"}))
     description = forms.CharField(required=False, widget=forms.Textarea(
         attrs = {
             "placeholder": "Description",
@@ -19,7 +19,8 @@ class ProjectForm(forms.ModelForm):
     ))
     new_labels = forms.CharField(label="Labels", required=False, widget=forms.TextInput(
         attrs = {
-            "placeholder": "A comma separated list of new labels"
+            "placeholder": "A comma separated list of new labels",
+            "id": "new_labels",
         }
     ))
     class Meta:

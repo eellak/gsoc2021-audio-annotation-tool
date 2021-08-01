@@ -37,7 +37,7 @@
 					<th><i class="fa fa-caret-right my-table-header" aria-hidden="true"></i> Title</th>
 					<th><i class="fa fa-calendar my-table-header" aria-hidden="true"></i> Date of Creation</th>
 					<th><i class="fa fa-tasks my-table-header" aria-hidden="true"></i> Number of tasks</th>
-					<th><i class="fa fa-paint-brush my-table-header" aria-hidden="true"></i> Number of annotations</th>
+					<th><i class="fa fa-paint-brush my-table-header" aria-hidden="true"></i> Num of annotations</th>
 					<th><i class="fas fa-tag my-table-header"></i> Number of labels</th>
 					<th><i class="fa fa-user my-table-header" aria-hidden="true"></i> Annotator</th>
 					<th><i class="fa fa-user my-table-header" aria-hidden="true"></i> Reviewer</th>
@@ -53,9 +53,9 @@
 						<tr class="clickable-row" href="{% url 'project_page' project.id %}">
 							<td>
 								{% if project.logo %}
-								<img style="margin-right: 4%;" src="{{ project.logo.url }}" width="27" height="27" title="You" class="rounded-circle">
+									<img style="margin-right: 4%;" src="{{ project.logo.url }}" width="27" height="27" title="{{ project.title }}" class="rounded-circle">
 								{% else %}
-								<img style="margin-right: 4%;" src="{% static '/images/project_logo_not_found.png' %}" width="27" height="27" title="{{ project.title }}" class="rounded-circle">
+									<img style="margin-right: 4%;" src="{% static '/images/project_logo_not_found.png' %}" width="27" height="27" title="{{ project.title }}" class="rounded-circle">
 								{% endif %}
 								{{ project.title }}
 							</td>

@@ -28,7 +28,13 @@
         </div>
     {% endif %}
     {% if tasks_count_no_filter > 0 %}
-        <h1 style="text-align:center">Tasks for {{ project.title }}</h1>
+       
+        <h1 style="text-align:center">
+            {% if project.logo %}
+                <img style="border: 2px solid #74deed;" src="{{ project.logo.url }}" width="30" height="30" title="{{ project.title }}" class="rounded-circle">
+            {% endif %}
+            Tasks for {{ project.title }}
+        </h1>
         {% if user in project.managers.all%}
             <a data-toggle="modal" data-target="#importModal" href="">
                 <button class="btn my-button my-button-page">Import</button>

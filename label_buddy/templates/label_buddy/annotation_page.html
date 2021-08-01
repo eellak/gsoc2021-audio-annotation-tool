@@ -31,7 +31,7 @@
     {% if labels_count %}
         <div id="labels-div">
             {% for label in labels.all %}
-                <button style="background-color: {{ label.color }};" class="badge my-badge badge-pill" onclick="selectedLabel(this)">{{ label.name }}</button>
+                <button style="background-color: {{ label.color }};" class="badge my-badge badge-pill" value="{{ label.name }}" onclick="selectedLabel(this)">{{ label.name }}</button>
             {% endfor %}
         </div>
     {% endif %}

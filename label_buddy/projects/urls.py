@@ -5,7 +5,7 @@ from . import views
 
 # The API URLs are now determined automatically by the router.
 urlpatterns = [
-    url(r"^$", views.index),
+    url(r"^$", views.index, name="index_page"),
     url(r"^projects/create$", views.project_create_view, name="create_project"),
     url(r"^projects/(?P<pk>\d+)/tasks$", views.project_page_view, name="project_page"),
     url(r"^projects/(?P<pk>\d+)/tasks/(?P<task_pk>\d+)/annotate$", views.annotate_task_view, name="annotation_page"),

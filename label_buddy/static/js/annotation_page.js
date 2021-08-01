@@ -1,5 +1,6 @@
 var selected_label = null;
 var selected_label_color = null;
+var wavesurfer; // eslint-disable-line no-var
 
 function toggleIcon(button){
     $(button).find('i').remove();
@@ -13,22 +14,32 @@ function toggleIcon(button){
 
 function selectedLabel(button) {
 
-    // if label already selected, unselect it
-    if(selected_label) {
+    if(selected_label == button) {
         selected_label.style.border = 'none';
         selected_label.style.background = selected_label_color;
+        selected_label = null;
+        selected_label_color = null;
+    } else {
+        // if label already selected, unselect it
+        if(selected_label) {
+            selected_label.style.border = 'none';
+            selected_label.style.background = selected_label_color;
+        }
+
+        // set new selected label
+        selected_label = button;
+        selected_label_color = button.style.backgroundColor;
+
+        // wavesurfer.enableDragSelection({
+        //     color: rgba(255, 255, 255, .4)
+        // });
+        button.style.border = '2px solid #74deed';
+        button.style.background = 'grey'
     }
-
-    // set new selected label
-    selected_label = button;
-    selected_label_color = button.style.backgroundColor;
-
-    button.style.border = '3px solid #74deed';
-    button.style.background = 'grey'
 }
 //----------------------------------------------------------------------------------------------
 
-var wavesurfer; // eslint-disable-line no-var
+
 
 document.addEventListener('DOMContentLoaded', function() {
     // Init wavesurfer
