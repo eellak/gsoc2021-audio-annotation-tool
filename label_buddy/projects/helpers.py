@@ -16,6 +16,9 @@ from tasks.models import (
     Review_status,
 )
 
+# global variables
+ACCEPTED_EXTENSIONS = ['.wav', '.mp3', '.mp4',]
+
 # Functions
 
 # get projects where user is manager, annotator or reviewer
@@ -194,7 +197,7 @@ def add_tasks_from_compressed_file(compressed_file, project):
     for filename in files_names:
         new_file = archive.open(filename, "r")
         # for every file that has an extension in [.wav, .mp3, .mp4] create a task
-        if filename[-4:] in ['.wav', '.mp3', '.mp4']:
+        if filename[-4:] in ACCEPTED_EXTENSIONS:
             # create task
             new_task = Task.objects.create(project=project)
             new_task.file.save(filename, File(new_file))

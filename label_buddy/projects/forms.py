@@ -32,7 +32,7 @@ class ProjectForm(forms.ModelForm):
             "logo",
             "new_labels",
             "users_can_see_other_queues",
-            "reviewers",
             "annotators",
             "managers",
+            "reviewers",
         ]

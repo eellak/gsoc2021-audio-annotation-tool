@@ -128,18 +128,19 @@
             {% endfor %}
         </table>
     {% else %}
+        <h5 style="text-align:center; margin-top: 2%;">
+            No tasks for {{ project.title }}. Please <a class="my-link" data-toggle="modal" data-target="#importModal" href="">import</a> some data.
+        </h5>
         {% if user in project.managers.all%}
-            <a href="{% url 'edit_project' project.id %}">
-                <button style="margin-right: 1%; margin-top: 1%;" class="btn my-button my-button-page">Edit</button>
-            </a>
-            <a href="{% url 'delete_project' project.id %}">
-                <button style="margin-right: .1%; margin-top: 1%;" class="btn btn-danger my-button my-button-page">Delete</button>
-            </a>
+            <div>
+                <a href="{% url 'edit_project' project.id %}">
+                    <button style="margin-right: 1%; margin-top: 1%;" class="btn my-button my-button-page">Edit</button>
+                </a>
+                <a href="{% url 'delete_project' project.id %}">
+                    <button style="margin-right: .1%; margin-top: 1%;" class="btn btn-danger my-button my-button-page">Delete</button>
+                </a>
+            </div>
         {% endif %}
-        <div class="center-screen">
-            <p>No tasks for {{ project.title }}. Please <a class="my-link" data-toggle="modal" data-target="#importModal" href="">import</a> some data.
-            </p>
-        </div>
     {% endif%}
 
     {% if tasks_count_filtered > tasks_per_page %}

@@ -13,7 +13,7 @@ from rest_framework import (
     status,
 )
 
-
+from users.models import User
 from tasks.models import Task, Status, Review_status
 from tasks.forms import TaskForm
 from tasks.serializers import TaskSerializer
@@ -111,6 +111,12 @@ def project_create_view(request):
             return HttpResponseRedirect("/?create=true&title_created=" + project.title)
         else:
             raise forms.ValidationError("Something is wrong")
+    else:
+        # if user wants to create project, exclude him from annotators, managers and reviewers list
+        form.fields['annotators'].queryset = User.objects.exclude(username=user.username)
+        form.fields['managers'].queryset = User.objects.exclude(username=user.username)
+        form.fields['reviewers'].queryset = User.objects.exclude(username=user.username)
+    
     context = {
         "form":form,
     }
@@ -120,7 +126,7 @@ def project_create_view(request):
 def project_edit_view(request, pk):
     # if redirected for project with no labels
     project_has_no_labels = True if request.GET.get('no_labels', '') == 'true' else False
-
+    form = ProjectForm()
     project = get_project(pk)
     user = request.user
 
@@ -142,10 +148,16 @@ def project_edit_view(request, pk):
             project.reviewers.add(user)
             return HttpResponseRedirect(get_project_url(project.id))
     else:
+        # add existing labels as initial values
         labels_names = []
         for lbl in project.labels.all():
             labels_names.append(lbl.name)
         form = ProjectForm(instance=project, initial={'new_labels': ",".join(labels_names)})
+
+        # if user wants to create project, exclude him from annotators, managers and reviewers list
+        form.fields['annotators'].queryset = User.objects.exclude(username=user.username)
+        form.fields['managers'].queryset = User.objects.exclude(username=user.username)
+        form.fields['reviewers'].queryset = User.objects.exclude(username=user.username)
 
     message = None 
     if project_has_no_labels:
