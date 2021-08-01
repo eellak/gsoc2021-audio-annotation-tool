@@ -52,11 +52,7 @@
 					
 						<tr class="clickable-row" href="{% url 'project_page' project.id %}">
 							<td>
-								{% if project.logo %}
-									<img style="margin-right: 4%;" src="{{ project.logo.url }}" width="27" height="27" title="{{ project.title }}" class="rounded-circle">
-								{% else %}
-									<img style="margin-right: 4%;" src="{% static '/images/project_logo_not_found.png' %}" width="27" height="27" title="{{ project.title }}" class="rounded-circle">
-								{% endif %}
+								<img style="margin-right: 4%;" src="{{ project.logo.url }}" width="27" height="27" title="{{ project.title }}" class="rounded-circle">
 								{{ project.title }}
 							</td>
 							<td>{{ project.created_at|date:"d-m-y"}}</td>
@@ -82,18 +78,10 @@
 							{% endif %}
 							<td>
 								{% for obj in project.managers.all %}
-									{% if obj.avatar %}
-										{% if obj == user %}
-											<img style="border: 2px solid #74deed;" src="{{ obj.avatar.url }}" width="27" height="27" title="You" class="rounded-circle">
-										{% else %}
-											<img src="{{ obj.avatar.url }}" width="25" height="25" title="{{ obj.username }}" class="rounded-circle">
-										{% endif %}
+									{% if obj == user %}
+										<img style="border: 2px solid #74deed;" src="{{ obj.avatar.url }}" width="27" height="27" title="You" class="rounded-circle">
 									{% else %}
-										{% if obj == user%}
-											<img style="border: 2px solid #74deed;" src="{% static '/images/user/user.jpg' %}" width="27" height="27" title="You" class="rounded-circle">
-										{% else %}
-											<img src="{% static '/images/user/user.jpg' %}" width="25" height="25" title="{{ obj.username }}" class="rounded-circle">
-										{% endif %}
+										<img src="{{ obj.avatar.url }}" width="25" height="25" title="{{ obj.username }}" class="rounded-circle">
 									{% endif %}
 								{% endfor %}
 							</td>

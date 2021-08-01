@@ -1,5 +1,7 @@
 import os
 
+from django.conf import settings
+from django.core.files import File
 from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
@@ -46,3 +48,13 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
         if not old_avatar == new_avatar:
             if os.path.isfile(old_avatar.path):
                 os.remove(old_avatar.path)
+
+@receiver(pre_save, sender=User)
+def set_users_avatar(sender, instance, **kwargs):
+    """
+    If user's avatar is not specified
+    set it to the unknown icon user
+    """
+    if not instance.avatar:
+        user_avatar = open(os.path.join(settings.BASE_DIR, 'static/images/user/user.jpg'), "rb")
+        instance.avatar.save('user.jpg', File(user_avatar))

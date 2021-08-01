@@ -192,7 +192,7 @@ def project_page_view(request, pk):
         return HttpResponseRedirect("/")
 
     if request.method == "POST":
-        
+        skipped_files = 0
         task_form = TaskForm(request.POST, request.FILES)
         if task_form.is_valid():
             new_task = task_form.save(commit=False)
@@ -204,9 +204,8 @@ def project_page_view(request, pk):
             else:
                 new_task.project = project
                 new_task.save()
-            if skipped_files != 0:
-                return HttpResponseRedirect(get_project_url(project.id) + '?skipped=' + str(skipped_files))
-            return HttpResponseRedirect(get_project_url(project.id))
+            return HttpResponseRedirect(get_project_url(project.id) + '?skipped=' + str(skipped_files))
+
     else:
         task_form = TaskForm()
     
@@ -231,6 +230,7 @@ def project_page_view(request, pk):
         "labeled": Status.labeled,
         "reviewed": Review_status.reviewed,
         "num_of_skipped_files": num_of_skipped_files,
+        "from_import": request.GET.get('skipped', ''),
     }
     return render(request, "label_buddy/project_page.html", context)
 
