@@ -19,6 +19,8 @@ function selectedLabel(button) {
         selected_label.style.background = selected_label_color;
         selected_label = null;
         selected_label_color = null;
+        // if no label is selected user cannot drag
+        wavesurfer.disableDragSelection();
     } else {
         // if label already selected, unselect it
         if(selected_label) {
@@ -29,13 +31,22 @@ function selectedLabel(button) {
         // set new selected label
         selected_label = button;
         selected_label_color = button.style.backgroundColor;
-
-        // wavesurfer.enableDragSelection({
-        //     color: rgba(255, 255, 255, .4)
-        // });
+        
+        // enable drag selection with label's color
+        wavesurfer.enableDragSelection({
+            color: rgbToRgba(selected_label_color)
+        });
         button.style.border = '2px solid #74deed';
         button.style.background = 'grey'
     }
+}
+
+// rgb to rgba with opacity 0.1
+function rgbToRgba(rgb) {
+    if(rgb.indexOf('a') == -1){
+        var rgba = rgb.replace(')', ', 0.5)').replace('rgb', 'rgba');
+    }
+    return rgba;
 }
 //----------------------------------------------------------------------------------------------
 
@@ -69,9 +80,9 @@ document.addEventListener('DOMContentLoaded', function() {
     /* Regions */
 
     wavesurfer.on('ready', function() {
-        wavesurfer.enableDragSelection({
-            color: randomColor(0.1)
-        });
+        // wavesurfer.enableDragSelection({
+        //     color: randomColor(0.1)
+        // });
 
         // if (localStorage.regions) {
         //     loadRegions(JSON.parse(localStorage.regions));
@@ -210,19 +221,19 @@ function extractRegions(peaks, duration) {
 
 /**
  * Random RGBA color.
- */
-function randomColor(alpha) {
-    return (
-        'rgba(' +
-        [
-            ~~(Math.random() * 255),
-            ~~(Math.random() * 255),
-            ~~(Math.random() * 255),
-            alpha || 1
-        ] +
-        ')'
-    );
-}
+*/
+// function randomColor(alpha) {
+//     return (
+//         'rgba(' +
+//         [
+//             ~~(Math.random() * 255),
+//             ~~(Math.random() * 255),
+//             ~~(Math.random() * 255),
+//             alpha || 1
+//         ] +
+//         ')'
+//     );
+// }
 
 /**
  * Edit annotation for a region.
