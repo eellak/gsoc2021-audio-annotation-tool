@@ -20,6 +20,7 @@
         var task_id = "{{ task.id }}";
         var project_id = "{{ project.id }}";
         var django_csrf_token = "{{ csrf_token }}";
+        var annotation = JSON.parse("{{annotation|escapejs}}");
     </script>
     <script src="{% static '/js/annotation_page.js'%}" defer></script>
 {% endblock %}

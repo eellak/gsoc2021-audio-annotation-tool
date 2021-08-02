@@ -1,6 +1,8 @@
 #functions used for views
 import random
 from zipfile import ZipFile
+from json import dumps
+import datetime
 
 from django.core.files import File
 from django.db.models import Q
@@ -59,12 +61,14 @@ def get_task(pk):
 def get_annotation_info(task, project, user):
     try:
         annotation = Annotation.objects.get(task=task, project=project, user=user)
-        return {
+        to_return = {
             "result": annotation.result,
-            "updated_date": annotation.updated_at,
+            "updated_at": annotation.updated_at
         }
+        return dumps(to_return, default=datetime_handler)
     except Annotation.DoesNotExist:
-        return {}
+        return dumps({})
+
 
 # get label by name
 def get_label(name):

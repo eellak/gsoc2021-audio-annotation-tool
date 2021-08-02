@@ -79,18 +79,28 @@ document.addEventListener('DOMContentLoaded', function() {
 
     /* Regions */
 
-    // load regions
+    // load regions of existing annotation (if exists)
     wavesurfer.on('ready', function() {
-        // if (localStorage.regions) {
-        //     loadRegions(JSON.parse(localStorage.regions));
-        // } else {
-        //     fetch('annotations.json')
-        //         .then(r => r.json())
-        //         .then(data => {
-        //             loadRegions(data);
-        //             saveRegions();
-        //         });
-        // }
+        result = annotation['result']
+        // if there is a result load regions of annotation
+        if(result && result.length != 0) {
+            loadRegions(result);
+        }
+    });
+
+    
+    // on region click
+    wavesurfer.on('region-click', function(region) {
+        //alert(region.start);
+    });
+
+    
+    // on region created set its data to current label
+    wavesurfer.on('region-created', function(region) {
+        if(selected_label) {
+            region.data['label'] = selected_label.value;
+            region.data['color'] = selected_label_color;
+        }
     });
 
     // play regions
@@ -109,16 +119,6 @@ document.addEventListener('DOMContentLoaded', function() {
     //     });
     // });
 
-    // on region click
-    wavesurfer.on('region-click', function(region) {
-        //alert(region.start);
-    });
-
-    // on region created set its data to current label
-    wavesurfer.on('region-created', function(region) {
-        region.data['label'] = selected_label.value;
-    });
-
 });
 
 
@@ -133,7 +133,8 @@ function createResult() {
             "value": {
                 "start": region.start,
                 "end": region.end,
-                "label": region.data['label']
+                "label": region.data['label'],
+                "color": region.data['color']
             }
         }
         result.push(region_dict);
@@ -143,8 +144,6 @@ function createResult() {
 
 
 function submitAnnotation() {
-    
-
     // xmlhttp request for saving the annotation
     let xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
@@ -164,30 +163,16 @@ function submitAnnotation() {
     xhttp.send(JSON.stringify(createResult()));
 }
 
-/**
- * Save annotations to localStorage.
- */
-function saveRegions() {
-    
-    localStorage.regions = JSON.stringify(
-        Object.keys(wavesurfer.regions.list).map(function(id) {
-            let region = wavesurfer.regions.list[id];
-            return {
-                start: region.start,
-                end: region.end,
-                attributes: region.attributes,
-                data: region.data
-            };
-        })
-    );
-}
 
-/**
- * Load regions from localStorage.
- */
-function loadRegions(regions) {
-    regions.forEach(function(region) {
-        region.color = randomColor(0.1);
-        wavesurfer.addRegion(region);
-    });
+//Load regions from annotation.
+function loadRegions(result) {
+    for(const region of result) {
+        let new_region = wavesurfer.addRegion({
+            "start": region['value']['start'],
+            "end": region['value']['end'],
+            "color": rgbToRgba(region['value']['color'])
+        });
+        new_region.data['label'] = region['value']['label'];
+        new_region.data['color'] = region['value']['color'];
+    }
 }

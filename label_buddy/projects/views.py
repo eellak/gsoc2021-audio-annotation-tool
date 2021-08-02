@@ -275,6 +275,7 @@ def annotate_task_view(request, pk, task_pk):
         "task": task,
         "project": project,
         "next_unlabeled_task_id": next_unlabeled_task_id(task.id, project),
+        "annotation": get_annotation_info(task, project, user),
     }
 
     return render(request, "label_buddy/annotation_page.html", context)
