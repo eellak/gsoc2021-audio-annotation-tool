@@ -84,7 +84,7 @@ class Annotation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, related_name='annotation_user', help_text='User who made the annotation')
 
     created_at = models.DateTimeField(auto_now=True, help_text='Date and time of annotation creation')
-    updated_at = models.DateTimeField(blank=False, help_text='Date and time of update')
+    updated_at = models.DateTimeField(blank=True, null=True, help_text='Date and time of update')
 
     result = models.JSONField(blank=True, null=True, help_text='The result of the annotation in JSON format')
 
@@ -103,7 +103,7 @@ class Annotation(models.Model):
         return 'Annotation %d - project: %s' % (self.id, self.project)
 
 
-#When an annotation is created, the task to which it belongs must be set a labeled (Task.status = labeled)
+# When an annotation is created, the task to which it belongs must be set a labeled (Task.status = labeled)
 @receiver(post_save, sender=Annotation)
 def make_task_labeled(sender, instance, created, **kwargs):
 
@@ -111,6 +111,21 @@ def make_task_labeled(sender, instance, created, **kwargs):
         task = instance.task
         task.status = Status.labeled
         task.save()
+
+# after deleting an annotation check task and if has no other annotation mark it as unlabeled
+@receiver(pre_delete, sender=Annotation)
+def mark_task_unlabeled(sender, instance, **kwargs):
+
+    try:
+        task_annotation = instance.task
+    except Annotation.DoesNotExist:
+        return False
+
+    task_annotations = Annotation.objects.filter(task=task_annotation).count() - 1
+    if task_annotations == 0:
+        task_annotation.status = Status.unlabeled
+        task_annotation.save()
+
 
 @receiver(pre_delete, sender=Task)
 def auto_delete_files(sender, instance, **kwargs):
