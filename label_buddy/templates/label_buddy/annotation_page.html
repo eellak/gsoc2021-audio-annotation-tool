@@ -15,7 +15,12 @@
     <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.regions.js"></script>
     <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.minimap.js"></script>
 
-    <script type="text/javascript"> var audio_url = "{{ task.file.url }}"; </script>
+    <script type="text/javascript"> 
+        var audio_url = "{{ task.file.url }}";
+        var task_id = "{{ task.id }}";
+        var project_id = "{{ project.id }}";
+        var django_csrf_token = "{{ csrf_token }}";
+    </script>
     <script src="{% static '/js/annotation_page.js'%}" defer></script>
 {% endblock %}
 
@@ -27,7 +32,7 @@
 {% endblock %}
 
 {% block content %}
-    <h1 style="text-align:center">Annotate task {{ task.id }}</h1>
+    <h1 class="headers-page">Annotate task {{ task.id }}</h1>
     {% if labels_count %}
         <div id="labels-div">
             {% for label in labels.all %}
@@ -38,6 +43,8 @@
     <div id="wave-timeline"></div>
     <div id="waveform"></div>
     <button id="play-pause-button" class="btn my-button" onclick="wavesurfer.playPause(); toggleIcon(this);"> <i style="margin-right: 10%;" class="fas fa-play"></i> Play</button>
+
+    <button class="btn btn-success my-button annotation-buttons" onclick="submitAnnotation();">Submit</button>
     {% if next_unlabeled_task_id == -1 %}
         <a title="Next unlabeled task" href="{% url 'annotation_page' project.id task.id %}"><button class="btn my-button annotation-buttons">Next <i style="margin-left: 10%;" class="fas fa-caret-right"></i></button></a>
     {% else %}

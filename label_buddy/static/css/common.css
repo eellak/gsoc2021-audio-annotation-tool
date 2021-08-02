@@ -43,6 +43,12 @@ table
     background-color: var(--basic_color);
 }
 
+.headers-page {
+    text-align: center;
+    font-family: 'Georama';
+    text-shadow: 2px 2px 2px #aaa;
+}
+
 .my-button-page {
     float: right;
     margin-left: 1%;

@@ -26,6 +26,7 @@ from .helpers import (
     get_user,
     get_project,
     get_task,
+    get_annotation_info,
     get_num_of_tasks,
     project_annotations_count,
     task_annotations_count,
@@ -92,7 +93,7 @@ def index(request):
 @login_required
 def project_create_view(request):
     form = ProjectForm()
-    user = request.user
+    user = get_user(request.user.username)
 
     if not user or (user != request.user) or not user.can_create_projects:
         return HttpResponseRedirect("/")
@@ -128,7 +129,7 @@ def project_edit_view(request, pk):
     project_has_no_labels = True if request.GET.get('no_labels', '') == 'true' else False
     form = ProjectForm()
     project = get_project(pk)
-    user = request.user
+    user = get_user(request.user.username)
 
     # check if user is manager of current project
     if not user or (user != request.user) or not project or not user in project.managers.all():
@@ -172,7 +173,7 @@ def project_edit_view(request, pk):
 @login_required
 def project_delete_view(request, pk):
     project = get_project(pk)
-    user = request.user
+    user = get_user(request.user.username)
 
     # check if user is manager of current project
     if not user or (user != request.user) or not project or not user in project.managers.all():
@@ -248,7 +249,7 @@ def project_page_view(request, pk):
 
 @login_required
 def annotate_task_view(request, pk, task_pk):
-    user = request.user
+    user = get_user(request.user.username)
     project = get_project(pk)
     task = get_task(task_pk)
 
@@ -259,10 +260,15 @@ def annotate_task_view(request, pk, task_pk):
         else:
             return HttpResponseRedirect("/")
 
+    # check if user in annotators of project and if task belongs to project
+    if user not in project.annotators.all() or task.project != project:
+        return HttpResponseRedirect(get_project_url(project.id))
+
+
     labels = project.labels
     if labels.count() == 0:
-        print("Hello")
         return HttpResponseRedirect("/projects/" + str(project.id) + "/edit?no_labels=true")
+
     context = {
         "labels": labels,
         "labels_count": labels.count(),
@@ -272,7 +278,6 @@ def annotate_task_view(request, pk, task_pk):
     }
 
     return render(request, "label_buddy/annotation_page.html", context)
-
 
 #API VIEWS
 class ProjectList(APIView):
@@ -299,7 +304,7 @@ class ProjectList(APIView):
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response(serializer.errors, status=status.HTTP_201_CREATED)
 
 
 class ProjectDetail(APIView):

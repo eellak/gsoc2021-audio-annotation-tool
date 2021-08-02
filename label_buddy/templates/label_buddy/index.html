@@ -21,7 +21,7 @@
 			</div>
 		{% endif %}
 		{% if projects %}
-			<h1 style="text-align:center">Projects you are involved</h1>
+			<h1 class="headers-page">Projects you are involved</h1>
 			{% if user.can_create_projects %}
 				<a href="{% url 'create_project'%}">
 					<button class="btn my-button my-button-page">Create</button>
@@ -92,7 +92,7 @@
 				<!--Table body-->
 			</table>
 			{% else %}
-				<h1 style="text-align:center">No projects for you yet</h1>
+				<h1 class="headers-page">No projects for you yet</h1>
 				{% if user.can_create_projects %}
 				<a href="{% url 'create_project'%}">
 					<button class="btn my-button my-button-page">Create</button>

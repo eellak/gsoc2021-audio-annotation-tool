@@ -1,7 +1,7 @@
 #functions used for views
 import random
-
 from zipfile import ZipFile
+
 from django.core.files import File
 from django.db.models import Q
 from django.template.defaulttags import register
@@ -20,6 +20,12 @@ from tasks.models import (
 ACCEPTED_EXTENSIONS = ['.wav', '.mp3', '.mp4',]
 
 # Functions
+
+def datetime_handler(date):
+    if isinstance(date, datetime.datetime):
+        return date.isoformat()
+    raise TypeError("Unknown type")
+
 
 # get projects where user is manager, annotator or reviewer
 def get_projects_of_user(user):
@@ -48,6 +54,17 @@ def get_task(pk):
         return task
     except Task.DoesNotExist:
         return None
+
+# get annotation updated_at and result by task, project and user
+def get_annotation_info(task, project, user):
+    try:
+        annotation = Annotation.objects.get(task=task, project=project, user=user)
+        return {
+            "result": annotation.result,
+            "updated_date": annotation.updated_at,
+        }
+    except Annotation.DoesNotExist:
+        return {}
 
 # get label by name
 def get_label(name):
