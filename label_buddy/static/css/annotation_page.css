@@ -1,7 +1,7 @@
 #waveform {
-    /* border: 1px solid black; */
-    margin-left: 1%;
-    margin-right: 1%;
+    /* margin-left: 1%;
+    margin-right: 1%; */
+    position: relative;
 }
 
 #wave-timeline {
@@ -13,15 +13,19 @@
 
 
 #labels-div {
-    
     margin-top: 5%;
     margin-left: 1%;
     margin-right: 1%;
     /* border: 1px solid black; */
 }
 
-
-
+/* .inner-grid {
+    margin-top: 5%;
+} */
+.outer-wave {
+    margin-left: 1%;
+    margin-right: 1%;
+}
 .my-badge {
     font-size: 13px; 
     border: none; 
@@ -41,13 +45,13 @@
 .annotation-buttons {
     float: right;
     margin-right: 1%;
-    margin-top: .5%;
+    margin-top: 1%;
 }
 
 .play-pause-buttons {
     float: left;
     margin-left: 1%;
-    margin-top: .5%;
+    margin-top: 1%;
 }
 
 .play-pause-buttons:focus {

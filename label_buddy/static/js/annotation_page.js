@@ -59,11 +59,14 @@ document.addEventListener('DOMContentLoaded', function() {
     // Init wavesurfer
     wavesurfer = WaveSurfer.create({
         container: '#waveform',
-        height: 200,
+        height: 150,
         pixelRatio: 1,
         scrollParent: true,
         normalize: true,
         minimap: true,
+        splitChannels: true,
+        waveColor: '#ddd',
+        progressColor: '#74deed',
         backend: 'MediaElement',
         plugins: [
             WaveSurfer.regions.create(),
@@ -75,7 +78,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }),
             WaveSurfer.timeline.create({
                 container: '#wave-timeline'
-            })
+            }),
+            WaveSurfer.cursor.create({
+                showTime: true,
+                opacity: 1,
+                customShowTimeStyle: {
+                    'background-color': '#000',
+                    color: '#fff',
+                    padding: '2px',
+                    'font-size': '10px'
+                }
+            }),
         ]
     });
     wavesurfer.load(audio_url);
@@ -85,6 +98,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // load regions of existing annotation (if exists)
     wavesurfer.on('ready', function() {
         result = annotation['result']
+        console.log(result);
         // if there is a result load regions of annotation
         if(result && result.length != 0) {
             loadRegions(result);
@@ -216,3 +230,7 @@ function backwardAudio() {
     wavesurfer.stop();
     toggleIcon(document.getElementById('play-pause-button'));
 }
+
+document.getElementById('zoom-slider').oninput = function () {
+    wavesurfer.zoom(Number(this.value));
+};
