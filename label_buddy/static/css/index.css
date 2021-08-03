@@ -1,0 +1,16 @@
+#edit-link {
+    text-decoration: none !important;
+    margin-right: 10%;
+    color:  #74deed;
+}
+
+#delete-link {
+    color: #d9534f;
+}
+.table-title {
+    font-size: 13px;
+    /**Major Properties**/
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}

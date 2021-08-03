@@ -30,7 +30,7 @@
                 {% csrf_token %}
                 {{ form | crispy}}
                 <button class="btn my-button" type="submit">Save</button>
-                <a title="Back to projects page" class="btn btn-danger my-button annotation-buttons" href="{% url 'project_page' project.id %}">Cancel</a>
+                <a title="Back to projects page" class="btn btn-danger my-button annotation-buttons" href="{% url 'index_page' %}">Cancel</a>
                 </form>
             </div>
         </div>

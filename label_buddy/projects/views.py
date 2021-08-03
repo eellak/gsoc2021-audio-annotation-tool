@@ -147,7 +147,7 @@ def project_edit_view(request, pk):
             project.managers.add(user)
             project.annotators.add(user)
             project.reviewers.add(user)
-            return HttpResponseRedirect(get_project_url(project.id))
+            return HttpResponseRedirect("/")
     else:
         # add existing labels as initial values
         labels_names = []

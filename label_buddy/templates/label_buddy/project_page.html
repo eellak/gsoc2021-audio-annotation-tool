@@ -38,34 +38,21 @@
     {% endif %}
     {% if tasks_count_no_filter > 0 %}
        
-        <h1 class="headers-page">
+        <h2 class="headers-page">
             <img style="border: 2px solid #74deed;" src="{{ project.logo.url }}" width="30" height="30" title="{{ project.title }}" class="rounded-circle">
-            Tasks for {{ project.title }}
-        </h1>
-        {% if user in project.managers.all%}
-            <a data-toggle="modal" data-target="#importModal" href="">
-                <button class="btn my-button my-button-page">Import</button>
-            </a>
-            <a href="{% url 'edit_project' project.id %}">
-                <button style="margin-right: .1%;" class="btn my-button my-button-page">Edit</button>
-            </a>
-            {% include "filters.html" %}
-            <a href="{% url 'delete_project' project.id %}">
-                <button style="margin-right: .1%;" class="btn btn-danger my-button my-button-page"><i style="margin-right: 10%;" class="fas fa-trash-alt"></i> Delete</button>
-            </a>
-        {% else %}
-            <a data-toggle="modal" data-target="#importModal" href="">
-                <button class="btn my-button my-button-page">Import</button>
-            </a>
-            {% include "filters.html" %}
-        {% endif %}
+            {{ project.title }}
+        </h2>
+        <a data-toggle="modal" data-target="#importModal" href="">
+            <button class="btn my-button my-button-page">Import</button>
+        </a>
+        {% include "filters.html" %}
         <div class="my-custom-scrollbar table-wrapper-scroll-y">
             <!--Table-->
             <table class="table table-bordered table-hover">
             <!--Table head-->
             <thead>
                 <tr>
-                    <th title="Task ID"><i class="fas fa-hashtag my-table-header"></i> ID</th>
+                    <th style="width: 100px;" title="Task ID"><i class="fas fa-hashtag my-table-header"></i> ID</th>
                     <th><i class="fa fa-caret-right my-table-header" aria-hidden="true"></i> Title</th>
                     <th><i class="fa fa-paint-brush my-table-header" aria-hidden="true"></i> Annotations completed</th>
                     <th><i class="fas fa-users my-table-header"></i> Annotated by</th>
@@ -131,16 +118,6 @@
         <h5 style="text-align:center; margin-top: 2%;">
             No tasks for {{ project.title }}. Please <a class="my-link" data-toggle="modal" data-target="#importModal" href="">import</a> some data.
         </h5>
-        {% if user in project.managers.all%}
-            <div>
-                <a href="{% url 'edit_project' project.id %}">
-                    <button style="margin-right: 1%; margin-top: 1%;" class="btn my-button my-button-page">Edit</button>
-                </a>
-                <a href="{% url 'delete_project' project.id %}">
-                    <button style="margin-right: .1%; margin-top: 1%;" class="btn btn-danger my-button my-button-page">Delete</button>
-                </a>
-            </div>
-        {% endif %}
     {% endif%}
 
     {% if tasks_count_filtered > tasks_per_page %}
@@ -159,7 +136,9 @@
                 <span aria-hidden="true">&times;</span>
             </button>
             </div>
-            <p>This file is for the annotation process. The accepted formats are: <b>.wav, .mp3, .mp4 and .zip</b></p>
+            <p>This file is for the annotation process. <br><br>Accepted formats: <b>.wav, .mp3, .mp4 and .zip.</b><br><br>
+                All files of the <b>.zip</b> will be uploaded except those who does not belong to the accepted formats.
+            </p>
             <div class="modal-body">
                 <form enctype="multipart/form-data" action="" method="POST">
                     {% csrf_token %}
