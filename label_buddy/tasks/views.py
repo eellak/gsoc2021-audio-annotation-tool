@@ -103,14 +103,19 @@ class AnnotationSave(APIView):
         # check if an annotation already exists. If not create one, else change result and update date
         annotation = get_annotation(task, project, user)
         result = request.data
-        if result != []:
-            # if annotation is not empty
-            if annotation:
+        
+        # if annotation is not empty
+        if annotation:
+            if result != []:
                 # update existing annotation
                 annotation.result = result
                 annotation.updated_at = timezone.now()
                 annotation.save()
             else:
+                annotation.delete()
+                return Response({"message": "Annotation deleted!"}, status=status.HTTP_200_OK)
+        else:
+            if result != []:
                 #create new annotation
                 Annotation.objects.create(
                     task=task,
@@ -118,6 +123,7 @@ class AnnotationSave(APIView):
                     user=user,
                     result=result,
                 )
-        else:
-            return Response({"message": "You submitted an empty annotation!"}, status=status.HTTP_200_OK)
+            else:
+                return Response({"message": "You submitted an empty annotation!"}, status=status.HTTP_200_OK)
+
         return Response({"message": "Annotation saved successfully!"}, status=status.HTTP_200_OK)

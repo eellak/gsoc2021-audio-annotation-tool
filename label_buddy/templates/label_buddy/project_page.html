@@ -51,7 +51,7 @@
             </a>
             {% include "filters.html" %}
             <a href="{% url 'delete_project' project.id %}">
-                <button style="margin-right: .1%;" class="btn btn-danger my-button my-button-page">Delete</button>
+                <button style="margin-right: .1%;" class="btn btn-danger my-button my-button-page"><i style="margin-right: 10%;" class="fas fa-trash-alt"></i> Delete</button>
             </a>
         {% else %}
             <a data-toggle="modal" data-target="#importModal" href="">

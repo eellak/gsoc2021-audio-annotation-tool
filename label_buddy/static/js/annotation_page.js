@@ -1,5 +1,8 @@
 var selected_label = null;
 var selected_label_color = null;
+var selected_region = null;
+var initial_opacity = .4;
+var selected_region_opacity = .9;
 var wavesurfer; // eslint-disable-line no-var
 
 function toggleIcon(button){
@@ -34,7 +37,7 @@ function selectedLabel(button) {
         
         // enable drag selection with label's color
         wavesurfer.enableDragSelection({
-            color: rgbToRgba(selected_label_color)
+            color: rgbToRgba(selected_label_color, initial_opacity)
         });
         button.style.border = '2px solid #74deed';
         button.style.background = 'grey'
@@ -42,9 +45,9 @@ function selectedLabel(button) {
 }
 
 // rgb to rgba with opacity 0.1
-function rgbToRgba(rgb) {
+function rgbToRgba(rgb, opacity) {
     if(rgb.indexOf('a') == -1){
-        var rgba = rgb.replace(')', ', 0.5)').replace('rgb', 'rgba');
+        var rgba = rgb.replace(')', ', ' + opacity + ')').replace('rgb', 'rgba');
     }
     return rgba;
 }
@@ -91,21 +94,45 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // on region click
     wavesurfer.on('region-click', function(region) {
-        //alert(region.start);
+        region.remove();
+
+        // if region already selected, unselect it
+        if(selected_region == region) {
+            region.color = rgbToRgba(region.data['color'], initial_opacity);
+            region.data['from-click'] = true;
+            selected_region = null;
+            wavesurfer.addRegion(region);
+            //document.getElementById('delete-region-btn').style.visibility = 'hidden';
+            document.getElementById('delete-region-btn').disabled = true;
+        } else {
+
+            // if another region is selected, unselect it
+            if(selected_region) {
+                selected_region.remove();
+                selected_region.color = rgbToRgba(selected_region.data['color'], initial_opacity);
+                selected_region.data['from-click'] = true;
+                wavesurfer.addRegion(selected_region);
+            }
+            
+            region.color = rgbToRgba(region.data['color'], selected_region_opacity);
+            region.data['from-click'] = true;
+            selected_region = wavesurfer.addRegion(region);
+            //document.getElementById('delete-region-btn').style.visibility = 'visible';
+            document.getElementById('delete-region-btn').disabled = false;
+        }
     });
 
     
     // on region created set its data to current label
     wavesurfer.on('region-created', function(region) {
-        if(selected_label) {
+        if(selected_label && !region.data['from-click']) {
             region.data['label'] = selected_label.value;
             region.data['color'] = selected_label_color;
         }
     });
 
-    // play regions
-    // wavesurfer.on('region-click', function(region, e) {
-        
+    // play regions on double click
+    // wavesurfer.on('region-dblclick', function(region, e) {
     //     e.stopPropagation();
     //     // Play on click, loop on shift click
     //     e.shiftKey ? region.playLoop() : region.play();
@@ -142,7 +169,6 @@ function createResult() {
     return result;
 }
 
-
 function submitAnnotation() {
     // xmlhttp request for saving the annotation
     let xhttp = new XMLHttpRequest();
@@ -163,16 +189,30 @@ function submitAnnotation() {
     xhttp.send(JSON.stringify(createResult()));
 }
 
-
-//Load regions from annotation.
+// Load regions from annotation.
 function loadRegions(result) {
     for(const region of result) {
         let new_region = wavesurfer.addRegion({
             "start": region['value']['start'],
             "end": region['value']['end'],
-            "color": rgbToRgba(region['value']['color'])
+            "color": rgbToRgba(region['value']['color'], initial_opacity)
         });
         new_region.data['label'] = region['value']['label'];
         new_region.data['color'] = region['value']['color'];
     }
+}
+
+// remove region
+function removeRegion(button) {
+    if(selected_region){
+        selected_region.remove();
+        selected_region = null;
+        button.disabled = true;
+    }
+}
+
+// backwardAudio audio to start
+function backwardAudio() {
+    wavesurfer.stop();
+    toggleIcon(document.getElementById('play-pause-button'));
 }
