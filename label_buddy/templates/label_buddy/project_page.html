@@ -54,7 +54,7 @@
                     <tr class="clickable-row" href="{% url 'annotation_page' project.id task.id %}">
                         <td>{% get_table_id page_obj.number tasks_per_page forloop.counter %}</td>
                         {% if task.file %}
-                            <td title="{{ task.file }}" class="table-title">{{ task.file }}</td>
+                            <td title="{{ task.original_file_name }}" class="table-title">{{ task.original_file_name }}</td>
                         {% else %}
                             <td><b>-</b></td>
                         {% endif %}

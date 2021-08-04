@@ -56,7 +56,7 @@
                   <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                     <h6 class="dropdown-header user-round-icon">
                       <img style="margin-right: 8%;" src="{{ user.avatar.url }}" width="40" height="40" class="rounded-circle">
-                      <b> Hi, {{ user }}</b>
+                      <b> Hi, {{ user.username }}</b>
                     </h6>
                     <div class="dropdown-divider"></div>
                     <a class="dropdown-item" href="{% url 'edit_user' user.username %}"> <i class="fas fa-user-edit drop-down"></i> Edit profile</a>

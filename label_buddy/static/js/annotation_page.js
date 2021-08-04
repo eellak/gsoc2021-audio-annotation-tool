@@ -86,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     'background-color': '#000',
                     color: '#fff',
                     padding: '2px',
-                    'font-size': '10px'
+                    'font-size': '15px'
                 }
             }),
         ]

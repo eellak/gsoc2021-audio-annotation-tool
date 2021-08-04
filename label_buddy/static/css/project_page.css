@@ -9,7 +9,6 @@ p {
 }
 
 .table-title {
-    font-size: 13px;
     /**Major Properties**/
     white-space:nowrap;
     overflow:hidden;

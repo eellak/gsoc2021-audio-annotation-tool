@@ -38,7 +38,7 @@
         <i style="margin-top: .4%;" class="fas fa-angle-right top-icons"></i>
         <a title="Project instructions" class="my-link top-icons" data-toggle="modal" data-target="#instructionsModal" href=""><i class="fas fa-info"></i></a>
     </div>
-    <h2 class="headers-page">Annotate task {{ task.id }}</h2>
+    <h2 title="{{ task.original_file_name }}"class="annoation-header">Audio: {{ task.original_file_name }}</h2>
     {% if next_unlabeled_task_id == -1 %}
         <a title="Next unlabeled task" href="{% url 'annotation_page' project.id task.id %}"><button class="btn my-button annotation-buttons">Next <i style="margin-left: 10%;" class="fas fa-caret-right"></i></button></a>
     {% else %}

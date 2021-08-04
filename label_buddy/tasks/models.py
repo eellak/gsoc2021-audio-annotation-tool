@@ -38,6 +38,7 @@ class Task(models.Model):
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE, help_text='Project to which the task belongs')
     file = models.FileField(upload_to='audio', blank=True, null=True, help_text='Local file uploaded')
+    original_file_name = models.CharField(max_length=256, blank=True, null=True, default='', help_text='Task file original file name')
     url = URLOrRelativeURLField(blank=True, help_text='URL for a file')
 
     extra = models.JSONField(blank=True, null=True, default=None, help_text='Extra info about the task')

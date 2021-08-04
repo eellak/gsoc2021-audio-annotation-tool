@@ -58,3 +58,15 @@
     outline: none;
     box-shadow: none;
 }
+
+.annoation-header {
+    margin-left: 25%;
+    margin-right: 25%;
+    text-align: center;
+    font-family: 'Georama';
+    text-shadow: 2px 2px 2px #aaa;
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}

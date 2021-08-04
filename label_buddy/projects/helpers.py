@@ -220,7 +220,7 @@ def add_tasks_from_compressed_file(compressed_file, project):
         # for every file that has an extension in [.wav, .mp3, .mp4] create a task
         if filename[-4:] in ACCEPTED_EXTENSIONS:
             # create task
-            new_task = Task.objects.create(project=project)
+            new_task = Task.objects.create(project=project, original_file_name=filename)
             new_task.file.save(filename, File(new_file))
         else:
             skipped_files += 1

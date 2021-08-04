@@ -182,6 +182,7 @@ def project_page_view(request, pk):
         return HttpResponseRedirect("/")
 
     if request.method == "POST":
+        skipped_files = 0
         task_form = TaskForm(request.POST, request.FILES)
         if task_form.is_valid():
             new_task = task_form.save(commit=False)
@@ -191,6 +192,8 @@ def project_page_view(request, pk):
                 # unzip file and add as many tasks as the files in the zip/rar file
                 skipped_files = add_tasks_from_compressed_file(new_task.file, project)
             else:
+                # one file is uploaded
+                new_task.original_file_name = request.FILES['file'].name
                 new_task.project = project
                 new_task.save()
             
