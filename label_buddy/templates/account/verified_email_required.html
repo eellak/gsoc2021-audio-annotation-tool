@@ -6,6 +6,7 @@
 {% block title %} &#9702; Verify Your E-mail Address {% endblock %}
 
 {% block content %}
+{{ block.super }}
 <h1>{% trans "Verify Your E-mail Address" %}</h1>
 
 {% url 'account_email' as email_url %}

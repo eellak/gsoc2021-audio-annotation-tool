@@ -11,6 +11,7 @@
 {% block title %} Label Buddy {% endblock %}
 
 {% block content %}
+	{{ block.super }}
 	{% if user.is_authenticated %}
 		{% if projects %}
 			<h2 class="headers-page">Projects</h2>
