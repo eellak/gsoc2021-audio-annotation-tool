@@ -5,18 +5,7 @@
 {% load crispy_forms_tags %}
 
 {% block title %} &#9702; Sign in {% endblock %}
-
 {% block content %}
-  {% for message in messages %}
-  {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-      <i style="margin-right: .5%;" class="fas fa-check-circle"></i><strong>{{ message }}</strong>
-      <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-  {% endif %}
-  {% endfor %}
   <div class="container centered">
     <div class="row justify-content-center">
       <div class="user-form-wrap col-6">
