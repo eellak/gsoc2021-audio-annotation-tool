@@ -45,7 +45,6 @@ from .helpers import (
 
 def index(request):
     """Index view"""
-
     projects_count = 0
     if request.user.is_authenticated:
         projects = get_projects_of_user(request.user)
@@ -242,6 +241,7 @@ def project_page_view(request, pk):
 
 @login_required
 def annotate_task_view(request, pk, task_pk):
+    
     user = get_user(request.user.username)
     project = get_project(pk)
     task = get_task(task_pk)
@@ -279,7 +279,7 @@ def annotate_task_view(request, pk, task_pk):
         "next_unlabeled_task_id": next_unlabeled_task_id(task.id, project),
         "annotation": annotation,
         "tasks_count_no_filter": get_project_tasks(project).count(),
-
+        "host": request.build_absolute_uri("/"),
     }
 
     return render(request, "label_buddy/annotation_page.html", context)

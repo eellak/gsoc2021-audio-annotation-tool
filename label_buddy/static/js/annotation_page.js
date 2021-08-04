@@ -208,7 +208,7 @@ function submitAnnotation() {
             alert(response['message']);
         }
     };
-    let url = "http://127.0.0.1:8000/api/v1/projects/" + project_id + "/tasks/" + task_id + "/annotation/save";
+    let url = host + "api/v1/projects/" + project_id + "/tasks/" + task_id + "/annotation/save";
     xhttp.open("POST", url, true);
     xhttp.setRequestHeader("X-CSRFToken", django_csrf_token);
     xhttp.setRequestHeader("Content-Type", "application/json");

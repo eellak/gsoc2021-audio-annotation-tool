@@ -22,6 +22,7 @@
         var project_id = "{{ project.id }}";
         var django_csrf_token = "{{ csrf_token }}";
         var annotation = JSON.parse("{{annotation|escapejs}}");
+        var host = "{{ host }}";
     </script>
     <script src="{% static '/js/annotation_page.js'%}" defer></script>
 {% endblock %}
@@ -39,12 +40,8 @@
         <a title="Project instructions" class="my-link top-icons" data-toggle="modal" data-target="#instructionsModal" href=""><i class="fas fa-info"></i></a>
     </div>
     <h2 title="{{ task.original_file_name }}"class="annoation-header">Audio: {{ task.original_file_name }}</h2>
-    {% if next_unlabeled_task_id == -1 %}
-        <a title="Next unlabeled task" href="{% url 'annotation_page' project.id task.id %}"><button class="btn my-button annotation-buttons">Next <i style="margin-left: 10%;" class="fas fa-caret-right"></i></button></a>
-    {% else %}
-        <a title="Next unlabeled task" href="{% url 'annotation_page' project.id next_unlabeled_task_id %}"><button class="btn my-button annotation-buttons">Next <i style="margin-left: 10%;" class="fas fa-caret-right"></i></button></a>
-    {% endif %}
-    <a title="Back to project page" href="{% url 'project_page' project.id %}"><button class="btn my-button annotation-buttons"><i style="margin-right: 10%;" class="fas fa-caret-left"></i> Project</button></a>
+    
+    <a title="Back to project page" href="{% url 'project_page' project.id %}"><button id="back-project-btn" class="btn my-button"><i style="margin-right: 10%;" class="fas fa-caret-left"></i> Project</button></a>
 
     {% if labels_count %}
         <div id="labels-div">
@@ -55,12 +52,26 @@
     {% endif %}
     <div id="wave-timeline"></div>
     <div class="outer-wave"><div id="waveform"></div></div>
-    <button title="Play/Pause audio"id="play-pause-button" class="btn my-button play-pause-buttons" onclick="wavesurfer.playPause(); toggleIcon(this);"> <i style="margin-right: 10%;" class="fas fa-play"></i> Play</button>
-    <button class="btn my-button play-pause-buttons" onclick="backwardAudio();"><i class="fas fa-backward"></i></button>
-    <input style="float: left; width: 100px; margin-top: 2%; margin-left: 1%;" type="range" class="custom-range" id="zoom-slider">
+    
+    <div id="play-pause-btn-div">
+        <button title="Play/Pause audio" id="play-pause-button" class="btn my-button play-pause-buttons" onclick="wavesurfer.playPause(); toggleIcon(this);"> <i style="margin-right: 10%;" class="fas fa-play"></i> Play</button>
+        {% comment %}
+            <button style="margin-left: 1%;" class="btn my-button play-pause-buttons" onclick="backwardAudio();"><i class="fas fa-backward"></i></button>
+        {% endcomment %}
+        <i style="margin-left: 1%;" class="fas fa-search-minus"></i>
+        <input style="width: 100px; margin-top: 1%; margin-left: .5%;" type="range" class="custom-range" id="zoom-slider">
+        <i style="margin-left: .5%;" class="fas fa-search-plus"></i>
+    </div>
 
-    <button title="Save annotation" class="btn my-button annotation-buttons" onclick="submitAnnotation();"><i style="margin-right: 10%;" class="fas fa-save"></i> Save</button>
-    <button title="Delete region" class="btn btn-danger my-button annotation-buttons" id="delete-region-btn" disabled onclick="removeRegion(this);"><i class="fas fa-trash-alt"></i></button>
+    <div id="annotation-btn-div" class="col">
+        <button title="Save annotation" class="btn btn-success my-button annotation-buttons" onclick="submitAnnotation();"><i style="margin-right: 10%;" class="fas fa-save"></i> Save</button>
+        <button title="Delete region" class="btn btn-danger my-button annotation-buttons" id="delete-region-btn" disabled onclick="removeRegion(this);"><i class="fas fa-trash-alt"></i></button>
+        {% if next_unlabeled_task_id == -1 %}
+            <a title="Next unlabeled task" href="{% url 'annotation_page' project.id task.id %}"><button class="btn my-button annotation-buttons">Next <i style="margin-left: 10%;" class="fas fa-caret-right"></i></button></a>
+        {% else %}
+            <a title="Next unlabeled task" href="{% url 'annotation_page' project.id next_unlabeled_task_id %}"><button class="btn my-button annotation-buttons">Next <i style="margin-left: 10%;" class="fas fa-caret-right"></i></button></a>
+        {% endif %}
+    </div>
     {% include "project_modals.html" %}
     {% include "project_information_modal.html" %}
 {% endblock %}
