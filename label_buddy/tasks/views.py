@@ -3,6 +3,7 @@ import json
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.utils import timezone
+from django.contrib import messages
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -113,7 +114,8 @@ class AnnotationSave(APIView):
                 annotation.save()
             else:
                 annotation.delete()
-                return Response({"message": "Annotation deleted!"}, status=status.HTTP_200_OK)
+                messages.add_message(request, messages.SUCCESS, "Annotation deleted.")
+                return Response({}, status=status.HTTP_200_OK)
         else:
             if result != []:
                 #create new annotation
@@ -124,6 +126,7 @@ class AnnotationSave(APIView):
                     result=result,
                 )
             else:
-                return Response({"message": "You submitted an empty annotation!"}, status=status.HTTP_200_OK)
-
-        return Response({"message": "Annotation saved successfully!"}, status=status.HTTP_200_OK)
+                messages.add_message(request, messages.ERROR, "You submitted an empty annotation.")
+                return Response({}, status=status.HTTP_400_BAD_REQUEST)
+        messages.add_message(request, messages.SUCCESS, "Annotation saved successfully.")
+        return Response({}, status=status.HTTP_200_OK)

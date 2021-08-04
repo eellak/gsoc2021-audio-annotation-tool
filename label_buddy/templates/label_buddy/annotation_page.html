@@ -38,8 +38,17 @@
         <img style="border: 2px solid #74deed; float: left;" src="{{ project.logo.url }}" width="30" height="30" data-toggle="modal" data-target="#informationModal" href="" title="{{ project.title }} information" class="rounded-circle">
         <i style="margin-top: .4%;" class="fas fa-angle-right top-icons"></i>
         <a title="Project instructions" class="my-link top-icons" data-toggle="modal" data-target="#instructionsModal" href=""><i class="fas fa-info"></i></a>
+        <p style="float: right;">
+            {% if updated_at %}
+                <b>Last update: </b>{{ updated_at|date:"d-m-y" }}
+            {% elif created_at %}
+                <b>Annotation created at: </b>{{ created_at|date:"d-m-y" }}
+            {% else %}
+                <b>You have not annotated this task!</b>
+            {% endif %}
+        </p>
     </div>
-    <h2 title="{{ task.original_file_name }}"class="annoation-header">Audio: {{ task.original_file_name }}</h2>
+    <h2 title="{{ task.original_file_name }}" class="annoation-header">Audio: {{ task.original_file_name }}</h2>
     
     <a title="Back to project page" href="{% url 'project_page' project.id %}"><button id="back-project-btn" class="btn my-button"><i style="margin-right: 10%;" class="fas fa-caret-left"></i> Project</button></a>
 
@@ -61,11 +70,14 @@
         <i style="margin-left: 1%;" class="fas fa-search-minus"></i>
         <input style="width: 100px; margin-top: 1%; margin-left: .5%;" type="range" class="custom-range" id="zoom-slider">
         <i style="margin-left: .5%;" class="fas fa-search-plus"></i>
+        <a title="Delete selected region"style="display: none; margin-left: 1%; color: #d9534f;" id="delete-region-btn" href=""><i class="fas fa-trash"></i></a>
     </div>
 
     <div id="annotation-btn-div" class="col">
         <button title="Save annotation" class="btn btn-success my-button annotation-buttons" onclick="submitAnnotation();"><i style="margin-right: 10%;" class="fas fa-save"></i> Save</button>
-        <button title="Delete region" class="btn btn-danger my-button annotation-buttons" id="delete-region-btn" disabled onclick="removeRegion(this);"><i class="fas fa-trash-alt"></i></button>
+        <a href="{% url 'delete_annotation' project.id task.id %}">
+            <button title="Delete annotation" class="btn btn-danger my-button annotation-buttons" id="delete-annotation-btn"><i class="fas fa-trash-alt"></i></button>
+        </a>
         {% if next_unlabeled_task_id == -1 %}
             <a title="Next unlabeled task" href="{% url 'annotation_page' project.id task.id %}"><button class="btn my-button annotation-buttons">Next <i style="margin-left: 10%;" class="fas fa-caret-right"></i></button></a>
         {% else %}

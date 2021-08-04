@@ -120,3 +120,16 @@ table
     margin-left: 1%;
     margin-top: .2%;
 }
+
+.form-headers {
+    font-family: 'Georama';
+    text-shadow: 2px 2px 2px #aaa;
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+a {
+    text-decoration: none !important;
+}

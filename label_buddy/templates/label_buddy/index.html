@@ -82,7 +82,7 @@
 
 							{% if user in project.managers.all %}
 								<td title="You are a manager. You can Edit/Delete">
-									<a title="Edit {{ project.title }}"id="edit-link" href="{% url 'edit_project' project.id %}">
+									<a title="Edit {{ project.title }}" id="edit-link" href="{% url 'edit_project' project.id %}">
 										<i class="fas fa-edit"></i> </i>
 									</a>
 									<b>/</b>
@@ -100,7 +100,7 @@
 				<!--Table body-->
 			</table>
 			{% else %}
-				<h1 class="headers-page">No projects for you yet</h1>
+				<h1 class="headers-page form-headers">No projects for you yet</h1>
 				{% if user.can_create_projects %}
 				<a href="{% url 'create_project'%}">
 					<button class="btn my-button my-button-page">Create</button>
@@ -113,7 +113,7 @@
 			{% endif %}
 	{% else %}
 		<div class="center-screen">
-			<h1>Welcome to Label Buddy</h1>
+			<h1 class="form-headers">Welcome to Label Buddy</h1>
 			<p>Please <a class="my-link" href="/accounts/login">sign in</a> to continue
 			</p>
 		</div>

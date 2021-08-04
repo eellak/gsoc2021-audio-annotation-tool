@@ -101,9 +101,9 @@
             {% endfor %}
         </table>
     {% else %}
-        <h5 style="text-align:center; margin-top: 2%;">
+        <h2 style="text-align:center; margin-top: 2%;">
             No tasks for {{ project.title }}. Please <a class="my-link" data-toggle="modal" data-target="#importModal" href="">import</a> some data.
-        </h5>
+        </h2>
     {% endif%}
 
     {% if tasks_count_filtered > tasks_per_page %}

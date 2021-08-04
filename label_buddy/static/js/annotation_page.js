@@ -61,9 +61,23 @@ function getLabelColorByValue(label)
         }
     }
 }
+
+function showAlert() {
+    location.reload(true);
+}
 //----------------------------------------------------------------------------------------------
 
 
+// delete region link
+$('#delete-region-btn').click( function(e) {
+    e.preventDefault(); 
+    if(selected_region){
+        selected_region.remove();
+        selected_region = null;
+        document.getElementById('delete-region-btn').style.display = 'none';
+    }
+    return false; 
+} );
 
 document.addEventListener('DOMContentLoaded', function() {
     // Init wavesurfer
@@ -112,6 +126,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // if there is a result load regions of annotation
         if(result && result.length != 0) {
             loadRegions(result);
+        } else {
+            document.getElementById('delete-annotation-btn').disabled = 'true';
         }
     });
 
@@ -127,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function() {
             selected_region = null;
             wavesurfer.addRegion(region);
             //document.getElementById('delete-region-btn').style.visibility = 'hidden';
-            document.getElementById('delete-region-btn').disabled = true;
+            document.getElementById('delete-region-btn').style.display = 'none';
         } else {
 
             // if another region is selected, unselect it
@@ -141,8 +157,7 @@ document.addEventListener('DOMContentLoaded', function() {
             region.color = rgbToRgba(region.data['color'], selected_region_opacity);
             region.data['from-click'] = true;
             selected_region = wavesurfer.addRegion(region);
-            //document.getElementById('delete-region-btn').style.visibility = 'visible';
-            document.getElementById('delete-region-btn').disabled = false;
+            document.getElementById('delete-region-btn').style.display = 'inline';
         }
     });
 
@@ -202,10 +217,10 @@ function submitAnnotation() {
         if (this.readyState == 4 && this.status == 200) {
            // Typical action to be performed when the document is ready:
             const response = JSON.parse(this.responseText);
-            alert(response['message']);
+            showAlert(response['message'], this.status);
         } else if(this.readyState == 4 && (this.status == 400 || this.status == 401)){
             const response = JSON.parse(this.responseText);
-            alert(response['message']);
+            showAlert(response['message'], this.status);
         }
     };
     let url = host + "api/v1/projects/" + project_id + "/tasks/" + task_id + "/annotation/save";

@@ -27,6 +27,7 @@ from .helpers import (
     get_user,
     get_project,
     get_task,
+    get_annotation,
     get_annotation_result,
     get_num_of_tasks,
     project_annotations_count,
@@ -177,6 +178,46 @@ def project_delete_view(request, pk):
     return render(request, "label_buddy/delete_project.html", context)
 
 @login_required
+def annotation_delete_view(request, pk, task_pk):
+    task = get_task(task_pk)
+    project = get_project(pk)
+    user = get_user(request.user.username)
+
+    # check if valid url
+    if not user or (user != request.user) or not project or not task:
+        if project:
+            messages.add_message(request, messages.ERROR, "Task does not exist.")
+            return HttpResponseRedirect(get_project_url(project.id))
+        else:
+            messages.add_message(request, messages.ERROR, "Project does not exist.")
+            return HttpResponseRedirect("/")
+
+    # check if user in annotators of project
+    if user not in project.annotators.all():
+        messages.add_message(request, messages.ERROR, "You are not an annotator for project %s." % project.title)
+        return HttpResponseRedirect(get_project_url(project.id))
+
+    # Check if task belongs to project
+    if task.project != project:
+        messages.add_message(request, messages.ERROR, "Task does not belong to project %s." % project.title)
+        return HttpResponseRedirect(get_project_url(project.id))
+
+    if request.method == "POST":
+        annotation = get_annotation(task, project, user)
+        if annotation:
+            annotation.delete()
+            messages.add_message(request, messages.SUCCESS, "Successfully deleted annotation.")
+        else:
+            messages.add_message(request, messages.ERROR, "Something is wrong.")
+        return HttpResponseRedirect(get_project_url(project.id) + "/" + str(task.id) + "/annotation")
+
+    context = {
+        "task": task,
+        "project_id": project.id,
+    }
+    return render(request, "label_buddy/delete_annotation.html", context)
+
+@login_required
 def project_page_view(request, pk):
     # read filter parameters
     labeled = request.GET.get('labeled', '')
@@ -269,15 +310,21 @@ def annotate_task_view(request, pk, task_pk):
     if labels.count() == 0:
         messages.add_message(request, messages.ERROR, "Add some labels to project %s in order to annotate." % project.title)
         return HttpResponseRedirect("/projects/" + str(project.id) + "/edit")
+    annotation_result = get_annotation_result(task, project, user)
+    annotation = get_annotation(task, project, user)
+    
+    created_at = annotation.created_at if annotation else None
+    updated_at = annotation.updated_at if annotation else None
 
-    annotation = get_annotation_result(task, project, user)
     context = {
         "labels": labels,
         "labels_count": labels.count(),
         "task": task,
         "project": project,
         "next_unlabeled_task_id": next_unlabeled_task_id(task.id, project),
-        "annotation": annotation,
+        "annotation": annotation_result,
+        "created_at": created_at,
+        "updated_at": updated_at,
         "tasks_count_no_filter": get_project_tasks(project).count(),
         "host": request.build_absolute_uri("/"),
     }

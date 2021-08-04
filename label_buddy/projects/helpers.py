@@ -50,13 +50,21 @@ def get_task(pk):
     except Task.DoesNotExist:
         return None
 
+# get annotation by task, project, user
+def get_annotation(task, project, user):
+    try:
+        annotation = Annotation.objects.get(task=task, project=project, user=user)
+        return annotation
+    except Annotation.DoesNotExist:
+        return None
+
 # get annotation updated_at and result by task, project and user
 def get_annotation_result(task, project, user):
     try:
         annotation = Annotation.objects.get(task=task, project=project, user=user)
         return dumps(annotation.result)
     except Annotation.DoesNotExist:
-        return dumps({})
+        return dumps([])
 
 
 # get label by name
