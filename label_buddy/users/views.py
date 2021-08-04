@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
+from django.contrib import messages
+
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.exceptions import PermissionDenied
@@ -36,6 +38,7 @@ def edit_profile(request, username):
         if form.is_valid():
             user = form.save(commit=False)
             user.save()
+            messages.add_message(request, messages.SUCCESS, "Successfully edited profile.")
             return HttpResponseRedirect("/")
     else:
         form = UserForm(instance=user)

@@ -84,15 +84,4 @@ function checkExtension(filePath) {
     }
 }
 
-// if files skipped after import clear url
-document.addEventListener('DOMContentLoaded', function() {
-    var url = window.location.href;
-    parameters = url.split('?')[1]
-    if(parameters) {
-        splitted = parameters.split('&')
-        if(splitted.length == 1 && splitted[0].split('=')[0] == 'skipped')
-            window.history.pushState({}, '', "/projects/" + project_id + "/tasks");
-    }
-});
-
 window.onload = fixFilters;

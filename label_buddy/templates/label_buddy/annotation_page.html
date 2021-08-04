@@ -29,11 +29,14 @@
 {% block title %} &#9702; Annotation{% endblock %}
 
 {% block navbar_buttons %}
-    <a title="Project instructions" style="margin-top: .7%;" class="my-button-page my-link" data-toggle="modal" data-target="#instructionsModal" href=""><i class="fas fa-info"></i></a>
-    <a title="Project description" style="margin-top: .7%;" class="my-button-page my-link" data-toggle="modal" data-target="#descriptionModal" href=""><i class="fas fa-question-circle"></i></a>
 {% endblock %}
 
 {% block content %}
+    <div class="top-div">
+        <img style="border: 2px solid #74deed; float: left;" src="{{ project.logo.url }}" width="30" height="30" data-toggle="modal" data-target="#informationModal" href="" title="{{ project.title }} information" class="rounded-circle">
+        <i style="margin-top: .4%;" class="fas fa-angle-right top-icons"></i>
+        <a title="Project instructions" class="my-link top-icons" data-toggle="modal" data-target="#instructionsModal" href=""><i class="fas fa-info"></i></a>
+    </div>
     <h2 class="headers-page">Annotate task {{ task.id }}</h2>
     {% if next_unlabeled_task_id == -1 %}
         <a title="Next unlabeled task" href="{% url 'annotation_page' project.id task.id %}"><button class="btn my-button annotation-buttons">Next <i style="margin-left: 10%;" class="fas fa-caret-right"></i></button></a>
@@ -58,4 +61,5 @@
     <button title="Save annotation" class="btn my-button annotation-buttons" onclick="submitAnnotation();"><i style="margin-right: 10%;" class="fas fa-save"></i> Save</button>
     <button title="Delete region" class="btn btn-danger my-button annotation-buttons" id="delete-region-btn" disabled onclick="removeRegion(this);"><i class="fas fa-trash-alt"></i></button>
     {% include "project_modals.html" %}
+    {% include "project_information_modal.html" %}
 {% endblock %}

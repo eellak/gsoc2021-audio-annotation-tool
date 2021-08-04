@@ -1,6 +1,7 @@
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.http import HttpResponseRedirect
 
 from rest_framework.response import Response
@@ -44,14 +45,6 @@ from .helpers import (
 
 def index(request):
     """Index view"""
-    # if redirected from login
-    from_login = True if request.GET.get('login', '') == 'true' else False
-    # if redirected from delete
-    from_delete = True if request.GET.get('delete', '') == 'true' else False
-    project_deleted = request.GET.get('title', '') if request.GET.get('delete', '') else ""
-    # if redirected from create
-    project_created = True if request.GET.get('create', '') == 'true' else False
-    project_created_title = request.GET.get('title_created', '') if request.GET.get('title_created', '') else ""
 
     projects_count = 0
     if request.user.is_authenticated:
@@ -66,17 +59,7 @@ def index(request):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    # send correct message
-    message = None
-    if request.user.is_authenticated and from_login:
-        message = "Successfully singed in as " + request.user.username + "!"
-    if from_delete:
-        message = "Successful deletion of project " + project_deleted + "!"
-    if project_created:
-        message = "Successful creation of project " + project_created_title + "!"
-    
     context = {
-        "message": message,
         "page_obj": page_obj,
         "projects_count": projects_count,
         "projects_per_page": projects_per_page,
@@ -108,8 +91,8 @@ def project_create_view(request):
             project.managers.add(user)
             project.annotators.add(user)
             project.reviewers.add(user)
-
-            return HttpResponseRedirect("/?create=true&title_created=" + project.title)
+            messages.add_message(request, messages.SUCCESS, "Successfully created project " + project.title + ".")
+            return HttpResponseRedirect("/")
         else:
             raise forms.ValidationError("Something is wrong")
     else:
@@ -125,8 +108,7 @@ def project_create_view(request):
 
 @login_required
 def project_edit_view(request, pk):
-    # if redirected for project with no labels
-    project_has_no_labels = True if request.GET.get('no_labels', '') == 'true' else False
+    
     form = ProjectForm()
     project = get_project(pk)
     user = get_user(request.user.username)
@@ -147,6 +129,7 @@ def project_edit_view(request, pk):
             project.managers.add(user)
             project.annotators.add(user)
             project.reviewers.add(user)
+            messages.add_message(request, messages.SUCCESS, "Successfully edited project " + project.title + ".")
             return HttpResponseRedirect("/")
     else:
         # add existing labels as initial values
@@ -160,11 +143,7 @@ def project_edit_view(request, pk):
         form.fields['managers'].queryset = User.objects.exclude(username=user.username)
         form.fields['reviewers'].queryset = User.objects.exclude(username=user.username)
 
-    message = None 
-    if project_has_no_labels:
-        message = "Add some labels to project " + project.title + " in order to annotate!"
     context = {
-        "message": message,
         "project": project,
         "form": form,
     }
@@ -182,7 +161,8 @@ def project_delete_view(request, pk):
     if request.method == "POST":
         project_title = project.title
         project.delete()
-        return HttpResponseRedirect("/?delete=true&title=" + project_title)
+        messages.add_message(request, messages.SUCCESS, "Successfully deleted project " + project_title + ".")
+        return HttpResponseRedirect("/")
     
     context = {
         "project": project,
@@ -195,9 +175,6 @@ def project_page_view(request, pk):
     labeled = request.GET.get('labeled', '')
     reviewed = request.GET.get('reviewed', '')
 
-    # skipped files from import
-    num_of_skipped_files = int(request.GET.get('skipped', '')) if request.GET.get('skipped', '') else 0
-
     user = request.user
     project = get_project(pk)
     tasks = filter_tasks(project, labeled, reviewed)
@@ -205,7 +182,6 @@ def project_page_view(request, pk):
         return HttpResponseRedirect("/")
 
     if request.method == "POST":
-        skipped_files = 0
         task_form = TaskForm(request.POST, request.FILES)
         if task_form.is_valid():
             new_task = task_form.save(commit=False)
@@ -217,7 +193,12 @@ def project_page_view(request, pk):
             else:
                 new_task.project = project
                 new_task.save()
-            return HttpResponseRedirect(get_project_url(project.id) + '?skipped=' + str(skipped_files))
+            
+            if skipped_files == 0:
+                messages.add_message(request, messages.SUCCESS, "Successful import.")
+            else:
+                messages.add_message(request, messages.ERROR, str(skipped_files) + " files were ignored during the import process.")
+            return HttpResponseRedirect(get_project_url(project.id))
 
     else:
         task_form = TaskForm()
@@ -227,7 +208,7 @@ def project_page_view(request, pk):
     
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
-    
+    setattr(request, 'view', 'projects.views.project_page_view')
     context = {
         "page_obj": page_obj,
         "list_num_of_pages": range(1, paginator.num_pages+1),
@@ -243,8 +224,6 @@ def project_page_view(request, pk):
         "task_form": task_form,
         "labeled": Status.labeled,
         "reviewed": Review_status.reviewed,
-        "num_of_skipped_files": num_of_skipped_files,
-        "from_import": request.GET.get('skipped', ''),
     }
     return render(request, "label_buddy/project_page.html", context)
 
@@ -268,7 +247,8 @@ def annotate_task_view(request, pk, task_pk):
 
     labels = project.labels
     if labels.count() == 0:
-        return HttpResponseRedirect("/projects/" + str(project.id) + "/edit?no_labels=true")
+        messages.add_message(request, messages.ERROR, "Add some labels to project " + project.title + " in order to annotate.")
+        return HttpResponseRedirect("/projects/" + str(project.id) + "/edit")
 
     context = {
         "labels": labels,
@@ -277,6 +257,8 @@ def annotate_task_view(request, pk, task_pk):
         "project": project,
         "next_unlabeled_task_id": next_unlabeled_task_id(task.id, project),
         "annotation": get_annotation_info(task, project, user),
+        "tasks_count_no_filter": get_project_tasks(project).count(),
+
     }
 
     return render(request, "label_buddy/annotation_page.html", context)

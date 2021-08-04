@@ -13,7 +13,8 @@
 {% block title %} &#9702; Edit {{ project.title }}{% endblock %}
 
 {% block content %}
-    {% if message %}
+    {% for message in messages %}
+    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <i style="margin-right: .5%;" class="fas fa-times-circle"></i><strong>{{ message }}</strong>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -21,6 +22,7 @@
             </button>
         </div>
     {% endif %}
+    {% endfor %}
     <div class="container centered">
         <div class="row justify-content-center">
             <div class="col-6 user-form-wrap">
