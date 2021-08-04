@@ -39,7 +39,7 @@ function selectedLabel(button) {
         wavesurfer.enableDragSelection({
             color: rgbToRgba(selected_label_color, initial_opacity)
         });
-        button.style.border = '2px solid #74deed';
+        button.style.border = '3px solid #74deed';
         button.style.background = 'grey'
     }
 }
@@ -50,6 +50,16 @@ function rgbToRgba(rgb, opacity) {
         var rgba = rgb.replace(')', ', ' + opacity + ')').replace('rgb', 'rgba');
     }
     return rgba;
+}
+
+function getLabelColorByValue(label)
+{
+    var alllabels = document.getElementsByClassName('my-badge');
+    for(const x of alllabels) {
+        if(x.value == label) {
+            return x.style.backgroundColor;
+        }
+    }
 }
 //----------------------------------------------------------------------------------------------
 
@@ -97,7 +107,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // load regions of existing annotation (if exists)
     wavesurfer.on('ready', function() {
-        result = annotation['result']
+        
+        let result = annotation
         // if there is a result load regions of annotation
         if(result && result.length != 0) {
             loadRegions(result);
@@ -107,7 +118,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // on region click
     wavesurfer.on('region-click', function(region) {
-        console.log("remove");
         region.remove();
 
         // if region already selected, unselect it
@@ -178,7 +188,6 @@ function createResult() {
                 "start": region.start,
                 "end": region.end,
                 "label": region.data['label'],
-                "color": region.data['color']
             }
         }
         result.push(region_dict);
@@ -212,10 +221,10 @@ function loadRegions(result) {
         let new_region = wavesurfer.addRegion({
             "start": region['value']['start'],
             "end": region['value']['end'],
-            "color": rgbToRgba(region['value']['color'], initial_opacity)
+            "color": rgbToRgba(getLabelColorByValue(region['value']['label']), initial_opacity),
         });
         new_region.data['label'] = region['value']['label'];
-        new_region.data['color'] = region['value']['color'];
+        new_region.data['color'] = getLabelColorByValue(region['value']['label']);
     }
 }
 

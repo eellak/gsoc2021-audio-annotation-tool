@@ -27,7 +27,7 @@ from .helpers import (
     get_user,
     get_project,
     get_task,
-    get_annotation_info,
+    get_annotation_result,
     get_num_of_tasks,
     project_annotations_count,
     task_annotations_count,
@@ -80,7 +80,7 @@ def project_create_view(request):
 
     if not user or (user != request.user) or not user.can_create_projects:
         return HttpResponseRedirect("/")
-    
+
     if request.method == "POST":
         form = ProjectForm(request.POST, request.FILES)
         if form.is_valid():
@@ -91,7 +91,7 @@ def project_create_view(request):
             project.managers.add(user)
             project.annotators.add(user)
             project.reviewers.add(user)
-            messages.add_message(request, messages.SUCCESS, "Successfully created project " + project.title + ".")
+            messages.add_message(request, messages.SUCCESS, "Successfully created project %s." % project.title)
             return HttpResponseRedirect("/")
         else:
             raise forms.ValidationError("Something is wrong")
@@ -115,6 +115,10 @@ def project_edit_view(request, pk):
 
     # check if user is manager of current project
     if not user or (user != request.user) or not project or not user in project.managers.all():
+        if not project:
+            messages.add_message(request, messages.ERROR, "Project does not exist.")
+        elif not user in project.managers.all():
+            messages.add_message(request, messages.ERROR, "You cannot edit project %s." % project.title) 
         return HttpResponseRedirect("/")
     
     if request.method == "POST":
@@ -129,7 +133,7 @@ def project_edit_view(request, pk):
             project.managers.add(user)
             project.annotators.add(user)
             project.reviewers.add(user)
-            messages.add_message(request, messages.SUCCESS, "Successfully edited project " + project.title + ".")
+            messages.add_message(request, messages.SUCCESS, "Successfully edited project %s." % project.title)
             return HttpResponseRedirect("/")
     else:
         # add existing labels as initial values
@@ -156,12 +160,16 @@ def project_delete_view(request, pk):
 
     # check if user is manager of current project
     if not user or (user != request.user) or not project or not user in project.managers.all():
+        if not project:
+            messages.add_message(request, messages.ERROR, "Project does not exist.")
+        elif not user in project.managers.all():
+            messages.add_message(request, messages.ERROR, "You cannot delete project %s." % project.title)
         return HttpResponseRedirect("/")
 
     if request.method == "POST":
         project_title = project.title
         project.delete()
-        messages.add_message(request, messages.SUCCESS, "Successfully deleted project " + project_title + ".")
+        messages.add_message(request, messages.SUCCESS, "Successfully deleted project %s." % project_title)
         return HttpResponseRedirect("/")
     
     context = {
@@ -179,6 +187,8 @@ def project_page_view(request, pk):
     project = get_project(pk)
     tasks = filter_tasks(project, labeled, reviewed)
     if not user or (user != request.user) or not project:
+        if not project:
+            messages.add_message(request, messages.ERROR, "Project does not exist.")
         return HttpResponseRedirect("/")
 
     if request.method == "POST":
@@ -200,7 +210,7 @@ def project_page_view(request, pk):
             if skipped_files == 0:
                 messages.add_message(request, messages.SUCCESS, "Successful import.")
             else:
-                messages.add_message(request, messages.ERROR, str(skipped_files) + " files were ignored during the import process.")
+                messages.add_message(request, messages.ERROR, "%s files were ignored during the import process." % str(skipped_files))
             return HttpResponseRedirect(get_project_url(project.id))
 
     else:
@@ -239,27 +249,35 @@ def annotate_task_view(request, pk, task_pk):
     # check if valid url
     if not user or (user != request.user) or not project or not task:
         if project:
+            messages.add_message(request, messages.ERROR, "Task does not exist.")
             return HttpResponseRedirect(get_project_url(project.id))
         else:
+            messages.add_message(request, messages.ERROR, "Project does not exist.")
             return HttpResponseRedirect("/")
 
-    # check if user in annotators of project and if task belongs to project
-    if user not in project.annotators.all() or task.project != project:
+    # check if user in annotators of project
+    if user not in project.annotators.all():
+        messages.add_message(request, messages.ERROR, "You are not an annotator for project %s." % project.title)
         return HttpResponseRedirect(get_project_url(project.id))
 
-
+    # Check if task belongs to project
+    if task.project != project:
+        messages.add_message(request, messages.ERROR, "Task does not belong to project %s." % project.title)
+        return HttpResponseRedirect(get_project_url(project.id))
+    
     labels = project.labels
     if labels.count() == 0:
-        messages.add_message(request, messages.ERROR, "Add some labels to project " + project.title + " in order to annotate.")
+        messages.add_message(request, messages.ERROR, "Add some labels to project %s in order to annotate." % project.title)
         return HttpResponseRedirect("/projects/" + str(project.id) + "/edit")
 
+    annotation = get_annotation_result(task, project, user)
     context = {
         "labels": labels,
         "labels_count": labels.count(),
         "task": task,
         "project": project,
         "next_unlabeled_task_id": next_unlabeled_task_id(task.id, project),
-        "annotation": get_annotation_info(task, project, user),
+        "annotation": annotation,
         "tasks_count_no_filter": get_project_tasks(project).count(),
 
     }

@@ -2,7 +2,6 @@
 import random
 from zipfile import ZipFile
 from json import dumps
-import datetime
 
 from django.core.files import File
 from django.db.models import Q
@@ -22,12 +21,6 @@ from tasks.models import (
 ACCEPTED_EXTENSIONS = ['.wav', '.mp3', '.mp4',]
 
 # Functions
-
-def datetime_handler(date):
-    if isinstance(date, datetime.datetime):
-        return date.isoformat()
-    raise TypeError("Unknown type")
-
 
 # get projects where user is manager, annotator or reviewer
 def get_projects_of_user(user):
@@ -58,14 +51,10 @@ def get_task(pk):
         return None
 
 # get annotation updated_at and result by task, project and user
-def get_annotation_info(task, project, user):
+def get_annotation_result(task, project, user):
     try:
         annotation = Annotation.objects.get(task=task, project=project, user=user)
-        to_return = {
-            "result": annotation.result,
-            "updated_at": annotation.updated_at
-        }
-        return dumps(to_return, default=datetime_handler)
+        return dumps(annotation.result)
     except Annotation.DoesNotExist:
         return dumps({})
 
@@ -231,7 +220,7 @@ def add_tasks_from_compressed_file(compressed_file, project):
 
 # return next unlabeled task
 def next_unlabeled_task_id(current_task_id, project):
-    ordered_tasks = Task.objects.all().order_by("-id")
+    ordered_tasks = Task.objects.filter(project=project).order_by("-id")
     min_id = ordered_tasks.reverse()[0].id
     max_id = ordered_tasks[0].id
 

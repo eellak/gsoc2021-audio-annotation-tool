@@ -12,17 +12,6 @@
             <b>Title:</b> {{ project.title }}<br><br>
             <b>Date of creation:</b> {{ project.created_at|date:"d-m-y" }}<br><br>
             <b>Number of tasks:</b> {{ tasks_count_no_filter }}<br><br>
-            {% if request.view == 'projects.views.project_page_view' %}
-                <b>Number of annotations:</b> {{ annotations_count }}<br><br>
-            
-                <b>Number of labels:</b>
-                {% if project.labels.count > 0 %}
-                    <b style="color: green;">{{ project.labels.count }}</b>
-                {% else %}
-                    <b style="color: red;">{{ project.labels.count }} (Add some labels to annotate!)</b>
-                {% endif %}
-                <br><br>
-            {% endif %}
 
             <b>Annotator for project:</b>
             {% if user in project.annotators.all %}

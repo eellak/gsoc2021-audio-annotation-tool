@@ -19,7 +19,7 @@
 {% block content %}
     {{ block.super }}
     <div class="top-div">
-        <img style="border: 2px solid #74deed; float: left;" src="{{ project.logo.url }}" width="30" height="30" data-toggle="modal" data-target="#informationModal" href="" title="{{ project.title }} information" class="rounded-circle">
+        <a href="{% url 'index_page' %}"><img style="border: 2px solid #74deed; float: left;" src="{{ project.logo.url }}" width="30" height="30" href="{% url 'index_page' %}" title="Projects page" class="rounded-circle"></a>
         <i style="margin-top: .4%;" class="fas fa-angle-right top-icons"></i>
         <a title="Project instructions" class="my-link top-icons" data-toggle="modal" data-target="#instructionsModal" href=""><i class="fas fa-info"></i></a>
         <a title="Project description" style="margin-left: 1%;" class="my-link top-icons" data-toggle="modal" data-target="#descriptionModal" href=""><i class="fas fa-question-circle"></i></a>
@@ -111,6 +111,5 @@
     {% endif %}
 
     {% include "project_modals.html" %}
-    {% include "project_information_modal.html" %}
     {% include "import_modal.html" %}
 {% endblock %}
