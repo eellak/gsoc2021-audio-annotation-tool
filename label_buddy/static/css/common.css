@@ -51,10 +51,8 @@ table
 
 .my-button-page {
     float: right;
-    margin-left: 1%;
     margin-right: 1%;
     margin-bottom: .5%;
-
 }
 
 .my-table-button {
@@ -108,4 +106,17 @@ table
     border: none;
     color: black !important;
     background: var(--basic_color) !important;
+}
+
+.top-div {
+    margin-top: .5%;
+    margin-left: 1%;
+    margin-right: 1%;
+    margin-bottom: 3%;
+}
+
+.top-icons {
+    float: left;
+    margin-left: 1%;
+    margin-top: .2%;
 }

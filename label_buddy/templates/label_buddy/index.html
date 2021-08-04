@@ -42,7 +42,7 @@
 					<th><i class="fa fa-user my-table-header" aria-hidden="true"></i> Annotator</th>
 					<th><i class="fa fa-user my-table-header" aria-hidden="true"></i> Reviewer</th>
 					<th><i class="fa fa-users my-table-header" aria-hidden="true"></i> Managers</th>
-					<th style="width: 150px;"><i class="fas fa-list my-table-header"></i> Options</th>
+					<th style="width: 110px;"><i class="fas fa-list my-table-header"></i> Options</th>
 					</tr>
 				</thead>
 				<!--Table head-->
@@ -56,7 +56,7 @@
 								<img style="margin-right: 4%;" src="{{ project.logo.url }}" width="27" height="27" title="{{ project.title }}" class="rounded-circle">
 								{{ project.title }}
 							</td>
-							<td>{{ project.created_at|date:"d-m-y"}}</td>
+							<td>{{ project.created_at|date:"d-m-y" }}</td>
 							<td><b>{{ tasks_count|get_item:project.id }}</b></td>
 							<td><b>{{ annotations_count|get_item:project.id }}</b></td>
 							
@@ -86,13 +86,14 @@
 									{% endif %}
 								{% endfor %}
 							</td>
+
 							{% if user in project.managers.all %}
 								<td title="You are a manager. You can Edit/Delete">
 									<a title="Edit {{ project.title }}"id="edit-link" href="{% url 'edit_project' project.id %}">
 										<i class="fas fa-edit"></i> </i>
 									</a>
 									<b>/</b>
-									<a title="Delete {{ project.title }}"id="delete-link" style="margin-left: 10%;" href="{% url 'delete_project' project.id %}">
+									<a title="Delete {{ project.title }}"id="delete-link" href="{% url 'delete_project' project.id %}">
 										<i class="fas fa-trash-alt"></i>
 									</a>
 								</td>

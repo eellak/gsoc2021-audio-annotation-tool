@@ -35,13 +35,6 @@
 
 {% block content %}
     <h2 class="headers-page">Annotate task {{ task.id }}</h2>
-    {% comment %}
-    <div class="d-flex">
-        <hr style="margin-left: 1%;" class="my-auto flex-grow-1">
-        <div class="px-4">SOME TEXT HERE</div>
-        <hr style="margin-right: 1%;" class="my-auto flex-grow-1">
-    </div>
-    {% endcomment %}
     {% if next_unlabeled_task_id == -1 %}
         <a title="Next unlabeled task" href="{% url 'annotation_page' project.id task.id %}"><button class="btn my-button annotation-buttons">Next <i style="margin-left: 10%;" class="fas fa-caret-right"></i></button></a>
     {% else %}

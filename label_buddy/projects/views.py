@@ -14,7 +14,7 @@ from rest_framework import (
 )
 
 from users.models import User
-from tasks.models import Task, Status, Review_status
+from tasks.models import Task, Status, Review_status, Annotation
 from tasks.forms import TaskForm
 from tasks.serializers import TaskSerializer
 from .models import Project
@@ -60,7 +60,7 @@ def index(request):
     else:
         projects = []
 
-    projects_per_page = 10
+    projects_per_page = 8
     paginator = Paginator(projects, projects_per_page) # Show 10 projects per page
 
     page_number = request.GET.get('page')
@@ -222,7 +222,7 @@ def project_page_view(request, pk):
     else:
         task_form = TaskForm()
     
-    tasks_per_page = 10
+    tasks_per_page = 8
     paginator = Paginator(tasks, tasks_per_page) # Show 15 tasks per page
     
     page_number = request.GET.get('page')
@@ -237,6 +237,7 @@ def project_page_view(request, pk):
         "tasks_count_filtered": tasks.count(),
         "tasks_count_no_filter": get_project_tasks(project).count(),
         "tasks": tasks,
+        "annotations_count": Annotation.objects.filter(project=project).count(),
         "count_annotations_for_task": task_annotations_count(tasks),
         "users_annotated": users_annotated_task(tasks),
         "task_form": task_form,

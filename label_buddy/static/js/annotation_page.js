@@ -98,7 +98,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // load regions of existing annotation (if exists)
     wavesurfer.on('ready', function() {
         result = annotation['result']
-        console.log(result);
         // if there is a result load regions of annotation
         if(result && result.length != 0) {
             loadRegions(result);
@@ -108,6 +107,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // on region click
     wavesurfer.on('region-click', function(region) {
+        console.log("remove");
         region.remove();
 
         // if region already selected, unselect it
@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    
+
     // on region created set its data to current label
     wavesurfer.on('region-created', function(region) {
         if(selected_label && !region.data['from-click']) {
@@ -147,9 +147,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // play regions on double click
     // wavesurfer.on('region-dblclick', function(region, e) {
-    //     e.stopPropagation();
-    //     // Play on click, loop on shift click
-    //     e.shiftKey ? region.playLoop() : region.play();
+    //     console.log("play");
+    //     if(selected_region)
+    //         wavesurfer.play(selected_region.start);
+    //     // e.stopPropagation();
+    //     // // Play on click, loop on shift click
+    //     // e.shiftKey ? region.playLoop() : wavesurfer.play(region.start);
     // });
     
     // // when region plays, take audio to the beggining of the region

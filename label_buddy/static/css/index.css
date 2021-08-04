@@ -1,10 +1,11 @@
 #edit-link {
     text-decoration: none !important;
-    margin-right: 10%;
-    color:  #74deed;
+    margin-right: 20%;
+    color:  #5cb85c;
 }
 
 #delete-link {
+    margin-left: 20%;
     color: #d9534f;
 }
 .table-title {

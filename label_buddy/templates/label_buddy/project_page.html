@@ -14,8 +14,6 @@
 {% block title %} &#9702; {{project.title}} {% endblock %}
 
 {% block navbar_buttons %}
-    <a title="Project instructions" style="margin-top: .7%;" class="my-button-page my-link" data-toggle="modal" data-target="#instructionsModal" href=""><i class="fas fa-info"></i></a>
-    <a title="Project description" style="margin-top: .7%;" class="my-button-page my-link" data-toggle="modal" data-target="#descriptionModal" href=""><i class="fas fa-question-circle"></i></a>
 {% endblock %}
 
 {% block content %}
@@ -36,16 +34,20 @@
             </div>
         {% endif %}
     {% endif %}
+    <div class="top-div">
+        <img style="border: 2px solid #74deed; float: left;" src="{{ project.logo.url }}" width="30" height="30" data-toggle="modal" data-target="#informationModal" href="" title="{{ project.title }} information" class="rounded-circle">
+        <i style="margin-top: .4%;" class="fas fa-angle-right top-icons"></i>
+        <a title="Project instructions" class="my-link top-icons" data-toggle="modal" data-target="#instructionsModal" href=""><i class="fas fa-info"></i></a>
+        <a title="Project description" style="margin-left: 1%;" class="my-link top-icons" data-toggle="modal" data-target="#descriptionModal" href=""><i class="fas fa-question-circle"></i></a>
+    </div>
     {% if tasks_count_no_filter > 0 %}
-       
-        <h2 class="headers-page">
-            <img style="border: 2px solid #74deed;" src="{{ project.logo.url }}" width="30" height="30" title="{{ project.title }}" class="rounded-circle">
-            {{ project.title }}
-        </h2>
-        <a data-toggle="modal" data-target="#importModal" href="">
-            <button class="btn my-button my-button-page">Import</button>
-        </a>
-        {% include "filters.html" %}
+        <h2 class="headers-page">{{ project.title }}</h2>
+        <div>
+            <a data-toggle="modal" data-target="#importModal" href="">
+                <button class="btn my-button my-button-page">Import</button>
+            </a>
+            {% include "filters.html" %}
+        </div>
         <div class="my-custom-scrollbar table-wrapper-scroll-y">
             <!--Table-->
             <table class="table table-bordered table-hover">
@@ -125,29 +127,6 @@
     {% endif %}
 
     {% include "project_modals.html" %}
-
-    <!-- Import Modal -->
-    <div class="modal fade" id="importModal" tabindex="-1" role="dialog" aria-labelledby="importModal" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLongTitle">Import data</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-            </div>
-            <p>This file is for the annotation process. <br><br>Accepted formats: <b>.wav, .mp3, .mp4 and .zip.</b><br><br>
-                All files of the <b>.zip</b> will be uploaded except those who does not belong to the accepted formats.
-            </p>
-            <div class="modal-body">
-                <form enctype="multipart/form-data" action="" method="POST">
-                    {% csrf_token %}
-                    {{ task_form | crispy}}
-                    <button id="import-btn" class="btn my-button" type="submit">Upload</button>
-                </form>
-            </div>
-        </div>
-        </div>
-    </div>
-    
+    {% include "project_information_modal.html" %}
+    {% include "import_modal.html" %}
 {% endblock %}
