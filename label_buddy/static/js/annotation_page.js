@@ -1,7 +1,9 @@
 var selected_label = null;
 var selected_label_color = null;
 var selected_region = null;
+var color_when_selected = '#74deed';
 var initial_opacity = .4;
+var hover_opacity = .7;
 var selected_region_opacity = .9;
 var wavesurfer; // eslint-disable-line no-var
 
@@ -18,8 +20,9 @@ function toggleIcon(button){
 function selectedLabel(button) {
 
     if(selected_label == button) {
-        selected_label.style.border = 'none';
-        selected_label.style.background = selected_label_color;
+        // selected_label.style.border = '2px solid ' + selected_label_color;
+        selected_label.style.opacity = .3;
+        //selected_label.style.background = selected_label_color;
         selected_label = null;
         selected_label_color = null;
         // if no label is selected user cannot drag
@@ -27,8 +30,7 @@ function selectedLabel(button) {
     } else {
         // if label already selected, unselect it
         if(selected_label) {
-            selected_label.style.border = 'none';
-            selected_label.style.background = selected_label_color;
+            selected_label.style.opacity = .3;
         }
 
         // set new selected label
@@ -39,8 +41,7 @@ function selectedLabel(button) {
         wavesurfer.enableDragSelection({
             color: rgbToRgba(selected_label_color, initial_opacity)
         });
-        button.style.border = '3px solid #74deed';
-        button.style.background = 'grey'
+        selected_label.style.opacity = 1;
     }
 }
 
@@ -50,6 +51,16 @@ function rgbToRgba(rgb, opacity) {
         var rgba = rgb.replace(')', ', ' + opacity + ')').replace('rgb', 'rgba');
     }
     return rgba;
+}
+
+// get label to select after region click
+function getLabelButton(label) {
+    var alllabels = document.getElementsByClassName('my-badge');
+    for(const x of alllabels) {
+        if(x.value == label) {
+            return x;
+        }
+    }
 }
 
 function getLabelColorByValue(label)
@@ -67,17 +78,6 @@ function showAlert() {
 }
 //----------------------------------------------------------------------------------------------
 
-
-// delete region link
-$('#delete-region-btn').click( function(e) {
-    e.preventDefault(); 
-    if(selected_region){
-        selected_region.remove();
-        selected_region = null;
-        document.getElementById('delete-region-btn').style.display = 'none';
-    }
-    return false; 
-} );
 
 document.addEventListener('DOMContentLoaded', function() {
     // Init wavesurfer
@@ -121,7 +121,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // load regions of existing annotation (if exists)
     wavesurfer.on('ready', function() {
-        
+        wavesurfer.zoom(0); // initial zoom
+        wavesurfer.setVolume(1); // initial volume
         let result = annotation
         // if there is a result load regions of annotation
         if(result && result.length != 0) {
@@ -131,62 +132,64 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    
-    // on region click
-    wavesurfer.on('region-click', function(region) {
-        region.remove();
 
+    // on region click select it
+    wavesurfer.on('region-click', function(region) {
         // if region already selected, unselect it
         if(selected_region == region) {
-            region.color = rgbToRgba(region.data['color'], initial_opacity);
-            region.data['from-click'] = true;
+            region.update({
+                color: rgbToRgba(region.data['color'], initial_opacity)
+            });
             selected_region = null;
-            wavesurfer.addRegion(region);
-            //document.getElementById('delete-region-btn').style.visibility = 'hidden';
             document.getElementById('delete-region-btn').style.display = 'none';
+            document.getElementById('play-region-btn').style.display = 'none';
+
+            // deactivate label of region
+            let lbl = getLabelButton(region.data['label']);
+            if(selected_label == lbl) lbl.click();
+
         } else {
 
             // if another region is selected, unselect it
             if(selected_region) {
-                selected_region.remove();
-                selected_region.color = rgbToRgba(selected_region.data['color'], initial_opacity);
-                selected_region.data['from-click'] = true;
-                wavesurfer.addRegion(selected_region);
+                selected_region.update({
+                    color: rgbToRgba(selected_region.data['color'], initial_opacity)
+                });
+
+                // deactivate label of region
+                let lbl = getLabelButton(selected_region.data['label']);
+                if(selected_label == lbl) lbl.click();
             }
-            
-            region.color = rgbToRgba(region.data['color'], selected_region_opacity);
-            region.data['from-click'] = true;
-            selected_region = wavesurfer.addRegion(region);
+
+            // activate label of region
+            let lbl = getLabelButton(region.data['label']);
+            if(selected_label != lbl) lbl.click();
+
+            region.update({
+                color: rgbToRgba(region.data['color'], selected_region_opacity)
+            });
+            selected_region = region;
             document.getElementById('delete-region-btn').style.display = 'inline';
+            document.getElementById('play-region-btn').style.display = 'inline';
         }
     });
 
 
     // on region created set its data to current label
     wavesurfer.on('region-created', function(region) {
-        if(selected_label && !region.data['from-click']) {
+        if(selected_label) {
             region.data['label'] = selected_label.value;
             region.data['color'] = selected_label_color;
         }
     });
 
-    // play regions on double click
-    // wavesurfer.on('region-dblclick', function(region, e) {
-    //     console.log("play");
-    //     if(selected_region)
-    //         wavesurfer.play(selected_region.start);
-    //     // e.stopPropagation();
-    //     // // Play on click, loop on shift click
-    //     // e.shiftKey ? region.playLoop() : wavesurfer.play(region.start);
-    // });
-    
-    // // when region plays, take audio to the beggining of the region
-    // wavesurfer.on('region-play', function(region) {
-    //     region.once('out', function() {
-    //         wavesurfer.play(region.start);
-    //         wavesurfer.pause();
-    //     });
-    // });
+    // when region plays, take audio to the beggining of the region
+    wavesurfer.on('region-play', function(region) {
+        region.once('out', function() {
+            wavesurfer.pause();
+            toggleIcon(document.getElementById('play-pause-button'));
+        });
+    });
 
 });
 
@@ -234,23 +237,41 @@ function submitAnnotation() {
 function loadRegions(result) {
     for(const region of result) {
         let new_region = wavesurfer.addRegion({
-            "start": region['value']['start'],
-            "end": region['value']['end'],
-            "color": rgbToRgba(getLabelColorByValue(region['value']['label']), initial_opacity),
+            start: region['value']['start'],
+            end: region['value']['end'],
+            color: rgbToRgba(getLabelColorByValue(region['value']['label']), initial_opacity),
         });
         new_region.data['label'] = region['value']['label'];
         new_region.data['color'] = getLabelColorByValue(region['value']['label']);
     }
 }
 
-// remove region
-function removeRegion(button) {
+// delete region link
+$('#delete-region-btn').click( function(e) {
+    e.preventDefault(); 
     if(selected_region){
+
+        // if label is selected, unselect it
+        let lbl = getLabelButton(selected_region.data['label'])
+        if(selected_label == lbl) lbl.click();
+
         selected_region.remove();
         selected_region = null;
-        button.disabled = true;
+        document.getElementById('delete-region-btn').style.display = 'none';
+        document.getElementById('play-region-btn').style.display = 'none';
     }
-}
+    return false; 
+} );
+
+// play region link
+$('#play-region-btn').click( function(e) {
+    e.preventDefault(); 
+    if(selected_region){
+        selected_region.play();
+        toggleIcon(document.getElementById('play-pause-button'));
+    }
+    return false; 
+} );
 
 // backwardAudio audio to start
 function backwardAudio() {
@@ -261,3 +282,47 @@ function backwardAudio() {
 document.getElementById('zoom-slider').oninput = function () {
     wavesurfer.zoom(Number(this.value));
 };
+
+function toggleSoundIcon(slider){
+    wavesurfer.setVolume(Number(slider.value));
+    let sound_slider_icon = document.getElementById('sound-slider-icon');
+    if(slider.value > 0 && slider.value <= .5) {
+        sound_slider_icon.classList.toggle('fa-volume-down');
+    } else if(slider.value > .5){
+        sound_slider_icon.classList.toggle('fa-volume-up');
+    } else {
+        sound_slider_icon.classList.toggle('fa-volume-mute');
+    }
+};
+
+$('#delete-region-btn').click( function(e) {
+    e.preventDefault(); 
+    if(selected_region){
+
+        // if label is selected, unselect it
+        let lbl = getLabelButton(selected_region.data['label'])
+        if(selected_label == lbl) lbl.click();
+
+        selected_region.remove();
+        selected_region = null;
+        document.getElementById('delete-region-btn').style.display = 'none';
+        document.getElementById('play-region-btn').style.display = 'none';
+    }
+    return false; 
+} );
+
+// mute unmute button
+$('#mute-unmute-btn').click( function(e) {
+    e.preventDefault(); 
+    let current_volume = wavesurfer.getVolume();
+    let sound_slider = document.getElementById('sound-slider');
+    if(current_volume > 0) {
+        // then mute
+        sound_slider.value = 0;
+        toggleSoundIcon(sound_slider);
+    } else {
+        sound_slider.value = .5;
+        toggleSoundIcon(sound_slider);
+    }
+    return false; 
+} );
