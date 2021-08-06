@@ -1,9 +1,10 @@
 var selected_label = null;
 var selected_label_color = null;
 var selected_region = null;
+var selected_region_button = null;
+var regions_count = 0;
 var color_when_selected = '#74deed';
 var initial_opacity = .4;
-var hover_opacity = .7;
 var selected_region_opacity = .9;
 var wavesurfer; // eslint-disable-line no-var
 
@@ -21,7 +22,7 @@ function selectedLabel(button) {
 
     if(selected_label == button) {
         // selected_label.style.border = '2px solid ' + selected_label_color;
-        selected_label.style.opacity = .3;
+        selected_label.style.opacity = initial_opacity;
         //selected_label.style.background = selected_label_color;
         selected_label = null;
         selected_label_color = null;
@@ -30,7 +31,7 @@ function selectedLabel(button) {
     } else {
         // if label already selected, unselect it
         if(selected_label) {
-            selected_label.style.opacity = .3;
+            selected_label.style.opacity = initial_opacity;
         }
 
         // set new selected label
@@ -42,6 +43,64 @@ function selectedLabel(button) {
             color: rgbToRgba(selected_label_color, initial_opacity)
         });
         selected_label.style.opacity = 1;
+    }
+}
+
+function selectRegionButton(button) {
+    let region_by_id = wavesurfer.regions.list[button.id];
+    if(selected_region_button == button) {
+        selected_region_button.style.opacity = initial_opacity;
+        selected_region_button.style.fontWeight = 'normal';
+        selected_region_button = null;
+
+        // if region selected, unselect it
+        if(selected_region == region_by_id) {
+            region_by_id.wavesurfer.fireEvent('region-click', region_by_id);
+        }
+    } else {
+        // if label already selected, unselect it
+        if(selected_region_button) {
+            
+            selected_region_button.style.opacity = initial_opacity;
+            selected_region_button.style.fontWeight = 'normal';
+            // if region selected, unselect it
+            if(selected_region == region_by_id) {
+                region_by_id.wavesurfer.fireEvent('region-click', region_by_id);
+            }
+        }
+        
+        selected_region_button = button;
+        selected_region_button.style.opacity = selected_region_opacity;
+        selected_region_button.style.fontWeight = 'bold';
+
+        if(selected_region != region_by_id) {
+            region_by_id.wavesurfer.fireEvent('region-click', region_by_id);
+        }
+    }
+
+}
+
+function hoverRegionButtonIn(button) {
+    button.style.opacity = selected_region_opacity;
+    let region_by_id = wavesurfer.regions.list[button.id];
+    region_by_id.update({
+        color: rgbToRgba(region_by_id.data['color'], selected_region_opacity)
+    });
+    getLabelButton(region_by_id.data['label']).style.opacity = selected_region_opacity;
+}
+
+function hoverRegionButtonOut(button) {
+    let region_by_id = wavesurfer.regions.list[button.id];
+    if(selected_region_button != button) {
+        button.style.opacity = initial_opacity;
+        region_by_id.update({
+            color: rgbToRgba(region_by_id.data['color'], initial_opacity)
+        });
+    }
+
+    let lbl_button = getLabelButton(region_by_id.data['label']);
+    if(selected_label != lbl_button) {
+        lbl_button.style.opacity = initial_opacity;
     }
 }
 
@@ -75,6 +134,46 @@ function getLabelColorByValue(label)
 
 function showAlert() {
     location.reload(true);
+}
+
+function getRegionButton(new_region) {
+    let new_region_button = document.createElement('BUTTON');
+    // set attributes
+    new_region_button.className = 'region-buttons';
+    new_region_button.style.backgroundColor = new_region.data['color'];
+    new_region_button.style.opacity = initial_opacity;
+    new_region_button.id = new_region.id;
+    new_region_button.title = "Label: " + new_region.data['label'];
+
+    new_region_button.setAttribute( "onClick", "selectRegionButton(this);" );
+    new_region_button.setAttribute( "onmouseover", "hoverRegionButtonIn(this);" );
+    new_region_button.setAttribute( "onmouseout", "hoverRegionButtonOut(this);" );
+
+    let count = document.createElement("SPAN");
+    let icon = document.createElement('i');
+    icon.className = 'fas fa-music';
+    icon.style.marginRight = "10px";
+
+    count.style.marginRight = "15px";
+    count.textContent = regions_count + ".";
+    new_region_button.appendChild(count);
+    new_region_button.appendChild(icon);
+    new_region_button.appendChild(document.createTextNode((Math.round((new_region.start + Number.EPSILON) * 100) / 100) + " - " + (Math.round((new_region.end + Number.EPSILON) * 100) / 100)));
+    return new_region_button;
+}
+
+function add_region_to_section(region) {
+    // load region to region section
+    let new_region_button = getRegionButton(region);
+    $('#regions-div').append(new_region_button);
+}
+
+function fixNumberOfRegions() {
+    let counter = 1;
+    region_buttons = document.getElementsByClassName('region-buttons');
+    for(btn of region_buttons) {
+        $(btn).find('span').text(counter++ + ".")
+    }
 }
 //----------------------------------------------------------------------------------------------
 
@@ -121,6 +220,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // load regions of existing annotation (if exists)
     wavesurfer.on('ready', function() {
+        wavesurfer.setPlaybackRate(1);
         wavesurfer.zoom(0); // initial zoom
         wavesurfer.setVolume(1); // initial volume
         let result = annotation
@@ -135,6 +235,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // on region click select it
     wavesurfer.on('region-click', function(region) {
+        let region_button = document.getElementById(region.id);
+
         // if region already selected, unselect it
         if(selected_region == region) {
             region.update({
@@ -148,6 +250,13 @@ document.addEventListener('DOMContentLoaded', function() {
             let lbl = getLabelButton(region.data['label']);
             if(selected_label == lbl) lbl.click();
 
+            // deactivate region button
+            if(selected_region_button == region_button) {
+                region_button.click();
+                // region_button.style.opacity = initial_opacity;
+                // selected_region_button = null;
+            }
+
         } else {
 
             // if another region is selected, unselect it
@@ -159,11 +268,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 // deactivate label of region
                 let lbl = getLabelButton(selected_region.data['label']);
                 if(selected_label == lbl) lbl.click();
-            }
 
-            // activate label of region
-            let lbl = getLabelButton(region.data['label']);
-            if(selected_label != lbl) lbl.click();
+                // deactivate region button
+                if(selected_region_button == region_button) {
+                    // region_button.style.opacity = initial_opacity;
+                    // selected_region_button = null;
+                    region_button.click();
+                }
+            }
 
             region.update({
                 color: rgbToRgba(region.data['color'], selected_region_opacity)
@@ -171,20 +283,43 @@ document.addEventListener('DOMContentLoaded', function() {
             selected_region = region;
             document.getElementById('delete-region-btn').style.display = 'inline';
             document.getElementById('play-region-btn').style.display = 'inline';
+
+            // activate label of region
+            let lbl = getLabelButton(region.data['label']);
+            if(selected_label != lbl) lbl.click();
+
+            // activate region button
+            if(selected_region_button != region_button) {
+                // region_button.style.opacity = selected_region_opacity;
+                // selected_region_button = region_button;
+                region_button.click();
+            }
         }
     });
 
 
     // on region created set its data to current label
     wavesurfer.on('region-created', function(region) {
+        // increase counter
+        regions_count++;
         if(selected_label) {
             region.data['label'] = selected_label.value;
             region.data['color'] = selected_label_color;
+        } else {
+            add_region_to_section(region);
+        }
+    });
+
+    // on region created set its data to current label
+    wavesurfer.on('region-update-end', function(region) {
+        if(!document.getElementById(region.id)) {
+            
+            add_region_to_section(region);
         }
     });
 
     // when region plays, take audio to the beggining of the region
-    wavesurfer.on('region-play', function(region) {
+    wavesurfer.on('region-update-end', function(region) {
         region.once('out', function() {
             wavesurfer.pause();
             toggleIcon(document.getElementById('play-pause-button'));
@@ -236,13 +371,15 @@ function submitAnnotation() {
 // Load regions from annotation.
 function loadRegions(result) {
     for(const region of result) {
-        let new_region = wavesurfer.addRegion({
+        wavesurfer.addRegion({
             start: region['value']['start'],
             end: region['value']['end'],
             color: rgbToRgba(getLabelColorByValue(region['value']['label']), initial_opacity),
+            data: {
+                label: region['value']['label'],
+                color: getLabelColorByValue(region['value']['label'])
+            }
         });
-        new_region.data['label'] = region['value']['label'];
-        new_region.data['color'] = getLabelColorByValue(region['value']['label']);
     }
 }
 
@@ -255,7 +392,14 @@ $('#delete-region-btn').click( function(e) {
         let lbl = getLabelButton(selected_region.data['label'])
         if(selected_label == lbl) lbl.click();
 
+        // delete region button
+        let region_button = document.getElementById(selected_region.id);
+        region_button.remove();
+
         selected_region.remove();
+        fixNumberOfRegions();
+        // decrease counter
+        regions_count--;
         selected_region = null;
         document.getElementById('delete-region-btn').style.display = 'none';
         document.getElementById('play-region-btn').style.display = 'none';
@@ -295,22 +439,6 @@ function toggleSoundIcon(slider){
     }
 };
 
-$('#delete-region-btn').click( function(e) {
-    e.preventDefault(); 
-    if(selected_region){
-
-        // if label is selected, unselect it
-        let lbl = getLabelButton(selected_region.data['label'])
-        if(selected_label == lbl) lbl.click();
-
-        selected_region.remove();
-        selected_region = null;
-        document.getElementById('delete-region-btn').style.display = 'none';
-        document.getElementById('play-region-btn').style.display = 'none';
-    }
-    return false; 
-} );
-
 // mute unmute button
 $('#mute-unmute-btn').click( function(e) {
     e.preventDefault(); 
@@ -326,3 +454,7 @@ $('#mute-unmute-btn').click( function(e) {
     }
     return false; 
 } );
+
+function changeSpeed(selector) {
+    wavesurfer.setPlaybackRate(selector.value);
+}

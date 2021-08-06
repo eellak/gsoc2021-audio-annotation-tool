@@ -17,10 +17,11 @@ class ProjectForm(forms.ModelForm):
             "rows": 4,
         }
     ))
-    new_labels = forms.CharField(label="Labels", required=False, widget=forms.TextInput(
+    new_labels = forms.CharField(label="Labels", required=False, widget=forms.Textarea(
         attrs = {
             "placeholder": "A comma separated list of new labels",
             "id": "new_labels",
+            "rows": 4,
         }
     ))
     class Meta:

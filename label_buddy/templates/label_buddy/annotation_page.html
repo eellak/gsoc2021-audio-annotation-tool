@@ -16,6 +16,7 @@
     <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.minimap.js"></script>
     <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.cursor.js"></script>
 
+
     <script type="text/javascript"> 
         var audio_url = "{{ task.file.url }}";
         var task_id = "{{ task.id }}";
@@ -51,29 +52,58 @@
     <h2 title="{{ task.original_file_name }}" class="annoation-header">Audio: {{ task.original_file_name }}</h2>
     
     <a title="Back to project page" href="{% url 'project_page' project.id %}"><button id="back-project-btn" class="btn my-button"><i style="margin-right: 10%;" class="fas fa-caret-left"></i> Project</button></a>
+    <div class="container-fluid">
+        <div style="margin-top: 5%;" class="row">
+            
+            <div class="col p-0" id="left-main-div" >
+                {% if labels_count %}
+                    <div>
+                        <div class="row">
+                            <div class="col">
+                                <h4 id="regions-header">Regions</h4>
+                                <div class="container-fluid" id="regions-div" role="tablist">
 
-    {% if labels_count %}
-        <div id="labels-div">
-            {% for label in labels.all %}
-        <button style="background-color: {{ label.color }}; opacity: 0.3" class="badge my-badge badge-pill" value="{{ label.name }}" onclick="selectedLabel(this)">{{ label.name }}</button>
-            {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            
+
+            <div class="col-sm-10 p-0" id="right-main-div">
+                {% if labels_count %}
+                    <div id="labels-div">
+                        {% for label in labels.all %}
+                            <button style="background-color: {{ label.color }}; opacity: 0.3" class="badge my-badge badge-pill" value="{{ label.name }}" onclick="selectedLabel(this)">{{ label.name }}</button>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <div id="wave-timeline"></div>
+                <div id="waveform"></div>
+                <div id="play-pause-btn-div">
+                    <button title="Play/Pause audio" id="play-pause-button" class="btn my-button play-pause-buttons" onclick="wavesurfer.playPause(); toggleIcon(this);"> <i style="margin-right: 10%;" class="fas fa-play"></i> Play</button>
+                    {% comment %}
+                        <button style="margin-left: 1%;" class="btn my-button play-pause-buttons" onclick="backwardAudio();"><i class="fas fa-backward"></i></button>
+                    {% endcomment %}
+                    <i style="margin-left: 1%;" class="fas fa-search-minus"></i>
+                    <input style="width: 400px; margin-top: 1%; margin-left: .5%;" type="range" class="custom-range" min="0" max="200" step=1 value=0 id="zoom-slider">
+                    <i style="margin-left: .5%;" class="fas fa-search-plus"></i>
+                    <input style="width: 100px; margin-top: 1%; margin-left: .5%;" type="range" class="custom-range" oninput="toggleSoundIcon(this);" min="0" max="1" step=0.1 value=1 id="sound-slider">
+                    <a style="color: black;" title="Mute" href="" id="mute-unmute-btn"><i id="sound-slider-icon" style="margin-left: .5%;" class="fas fa-volume-up"></i></a>
+                    <select onchange="changeSpeed(this)" style="margin-left: 1%; width: 120px;" class="selectpicker">
+                          <option value=0.5>Speed 0.5</option>
+                          <option value=0.75>Speed 0.75</option>
+                          <option selected="selected" value=1>Speed 1.0</option>
+                          <option value=1.25>Speed 1.25</option>
+                          <option value=1.5>Speed 1.5</option>
+                          <option value=2>Speed 2.0</option>
+                    </select>
+                    <a title="Delete selected region" style="display: none; margin-left: 2%; color: #d9534f;" id="delete-region-btn" href=""><i class="fas fa-trash"></i></a>
+                    <a title="Paly selected region" style="display: none; margin-left: 1%; color: #5cb85c;" id="play-region-btn" href=""><i class="fas fa-play"></i></a>
+                </div>
+            </div>
         </div>
-    {% endif %}
-    <div id="wave-timeline"></div>
-    <div class="outer-wave"><div id="waveform"></div></div>
-    
-    <div id="play-pause-btn-div">
-        <button title="Play/Pause audio" id="play-pause-button" class="btn my-button play-pause-buttons" onclick="wavesurfer.playPause(); toggleIcon(this);"> <i style="margin-right: 10%;" class="fas fa-play"></i> Play</button>
-        {% comment %}
-            <button style="margin-left: 1%;" class="btn my-button play-pause-buttons" onclick="backwardAudio();"><i class="fas fa-backward"></i></button>
-        {% endcomment %}
-        <i style="margin-left: 1%;" class="fas fa-search-minus"></i>
-        <input style="width: 200px; margin-top: 1%; margin-left: .5%;" type="range" class="custom-range" min="0" max="100" step=10 value=0 id="zoom-slider">
-        <i style="margin-left: .5%;" class="fas fa-search-plus"></i>
-        <input style="width: 100px; margin-top: 1%; margin-left: .5%;" type="range" class="custom-range" oninput="toggleSoundIcon(this);" min="0" max="1" step=0.1 value=1 id="sound-slider">
-        <a style="color: black;" title="Mute" href="" id="mute-unmute-btn"><i id="sound-slider-icon" style="margin-left: .5%;" class="fas fa-volume-up"></i></a>
-        <a title="Delete selected region" style="display: none; margin-left: 2%; color: #d9534f;" id="delete-region-btn" href=""><i class="fas fa-trash"></i></a>
-        <a title="Paly selected region" style="display: none; margin-left: 1%; color: #5cb85c;" id="play-region-btn" href=""><i class="fas fa-play"></i></a>
     </div>
 
     <div id="annotation-btn-div" class="col">
