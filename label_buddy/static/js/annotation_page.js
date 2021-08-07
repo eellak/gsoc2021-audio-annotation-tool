@@ -51,6 +51,7 @@ function selectRegionButton(button) {
     if(selected_region_button == button) {
         selected_region_button.style.opacity = initial_opacity;
         selected_region_button.style.fontWeight = 'normal';
+        selected_region_button.style.backgroundColor = 'rgb(245,245,245)'
         selected_region_button = null;
 
         // if region selected, unselect it
@@ -63,6 +64,7 @@ function selectRegionButton(button) {
             
             selected_region_button.style.opacity = initial_opacity;
             selected_region_button.style.fontWeight = 'normal';
+            selected_region_button.style.backgroundColor = 'rgb(245,245,245)';
             // if region selected, unselect it
             if(selected_region == region_by_id) {
                 region_by_id.wavesurfer.fireEvent('region-click', region_by_id);
@@ -71,6 +73,7 @@ function selectRegionButton(button) {
         
         selected_region_button = button;
         selected_region_button.style.opacity = selected_region_opacity;
+        selected_region_button.style.backgroundColor = '#dddddd';
         selected_region_button.style.fontWeight = 'bold';
 
         if(selected_region != region_by_id) {
@@ -82,6 +85,7 @@ function selectRegionButton(button) {
 
 function hoverRegionButtonIn(button) {
     button.style.opacity = selected_region_opacity;
+    button.style.backgroundColor = '#dddddd';
     let region_by_id = wavesurfer.regions.list[button.id];
     region_by_id.update({
         color: rgbToRgba(region_by_id.data['color'], selected_region_opacity)
@@ -93,6 +97,7 @@ function hoverRegionButtonOut(button) {
     let region_by_id = wavesurfer.regions.list[button.id];
     if(selected_region_button != button) {
         button.style.opacity = initial_opacity;
+        button.style.backgroundColor = 'rgb(245,245,245)';
         region_by_id.update({
             color: rgbToRgba(region_by_id.data['color'], initial_opacity)
         });
@@ -140,7 +145,7 @@ function getRegionButton(new_region) {
     let new_region_button = document.createElement('BUTTON');
     // set attributes
     new_region_button.className = 'region-buttons';
-    new_region_button.style.backgroundColor = new_region.data['color'];
+    // new_region_button.style.backgroundColor = new_region.data['color'];
     new_region_button.style.opacity = initial_opacity;
     new_region_button.id = new_region.id;
     new_region_button.title = "Label: " + new_region.data['label'];
@@ -150,15 +155,24 @@ function getRegionButton(new_region) {
     new_region_button.setAttribute( "onmouseout", "hoverRegionButtonOut(this);" );
 
     let count = document.createElement("SPAN");
+    count.id = "count";
+    count.style.display = 'inline-block';
+    count.style.width = '35px'
+    count.style.marginRight = '15px'
+    
     let icon = document.createElement('i');
     icon.className = 'fas fa-music';
     icon.style.marginRight = "10px";
+    icon.style.color = new_region.data['color'];
 
-    count.style.marginRight = "15px";
+    let timings = document.createElement("SPAN");
+    timings.id = "timings";
+
     count.textContent = regions_count + ".";
+    timings.textContent = (Math.round((new_region.start + Number.EPSILON) * 100) / 100) + " - " + (Math.round((new_region.end + Number.EPSILON) * 100) / 100);
     new_region_button.appendChild(count);
     new_region_button.appendChild(icon);
-    new_region_button.appendChild(document.createTextNode((Math.round((new_region.start + Number.EPSILON) * 100) / 100) + " - " + (Math.round((new_region.end + Number.EPSILON) * 100) / 100)));
+    new_region_button.appendChild(timings);
     return new_region_button;
 }
 
@@ -172,7 +186,7 @@ function fixNumberOfRegions() {
     let counter = 1;
     region_buttons = document.getElementsByClassName('region-buttons');
     for(btn of region_buttons) {
-        $(btn).find('span').text(counter++ + ".")
+        $(btn).find('#count').text(counter++ + ".")
     }
 }
 //----------------------------------------------------------------------------------------------
@@ -301,7 +315,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // on region created set its data to current label
     wavesurfer.on('region-created', function(region) {
         // increase counter
-        regions_count++;
+        if(++regions_count == 1) {
+            document.getElementById('remove_all_regions').style.display = 'block';
+        }
         if(selected_label) {
             region.data['label'] = selected_label.value;
             region.data['color'] = selected_label_color;
@@ -312,9 +328,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // on region created set its data to current label
     wavesurfer.on('region-update-end', function(region) {
+        let region_button = document.getElementById(region.id);
         if(!document.getElementById(region.id)) {
-            
+            // if region does not exists, add it
             add_region_to_section(region);
+        } else {
+            // else update it
+            $("#" + region.id).find('#timings').text(
+                (Math.round((region.start + Number.EPSILON) * 100) / 100) + " - " + (Math.round((region.end + Number.EPSILON) * 100) / 100)
+                );
         }
     });
 
@@ -399,7 +421,9 @@ $('#delete-region-btn').click( function(e) {
         selected_region.remove();
         fixNumberOfRegions();
         // decrease counter
-        regions_count--;
+        if(--regions_count == 0) {
+            document.getElementById('remove_all_regions').style.display = 'none';
+        }
         selected_region = null;
         document.getElementById('delete-region-btn').style.display = 'none';
         document.getElementById('play-region-btn').style.display = 'none';
@@ -455,6 +479,28 @@ $('#mute-unmute-btn').click( function(e) {
     return false; 
 } );
 
+
 function changeSpeed(selector) {
     wavesurfer.setPlaybackRate(selector.value);
 }
+
+// remove all regions button
+$('#remove_all_regions').click( function(e) {
+    e.preventDefault(); 
+    Object.keys(wavesurfer.regions.list).forEach(function (id) {
+        let region = wavesurfer.regions.list[id];
+        let region_button = document.getElementById(region.id);
+
+        // if label is selected, unselect it
+        region.remove();
+        region_button.remove();
+        // set counter to 0
+        regions_count = 0;
+        selected_region = null;
+        selected_region_button = null;
+        document.getElementById('remove_all_regions').style.display = 'none';
+        document.getElementById('delete-region-btn').style.display = 'none';
+        document.getElementById('play-region-btn').style.display = 'none';
+    });
+    return false; 
+} );

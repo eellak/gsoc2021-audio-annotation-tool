@@ -60,8 +60,13 @@
                     <div>
                         <div class="row">
                             <div class="col">
-                                <h4 id="regions-header">Regions</h4>
-                                <div class="container-fluid" id="regions-div" role="tablist">
+                                <div id="regions-header">
+                                    Regions
+                                    
+                                </div>
+                                <a title="Remove all regions" id="remove_all_regions" style="float: right; margin-right: 1%; color: #d9534f; display: none;" href=""><i  class="fas fa-times fa-lg"></i></a>
+                                <hr class="mt-0 mb-4">
+                                <div class="container" id="regions-div" role="tablist">
 
                                 </div>
                             </div>
@@ -82,7 +87,7 @@
                 <div id="wave-timeline"></div>
                 <div id="waveform"></div>
                 <div id="play-pause-btn-div">
-                    <button title="Play/Pause audio" id="play-pause-button" class="btn my-button play-pause-buttons" onclick="wavesurfer.playPause(); toggleIcon(this);"> <i style="margin-right: 10%;" class="fas fa-play"></i> Play</button>
+                    <button title="Play/Pause audio" id="play-pause-button" class="btn my-button play-pause-buttons" onclick="wavesurfer.playPause(); toggleIcon(this);"> <i style="margin-right: 10%;" class="fas fa-play fa-sm"></i> Play</button>
                     {% comment %}
                         <button style="margin-left: 1%;" class="btn my-button play-pause-buttons" onclick="backwardAudio();"><i class="fas fa-backward"></i></button>
                     {% endcomment %}

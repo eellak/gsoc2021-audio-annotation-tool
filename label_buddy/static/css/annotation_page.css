@@ -32,7 +32,8 @@
 }
 
 #left-main-div {
-    border: 3px solid #74deed;
+    /* border: 3px solid #74deed; */
+    background-color: rgb(245,245,245);
     margin-left: 1%;
     border-radius: 5px;
 }
@@ -41,6 +42,9 @@
     text-align: center;
     font-family: 'Georama';
     text-shadow: 2px 2px 2px #aaa;
+
+    font-size: 1.5em;
+    text-align: center;
 }
 
 #regions-div {
@@ -53,6 +57,7 @@
 #regions-div::-webkit-scrollbar {
     display: none;
 }
+
 
 
 
@@ -106,17 +111,27 @@
 }
 
 .region-buttons {
-    margin-top: 5px;
-    color: white;
+    margin-top: 2px;
+    background-color: rgb(245,245,245);
+    color: black;
     text-align: left;
     width: 100%;
+    font-size: 15px;
     height: 30px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
+
+}
+
+.region-buttons.truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .region-buttons:focus {
     outline:none !important;
     box-shadow: none;
 }
+
