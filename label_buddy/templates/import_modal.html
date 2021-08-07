@@ -12,9 +12,8 @@
         </div>
         
         <div class="modal-body">
-            <p>This file is for the annotation process. <br><br>Accepted formats: <b>.wav, .mp3, .mp4 and .zip.</b><br><br>
-                All files of the <b>.zip</b> will be uploaded except those who does not belong to the accepted formats.
-            </p>
+            This file is for the annotation process. <br><br>Accepted formats: <b>.wav, .mp3, .mp4 and .zip.</b><br><br>
+            All files of the <b>.zip</b> will be uploaded except those who does not belong to the accepted formats.
             <form style="margin-top: 5%;" enctype="multipart/form-data" action="" method="POST">
                 {% csrf_token %}
                 {{ task_form | crispy}}

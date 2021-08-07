@@ -11,6 +11,36 @@
     clear:both;
 }
 
+#export_div_json {
+    background-color: rgba(115, 223, 237, 0.3);
+    margin-top: 5%;
+    cursor: default;
+}
+
+.export_div {
+    border-radius: 5px;
+    padding: 2%;
+    /* border: 2px solid purple; */
+    margin-top: 1%;
+    text-align: left;
+    cursor: pointer;
+}
+
+.export_div:hover {
+    background-color: rgba(115, 223, 237, 0.3);
+}
+
+
+.export_name {
+    font-weight: bold;
+    font-size: 20px;
+}
+
+.export_description {
+    color: rgba(150, 150, 150, 1);
+    font-size: 15px;
+}
+
 .audio-player {
     width: 100%; 
     height: 25px; 
@@ -27,3 +57,5 @@ p {
     overflow:hidden;
     text-overflow:ellipsis;
 }
+
+
