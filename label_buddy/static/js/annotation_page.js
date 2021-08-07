@@ -21,9 +21,11 @@ function toggleIcon(button){
 function selectedLabel(button) {
 
     if(selected_label == button) {
-        // selected_label.style.border = '2px solid ' + selected_label_color;
+        
+        // change cursor
+        selected_label.style.cursor = 'pointer';
+
         selected_label.style.opacity = initial_opacity;
-        //selected_label.style.background = selected_label_color;
         selected_label = null;
         selected_label_color = null;
         // if no label is selected user cannot drag
@@ -31,6 +33,9 @@ function selectedLabel(button) {
     } else {
         // if label already selected, unselect it
         if(selected_label) {
+            // change cursor
+            selected_label.style.cursor = 'pointer';
+
             selected_label.style.opacity = initial_opacity;
         }
 
@@ -43,12 +48,18 @@ function selectedLabel(button) {
             color: rgbToRgba(selected_label_color, initial_opacity)
         });
         selected_label.style.opacity = 1;
+
+        // change cursor
+        selected_label.style.cursor = 'auto';
     }
 }
 
 function selectRegionButton(button) {
     let region_by_id = wavesurfer.regions.list[button.id];
     if(selected_region_button == button) {
+        // change cursor
+        selected_region_button.style.cursor = 'pointer';
+
         selected_region_button.style.opacity = initial_opacity;
         selected_region_button.style.fontWeight = 'normal';
         selected_region_button.style.backgroundColor = 'rgb(245,245,245)'
@@ -62,6 +73,9 @@ function selectRegionButton(button) {
         // if label already selected, unselect it
         if(selected_region_button) {
             
+            // change cursor
+            selected_region_button.style.cursor = 'pointer';
+
             selected_region_button.style.opacity = initial_opacity;
             selected_region_button.style.fontWeight = 'normal';
             selected_region_button.style.backgroundColor = 'rgb(245,245,245)';
@@ -79,6 +93,9 @@ function selectRegionButton(button) {
         if(selected_region != region_by_id) {
             region_by_id.wavesurfer.fireEvent('region-click', region_by_id);
         }
+
+        // change cursor
+        selected_region_button.style.cursor = 'auto';
     }
 
 }
