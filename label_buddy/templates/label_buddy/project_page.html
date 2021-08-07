@@ -26,13 +26,16 @@
     </div>
     {% if tasks_count_no_filter > 0 %}
         <h2 class="headers-page">{{ project.title }}</h2>
-        <div>
-            <a data-toggle="modal" data-target="#importModal" href="">
-                <button class="btn my-button my-button-page">Import</button>
-            </a>
+        <div id="header-div">
+            <button style="color: black; float: right;" data-toggle="modal" data-target="#exportModal" class="btn my-button">
+                Export
+            </button>
+            <button style="color: black; float: right; margin-right: 1%;" data-toggle="modal" data-target="#importModal" class="btn my-button">
+                Import
+            </button>
             {% include "filters.html" %}
         </div>
-        <div class="my-custom-scrollbar table-wrapper-scroll-y">
+        <div class="table-div">
             <!--Table-->
             <table class="table table-bordered table-hover">
             <!--Table head-->
@@ -101,7 +104,7 @@
             {% endfor %}
         </table>
     {% else %}
-        <h2 style="text-align:center; margin-top: 2%;">
+        <h2 style="text-align:center; margin-top: .5%;">
             No tasks for {{ project.title }}. Please <a class="my-link" data-toggle="modal" data-target="#importModal" href="">import</a> some data.
         </h2>
     {% endif%}
@@ -112,4 +115,5 @@
 
     {% include "project_modals.html" %}
     {% include "import_modal.html" %}
+    {% include "export_modal.html" %}
 {% endblock %}

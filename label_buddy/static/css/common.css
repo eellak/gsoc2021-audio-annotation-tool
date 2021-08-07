@@ -47,12 +47,16 @@ table
     text-align: center;
     font-family: 'Georama';
     text-shadow: 2px 2px 2px #aaa;
-}
 
-.my-button-page {
-    float: right;
+    /* border: 2px solid blue; */
+    margin-left: 1%;
     margin-right: 1%;
-    margin-bottom: .5%;
+    margin-top: .5%;
+    
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
 }
 
 .my-table-button {
@@ -74,9 +78,10 @@ table
     min-height: 70vh;
 }
 
-.my-custom-scrollbar {
+.table-div {
     margin-left: 1%;
     margin-right: 1%;
+    margin-top: .5%;
 }
 
 .drop-down {
@@ -112,7 +117,12 @@ table
     margin-top: .5%;
     margin-left: 1%;
     margin-right: 1%;
-    margin-bottom: 3%;
+}
+
+.top-div:after {
+    content:'';
+    display:block;
+    clear:both;
 }
 
 .top-icons {

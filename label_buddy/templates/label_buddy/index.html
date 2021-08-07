@@ -16,12 +16,12 @@
 		{% if projects %}
 			<h2 class="headers-page">Projects</h2>
 			{% if user.can_create_projects %}
-				<a title="Create new project" href="{% url 'create_project'%}">
-					<button class="btn my-button my-button-page">Create</button>
-				</a>
+				<div id="header-div">
+					<a style="color: black;" title="Create new project" href="{% url 'create_project'%}" class="btn my-button"> Create</a>
+				</div>
 			{% endif %}
 			
-			<div class="my-custom-scrollbar table-wrapper-scroll-y ">
+			<div class="table-div">
 				<!--Table-->
 				<table class="table table-bordered table-striped table-hover" id="index-table">
 				<!--Table head-->
@@ -43,7 +43,6 @@
 				<!--Table body-->
 				<tbody>
 					{% for project in page_obj %}
-					
 						<tr class="clickable-row" href="{% url 'project_page' project.id %}">
 							<td title="{{ project.title }}" class="table-title">
 								<img style="margin-right: 4%;" src="{{ project.logo.url }}" width="27" height="27" title="{{ project.title }}" class="rounded-circle">
@@ -100,11 +99,11 @@
 				<!--Table body-->
 			</table>
 			{% else %}
-				<h1 class="headers-page form-headers">No projects for you yet</h1>
+				<h1 class="headers-page">No projects for you yet</h1>
 				{% if user.can_create_projects %}
-				<a href="{% url 'create_project'%}">
-					<button class="btn my-button my-button-page">Create</button>
-				</a>
+				<div id="header-div">
+					<a style="color: black;" title="Create new project" href="{% url 'create_project'%}" class="btn my-button"> Create</a>
+				</div>
 			{% endif %}
 			{% endif %}
 

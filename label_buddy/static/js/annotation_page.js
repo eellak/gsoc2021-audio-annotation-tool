@@ -158,7 +158,7 @@ function getRegionButton(new_region) {
     count.id = "count";
     count.style.display = 'inline-block';
     count.style.width = '35px'
-    count.style.marginRight = '15px'
+    count.style.marginRight = '7px'
     
     let icon = document.createElement('i');
     icon.className = 'fas fa-music';
@@ -267,8 +267,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // deactivate region button
             if(selected_region_button == region_button) {
                 region_button.click();
-                // region_button.style.opacity = initial_opacity;
-                // selected_region_button = null;
             }
 
         } else {
@@ -285,8 +283,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 // deactivate region button
                 if(selected_region_button == region_button) {
-                    // region_button.style.opacity = initial_opacity;
-                    // selected_region_button = null;
                     region_button.click();
                 }
             }
@@ -304,8 +300,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // activate region button
             if(selected_region_button != region_button) {
-                // region_button.style.opacity = selected_region_opacity;
-                // selected_region_button = region_button;
                 region_button.click();
             }
         }
