@@ -277,6 +277,7 @@ def project_page_view(request, pk):
         "task_form": task_form,
         "labeled": Status.labeled,
         "reviewed": Review_status.reviewed,
+        "host": request.build_absolute_uri("/"),
     }
     return render(request, "label_buddy/project_page.html", context)
 

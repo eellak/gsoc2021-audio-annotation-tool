@@ -95,7 +95,7 @@ function selectExportFormat(div) {
         let json_radio = document.getElementById('json_radio');
         let export_div_csv = document.getElementById('export_div_csv');
         let csv_radio = document.getElementById('csv_radio');
-
+        
         if(export_div_json == div) {
 
             // select json div
@@ -124,8 +124,80 @@ function selectExportFormat(div) {
     }
 }
 
+// download exported file
+function downloadExportedFile(result) {
+
+    let format = result['format'];
+    let exported_json = result['exported_json'];
+    let exported_name = result['exported_name'];
+    if(format == "JSON") {
+        downloadJSON(JSON.stringify(exported_json), exported_name, 'text/plain');
+    } else if(format == "CSV") {
+        downloadCSV(exported_json, exported_name);
+    } else {
+        // something is wrong
+    }
+}
+
+function downloadJSON(content, fileName, contentType) {
+    let a = document.createElement("a");
+    let file = new Blob([content], { type: contentType });
+    a.href = URL.createObjectURL(file);
+    a.download = fileName;
+    a.click();
+}
+
+function downloadCSV(content, fileName) {
+    let rows = [
+        ["audio", "audio_length", "id", "regions", "completed_at", "annotator_email", "annotator_username", "annotation_id", "project_id"]
+    ];
+    
+    for(task of content) {
+        for(annotation of task['annotations']) {
+            let regions = []
+            for(region of annotation['result']) regions.push(region['value'])
+
+            var arr = [
+                task['data']['audio'],
+                annotation['result'][0]['audio_length'],
+                task['id'],
+                '"' + JSON.stringify(regions) + '"',
+                JSON.stringify(annotation['created_at']),
+                annotation['completed_by']['email'],
+                annotation['completed_by']['username'],
+                annotation['id'],
+                task['project']
+            ];
+        }
+        rows.push(arr);
+    }
+
+    let csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
+    // console.log(csvContent);
+    let encodedUri = encodeURI(csvContent);
+    let a = document.createElement("a");
+    a.href = encodedUri;
+    a.download = fileName;
+    a.click();
+}
+
 // export annotations for project request
 function exportDataRequest() {
+    // xmlhttp request for exporting data
+    let xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+           // Typical action to be performed when the document is ready:
+           downloadExportedFile(JSON.parse(this.responseText));
+        } else if(this.readyState == 4 && (this.status == 400 || this.status == 401)){
+            $('#export_fail_alert').show();
+        }
+    };
+    let url = host + "api/v1/projects/" + project_id + "/tasks/export";
+    xhttp.open("POST", url, true);
+    xhttp.setRequestHeader("X-CSRFToken", django_csrf_token);
+    xhttp.setRequestHeader("Content-Type", "application/json");
+    xhttp.send(JSON.stringify($("input[name=exampleRadios]:checked").val()));
 }
 
 document.addEventListener('DOMContentLoaded', function() {

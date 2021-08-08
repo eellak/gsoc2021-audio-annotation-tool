@@ -27,7 +27,7 @@
 }
 
 .export_div:hover {
-    background-color: rgba(115, 223, 237, 0.3);
+    background-color: rgba(115, 223, 237, 0.3) !important;
 }
 
 
