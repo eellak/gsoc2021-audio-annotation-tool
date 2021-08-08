@@ -19,3 +19,19 @@ class UserForm(forms.ModelForm):
             "phone_number",
             "avatar",
         ]
+        labels = {
+            'name': '<b>Name:</b>',
+            'email': '<b>Email:</b>',
+            'phone_number': '<b>Phone number:</b>',
+            'avatar': '<b>Avatar:</b>',
+        }
+
+    
+    def clean_avatar(self):
+        image = self.cleaned_data.get("avatar", False)
+        if image:
+            if image.size > 2 * 1024 * 1024:
+                raise forms.ValidationError("Image file too large ( > 2mb )")
+            return image
+        else:
+            raise forms.ValidationError("Please provide a logo")
