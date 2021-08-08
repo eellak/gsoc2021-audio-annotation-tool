@@ -125,17 +125,44 @@ function selectExportFormat(div) {
 }
 
 // download exported file
-function downloadExportedFile(result) {
+function downloadExportedFile(result, status) {
 
     let format = result['format'];
     let exported_json = result['exported_json'];
     let exported_name = result['exported_name'];
     if(format == "JSON") {
         downloadJSON(JSON.stringify(exported_json), exported_name, 'text/plain');
+        showAlert(result['message'], status);
     } else if(format == "CSV") {
         downloadCSV(exported_json, exported_name);
+        showAlert(result['message'], status);
     } else {
         // something is wrong
+    }
+}
+
+function showAlert(message, status) {
+    $('#exportModal').modal('toggle');
+    if(status == 200) {
+        // success message
+        document.getElementById('export_success_alert').style.display = 'block';
+        $("#success_message").html(message);
+        $('#export_success_alert').addClass('show');
+    } else if(status == 400 || status == 401) {
+        // danger message
+        document.getElementById('export_fail_alert').style.display = 'block';
+        $("#fail_message").html(message);
+        $('#export_fail_alert').addClass('show');
+    }
+}
+
+function hideAlert(button) {
+    if(button.value == "SUCCESS") {
+        document.getElementById('export_success_alert').style.display = 'none';
+        $('#export_success_alert').removeClass('show');
+    } else if(button.value == "DANGER") {
+        document.getElementById('export_fail_alert').style.display = 'none';
+        $('#export_fail_alert').removeClass('show');
     }
 }
 
@@ -188,9 +215,9 @@ function exportDataRequest() {
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
            // Typical action to be performed when the document is ready:
-           downloadExportedFile(JSON.parse(this.responseText));
-        } else if(this.readyState == 4 && (this.status == 400 || this.status == 401)){
-            $('#export_fail_alert').show();
+           downloadExportedFile(JSON.parse(this.responseText), this.status);
+        } else if(this.readyState == 4 && (this.status == 400 || this.status == 401)) {
+            showAlert(JSON.parse(this.responseText)['message'], this.status);
         }
     };
     let url = host + "api/v1/projects/" + project_id + "/tasks/export";

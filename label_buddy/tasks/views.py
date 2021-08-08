@@ -174,5 +174,6 @@ class ExportData(APIView):
             "format": request.data,
             "exported_json": exported_json,
             "exported_name": exported_name,
+            "message": "Succesfully exported " + exported_name + "."
         }
         return Response(data, status=status.HTTP_200_OK)

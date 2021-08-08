@@ -22,20 +22,20 @@
 
 {% block content %}
     {{ block.super }}
-    {% comment %}
-    <div class="alert alert-success alert-dismissible fade" id="export_success_alert" role="alert">
-        <i style="margin-right: .5%;" class="fas fa-check-circle"></i><strong>Hello</strong>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <div style="display: none;" class="alert alert-success alert-dismissible fade" id="export_success_alert">
+        <i style="margin-right: .5%;" class="fas fa-check-circle"></i>
+        <strong id="success_message"></strong>
+        <button type="button" class="close" onclick="hideAlert(this);" aria-label="Close" value="SUCCESS">
         <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    <div class="alert alert-danger alert-dismissible fade" id="export_fail_alert" role="alert">
-        <i style="margin-right: .5%;" class="fas fa-times-circle"></i><strong></strong>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <div style="display: none;" class="alert alert-danger alert-dismissible fade" id="export_fail_alert" role="alert">
+        <i style="margin-right: .5%;" class="fas fa-times-circle"></i>
+        <strong id="fail_message"></strong>
+        <button type="button" class="close" onclick="hideAlert(this);" aria-label="Close" value="DANGER">
         <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    {% endcomment %}
     <div class="top-div">
         <a href="{% url 'index_page' %}"><img style="border: 2px solid #74deed; float: left;" src="{{ project.logo.url }}" width="30" height="30" href="{% url 'index_page' %}" title="Projects page" class="rounded-circle"></a>
         <i style="margin-top: .4%;" class="fas fa-angle-right top-icons"></i>

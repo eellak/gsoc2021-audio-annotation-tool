@@ -86,7 +86,7 @@ function selectRegionButton(button) {
         }
         
         selected_region_button = button;
-        selected_region_button.style.opacity = selected_region_opacity;
+        selected_region_button.style.opacity = 1;
         selected_region_button.style.backgroundColor = '#dddddd';
         selected_region_button.style.fontWeight = 'bold';
 

@@ -238,9 +238,9 @@ def project_page_view(request, pk):
             new_task = task_form.save(commit=False)
             file_extension = str(new_task.file)[-4:]
             # if file uploaded is a zip add new tasks
-            if file_extension in ['.zip']:
+            if file_extension in [".zip", ".rar"]:
                 # unzip file and add as many tasks as the files in the zip/rar file
-                skipped_files = add_tasks_from_compressed_file(new_task.file, project)
+                skipped_files = add_tasks_from_compressed_file(new_task.file, project, file_extension)
             else:
                 # one file is uploaded
                 new_task.original_file_name = request.FILES['file'].name

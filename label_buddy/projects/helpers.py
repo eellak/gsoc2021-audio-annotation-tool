@@ -1,6 +1,7 @@
 #functions used for views
 import random
 from zipfile import ZipFile
+from rarfile import RarFile
 from json import dumps
 
 from django.core.files import File
@@ -207,13 +208,24 @@ def users_annotated_task(tasks):
 
 
 # unzip file and add tasks
-def add_tasks_from_compressed_file(compressed_file, project):
-    archive = ZipFile(compressed_file, 'r')
-    files_names = archive.namelist()
+def add_tasks_from_compressed_file(compressed_file, project, file_extension):
 
+    if file_extension == ".zip":
+        archive = ZipFile(compressed_file, 'r')
+    else:
+        archive = RarFile(compressed_file, 'r')
+
+    files_names = archive.namelist()
+    
     skipped_files = 0
     for filename in files_names:
-        new_file = archive.open(filename, "r")
+        if file_extension == ".zip":
+            # zip
+            new_file = archive.open(filename, 'r')
+        else:
+            # rar
+            pass # to be fixed
+    
         # for every file that has an extension in [.wav, .mp3, .mp4] create a task
         if filename[-4:] in ACCEPTED_EXTENSIONS:
             # create task
