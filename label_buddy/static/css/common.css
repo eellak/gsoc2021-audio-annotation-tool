@@ -1,0 +1,145 @@
+@charset "UTF-8";
+
+:root {
+    --basic_color: #74deed;
+}
+
+body {
+    padding-bottom: 4%;
+}
+
+table
+{
+    table-layout: fixed;
+    width: 100px;
+}
+
+.footer-div {
+    background-color: rgb(245,245,245);
+}
+
+.myAction {
+    margin-left: 55%;
+}
+
+.user-form-wrap {
+    background-color: rgb(245,245,245);
+    padding: 3%;
+    border-radius: 10px;
+    margin: 2%;
+}
+
+#allauth-image {
+    display:block;
+    margin:auto;
+}
+
+.user-round-icon {
+    background-color:rgb(245,245,245);
+}
+
+.my-button {
+    width: 100px;
+    background-color: var(--basic_color);
+}
+
+.headers-page {
+    text-align: center;
+    font-family: 'Georama';
+    text-shadow: 2px 2px 2px #aaa;
+
+    /* border: 2px solid blue; */
+    margin-left: 1%;
+    margin-right: 1%;
+    margin-top: .5%;
+    
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.my-table-button {
+    background-color: var(--basic_color);
+    height: 30px;
+}
+
+.my-link {
+    color: var(--basic_color);
+}
+
+
+.center-screen {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    min-height: 70vh;
+}
+
+.table-div {
+    margin-left: 1%;
+    margin-right: 1%;
+    margin-top: .5%;
+}
+
+.drop-down {
+    margin-right: 8%;
+}
+
+.my-table-header {
+    margin-right: 4%;
+}
+
+.my-small-btn {
+    display:block;
+    height: 300px;
+    width: 300px;
+    border-radius: 50%;
+    border: 1px solid red;
+    
+}
+
+.table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
+    background-color: var(--basic_color);
+    cursor: pointer;
+
+}
+
+.page-item.active .page-link {
+    border: none;
+    color: black !important;
+    background: var(--basic_color) !important;
+}
+
+.top-div {
+    margin-top: .5%;
+    margin-left: 1%;
+    margin-right: 1%;
+}
+
+.top-div:after {
+    content:'';
+    display:block;
+    clear:both;
+}
+
+.top-icons {
+    float: left;
+    margin-left: 1%;
+    margin-top: .2%;
+}
+
+.form-headers {
+    font-family: 'Georama';
+    text-shadow: 2px 2px 2px #aaa;
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+a {
+    text-decoration: none !important;
+}

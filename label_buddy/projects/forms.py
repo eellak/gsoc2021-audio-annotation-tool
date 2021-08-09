@@ -1,46 +1,39 @@
 from django import forms
 
-from .models import Project
-
+from .models import Project, Label
 
 class ProjectForm(forms.ModelForm):
 
-    title = forms.CharField(label='', widget=forms.TextInput(attrs={"placeholder": "Title"}))
-    
+    title = forms.CharField(label='Tile', required=False, widget=forms.TextInput(attrs={"placeholder": "Title"}))
+    description = forms.CharField(required=False, widget=forms.Textarea(
+        attrs = {
+            "placeholder": "Description",
+            "rows": 4,
+        }
+    ))
+    instructions = forms.CharField(required=False, widget=forms.Textarea(
+        attrs = {
+            "placeholder": "Instructions",
+            "rows": 4,
+        }
+    ))
+    new_labels = forms.CharField(label="Labels", required=False, widget=forms.Textarea(
+        attrs = {
+            "placeholder": "A comma separated list of new labels",
+            "id": "new_labels",
+            "rows": 4,
+        }
+    ))
     class Meta:
         model = Project
         fields = [
             "title",
             "description",
+            "instructions",
             "logo",
+            "new_labels",
             "users_can_see_other_queues",
-            "labels",
-            "reviewers",
             "annotators",
             "managers",
-            "project_type",
+            "reviewers",
         ]
-
-
-
-
-
-
-
-
-
-# title = models.CharField(max_length=256, blank=False, null=False, default='', help_text='Project title')
-
-#     description = models.TextField(blank=True, null=True, default='', help_text='Project description')
-#     instructions = models.TextField(blank=True, null=True, default='', help_text='Project instructions')
-#     logo = models.ImageField(blank=True, help_text='Project logo')
-#     created_at = models.DateTimeField(auto_now=True, help_text='Date and time of project creation')
-
-#     users_can_see_other_queues = models.BooleanField(default=False, help_text='If true, users can see which tasks are assinged to other users for this specific project')
-
-#     labels = models.ManyToManyField(Label, blank=False, help_text='Labels used by annotators to annotate')
-#     reviewers = models.ManyToManyField(User, blank=True, related_name='project_reviewer', help_text='Reviewers who will review annotations')
-#     annotators = models.ManyToManyField(User, blank=True, related_name='project_annotator', help_text='Annotators for the project')
-#     managers = models.ManyToManyField(User, blank=True, related_name='project_manager', help_text='Managers for the project')
-
-#     project_type = EnumChoiceField(Project_type, default=Project_type.audio, help_text='Specify the type of the annotation (Audio, image or Video)')

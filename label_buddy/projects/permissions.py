@@ -2,14 +2,14 @@ from rest_framework import permissions
 
 
 class UserCanCreateProject(permissions.BasePermission):
-    '''
+    """
     Custom permission to only allow users who can create projects to do so.
-    '''
+    """
 
     def has_permission(self, request, view):
-        '''
+        """
         Allow to post only if user Can create projects
-        '''
+        """
         #Allow GET, HEAD or OPTIONS requests.
         if request.method in permissions.SAFE_METHODS:
             return True

@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block head_files%}
+    {{ block.super }}
+	<link href="{% static 'css/index.css' %}" rel="stylesheet" type="text/css">
+	<script src="{% static '/js/index.js'%}"></script>
+{% endblock %}
+
+{% block title %} Label Buddy {% endblock %}
+
+{% block content %}
+	{{ block.super }}
+	{% if user.is_authenticated %}
+		{% if projects %}
+			<h2 class="headers-page">Projects</h2>
+			{% if user.can_create_projects %}
+				<div id="header-div">
+					<a style="color: black;" title="Create new project" href="{% url 'create_project'%}" class="btn my-button"> Create</a>
+				</div>
+			{% endif %}
+			
+			<div class="table-div">
+				<!--Table-->
+				<table class="table table-bordered table-striped table-hover" id="index-table">
+				<!--Table head-->
+				<thead>
+					<tr>
+					<th><i class="fa fa-caret-right my-table-header" aria-hidden="true"></i> Title</th>
+					<th><i class="fa fa-calendar my-table-header" aria-hidden="true"></i> Date of Creation</th>
+					<th><i class="fa fa-tasks my-table-header" aria-hidden="true"></i> Number of tasks</th>
+					<th><i class="fa fa-paint-brush my-table-header" aria-hidden="true"></i> Num of annotations</th>
+					<th><i class="fas fa-tag my-table-header"></i> Number of labels</th>
+					<th><i class="fa fa-user my-table-header" aria-hidden="true"></i> Annotator</th>
+					<th><i class="fa fa-user my-table-header" aria-hidden="true"></i> Reviewer</th>
+					<th><i class="fa fa-users my-table-header" aria-hidden="true"></i> Managers</th>
+					<th style="width: 110px;"><i class="fas fa-list my-table-header"></i> Options</th>
+					</tr>
+				</thead>
+				<!--Table head-->
+
+				<!--Table body-->
+				<tbody>
+					{% for project in page_obj %}
+						<tr class="clickable-row" href="{% url 'project_page' project.id %}">
+							<td title="{{ project.title }}" class="table-title">
+								<img style="margin-right: 4%;" src="{{ project.logo.url }}" width="27" height="27" title="{{ project.title }}" class="rounded-circle">
+								{{ project.title }}
+							</td>
+							<td>{{ project.created_at|date:"d-m-y" }}</td>
+							<td><b>{{ tasks_count|get_item:project.id }}</b></td>
+							<td><b>{{ annotations_count|get_item:project.id }}</b></td>
+							
+							{% if project.labels.count > 0 %}
+								<td title="You can annotate tasks for this project"><b style="color: green;">{{ project.labels.count }}</b></td>
+							{% else %}
+								<td title="Add labels in order to annotate"><b style="color: red;">{{ project.labels.count }}</b></td>
+							{% endif %}
+							
+							{% if user in project.annotators.all %}
+								<td title="Annotator for this project"><i title="Annotator for this project" style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
+							{% else %}
+								<td title="Not an annotator for this project"><i title="Not an annotator for this project" style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
+							{% endif %}
+
+							{% if user in project.reviewers.all %}
+								<td title="Reviewer for this project"><i title="Reviewer for this project" style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
+							{% else %}
+								<td title="Not a reviewer for this project"><i title="Not a reviewer for this project" style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
+							{% endif %}
+							<td>
+								{% for obj in project.managers.all %}
+									{% if obj == user %}
+										<img style="border: 2px solid #74deed;" src="{{ obj.avatar.url }}" width="27" height="27" title="You" class="rounded-circle">
+									{% else %}
+										<img src="{{ obj.avatar.url }}" width="25" height="25" title="{{ obj.username }}" class="rounded-circle">
+									{% endif %}
+								{% endfor %}
+							</td>
+
+							{% if user in project.managers.all %}
+								<td title="You are a manager. You can Edit/Delete">
+									<a title="Edit {{ project.title }}" id="edit-link" href="{% url 'edit_project' project.id %}">
+										<i class="fas fa-edit"></i> </i>
+									</a>
+									<b>/</b>
+									<a title="Delete {{ project.title }}"id="delete-link" href="{% url 'delete_project' project.id %}">
+										<i class="fas fa-trash-alt"></i>
+									</a>
+								</td>
+							{% else %}
+								<td title="You cannot Edit/Delete this project"><b>-</b></td>
+							{% endif %}
+						</tr>
+					
+					{% endfor %}
+				</tbody>
+				<!--Table body-->
+			</table>
+			{% else %}
+				<h1 class="headers-page">No projects for you yet</h1>
+				{% if user.can_create_projects %}
+				<div id="header-div">
+					<a style="color: black;" title="Create new project" href="{% url 'create_project'%}" class="btn my-button"> Create</a>
+				</div>
+			{% endif %}
+			{% endif %}
+
+			{% if projects_count > projects_per_page %}
+				{% include "pagination.html" %}
+			{% endif %}
+	{% else %}
+		<div class="center-screen">
+			<h1 class="form-headers">Welcome to Label Buddy</h1>
+			<p>Please <a class="my-link" href="/accounts/login">sign in</a> to continue
+			</p>
+		</div>
+	{% endif %}
+{% endblock %}

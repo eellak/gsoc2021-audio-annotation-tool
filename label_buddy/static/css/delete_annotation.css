@@ -1,0 +1,8 @@
+.delete-header {
+    font-family: 'Georama';
+    text-shadow: 2px 2px 2px #aaa;
+
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}

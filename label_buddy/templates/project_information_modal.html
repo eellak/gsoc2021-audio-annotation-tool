@@ -1,0 +1,44 @@
+<!-- Information Modal -->
+<div class="modal fade" id="informationModal" tabindex="-1" role="dialog" aria-labelledby="informationModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Project information</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+            <b>Title:</b> {{ project.title }}<br><br>
+            <b>Date of creation:</b> {{ project.created_at|date:"d-m-y" }}<br><br>
+            <b>Number of tasks:</b> {{ tasks_count_no_filter }}<br><br>
+
+            <b>Annotator for project:</b>
+            {% if user in project.annotators.all %}
+                <i title="Annotator for this project" style="color:green; margin-left: 2%;" class="fa fa-thumbs-up" aria-hidden="true"></i>
+            {% else %}
+                <i title="Not an annotator for this project" style="color:red; margin-left: 2%;" class="fa fa-thumbs-down" aria-hidden="true"></i>
+            {% endif %}
+            <br><br>
+
+            <b>Reviewer for project:</b>
+            {% if user in project.reviewers.all %}
+                <i title="Reviewer for this project" style="color:green; margin-left: 2%;" class="fa fa-thumbs-up" aria-hidden="true"></i>
+            {% else %}
+                <i title="Not a reviewer for this project" style="color:red; margin-left: 2%;" class="fa fa-thumbs-down" aria-hidden="true"></i>
+            {% endif %}
+            <br><br>
+
+            <b>Manager for project:</b>
+            {% if user in project.managers.all %}
+                <i title="Manager for this project" style="color:green; margin-left: 2%;" class="fa fa-thumbs-up" aria-hidden="true"></i>
+            {% else %}
+                <i title="Not a manager for this project" style="color:red; margin-left: 2%;" class="fa fa-thumbs-down" aria-hidden="true"></i>
+            {% endif %}
+            <br><br>
+
+
+        </div>
+    </div>
+    </div>
+</div>

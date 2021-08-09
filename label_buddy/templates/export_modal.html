@@ -1,0 +1,42 @@
+
+<!-- Export Modal -->
+<div class="modal fade" id="exportModal" tabindex="-1" role="dialog" aria-labelledby="exportModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle"><b>Export data</b></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        
+        <div class="modal-body">
+            <div style="padding: 2%;">
+                Export data in order to use it as a dataset. The file exported contains all annotations completed for the selected project.
+            </div>
+            <div id="export_div_json" class="export_div" onclick="selectExportFormat(this);">
+                <div class="form-check">
+                    <div class="export_name">JSON</div>
+                    <div class="export_description">
+                        <input class="form-check-input" type="radio" name="exampleRadios" id="json_radio" value="JSON" checked>
+                        List of items in raw JSON format stored in one JSON file. Use to export both the data and the annotations for a dataset.
+                    </div>
+                </div>
+            </div>
+
+            <div id="export_div_csv" class="export_div" onclick="selectExportFormat(this);">
+                <div class="form-check">
+                    <div class="export_name">CSV</div>
+                    <div class="export_description">
+                        <input class="form-check-input" type="radio" name="exampleRadios" id="csv_radio" value="CSV">
+                        Results are stored as comma-separated values with the column names specified.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button id="export-btn" class="btn my-button" onclick="exportDataRequest();">Export</button>
+        </div>
+    </div>
+    </div>
+</div>

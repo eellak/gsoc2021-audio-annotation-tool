@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %} &#9702; Delete {{ project.title }} {% endblock %}
+
+{% block content %}
+  {{ block.super }}
+  <div class="container centered">
+    <div class="row justify-content-center">
+      <div class="user-form-wrap col-6">
+        <h2 class="form-headers">Delete project</h2>
+        <hr class="mt-0 mb-4">
+        <p>Are you sure you want to delete {{ project.title }}?</p>
+        <form method="POST" action="{% url 'delete_project' project.id %}">
+          {% csrf_token %}
+          {% if redirect_field_value %}
+            <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+          {% endif %}
+          
+          <button class="btn btn-danger my-button" type="submit">Yes</button>
+          <a style="color: white;" class="btn my-button" href="{% url 'index_page' %}">No</a>
+        </form>
+      </div>
+    </div>
+  </div>
+
+{% endblock %}

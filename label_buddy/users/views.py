@@ -1,4 +1,8 @@
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
+from django.contrib import messages
+
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.exceptions import PermissionDenied
@@ -9,26 +13,56 @@ from rest_framework import (
 )
 
 
-
 from .models import User
 from .serializers import UserSerializer
+from .forms import UserForm
 # Create your views here.
+
+def get_user(username):
+    try:
+        user = User.objects.get(username=username)
+        return user
+    except User.DoesNotExist:
+        return None
+
+
+@login_required
+def edit_profile(request, username):
+    context = {}
+    user = get_user(username)
+    if not user or (user != request.user):
+        return HttpResponseRedirect("/")
+
+    if request.method == "POST":
+        form = UserForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.save()
+            messages.add_message(request, messages.SUCCESS, "Successfully edited profile.")
+            return HttpResponseRedirect("/")
+    else:
+        form = UserForm(instance=user)
+
+    context["form"] = form
+    return render(request, "label_buddy/user_edit_profile.html", context)
+
+
 
 
 #API VIEWS
 class UserList(APIView):
+    """
+    List all users or create a new one
+    """
 
     #User will be able to Post only if authenticated 
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
     serializer_class = UserSerializer
-    '''
-    List all users or create a new one
-    '''
+    
     #get request
     def get(self, request, format=None):
         
         users = User.objects.all()
-
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
 
@@ -43,10 +77,9 @@ class UserList(APIView):
 
 
 class UserDetail(APIView):
-
-    '''
+    """
     Retrieve, update or delete a user instance.
-    '''
+    """
 
     #User will be able to Post only if authenticated 
     permission_classes = (permissions.IsAuthenticatedOrReadOnly,)

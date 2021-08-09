@@ -2,9 +2,10 @@
 
 {% load i18n %}
 
-{% block head_title %}{% trans "Sign Up Closed" %}{% endblock %}
+{% block title %} &#9702; Sign Up Closed {% endblock %}
 
 {% block content %}
+{{ block.super }}
 <h1>{% trans "Sign Up Closed" %}</h1>
 
 <p>{% trans "We are sorry, but the sign up is currently closed." %}</p>

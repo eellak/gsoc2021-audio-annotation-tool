@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block head_files %}
+    {{ block.super }}
+    <link href="{% static 'css/annotation_page.css' %}" rel="stylesheet" type="text/css">
+
+    <!-- wavesurfer.js -->
+    <script src="https://unpkg.com/wavesurfer.js"></script>
+    <!-- plugins -->
+    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.timeline.js"></script>
+    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.regions.js"></script>
+    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.minimap.js"></script>
+    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.cursor.js"></script>
+
+
+    <script type="text/javascript"> 
+        var audio_url = "{{ task.file.url }}";
+        var task_id = "{{ task.id }}";
+        var project_id = "{{ project.id }}";
+        var django_csrf_token = "{{ csrf_token }}";
+        var annotation = JSON.parse("{{annotation|escapejs}}");
+        var host = "{{ host }}";
+    </script>
+    <script src="{% static '/js/annotation_page.js'%}" defer></script>
+{% endblock %}
+
+{% block title %} &#9702; Annotation{% endblock %}
+
+{% block navbar_buttons %}
+{% endblock %}
+
+{% block content %}
+    {{ block.super }}
+    <div class="top-div">
+        <img style="border: 2px solid #74deed; float: left;" src="{{ project.logo.url }}" width="30" height="30" data-toggle="modal" data-target="#informationModal" href="" title="{{ project.title }} information" class="rounded-circle">
+        <i style="margin-top: .4%;" class="fas fa-angle-right top-icons"></i>
+        <a title="Project instructions" class="my-link top-icons" data-toggle="modal" data-target="#instructionsModal" href=""><i class="fas fa-info"></i></a>
+        <span style="float: right; margin-top: .2%;">
+            {% if updated_at %}
+                <b>Last update: </b>{{ updated_at|date:"d-m-y" }}
+            {% elif created_at %}
+                <b>Annotation created at: </b>{{ created_at|date:"d-m-y" }}
+            {% else %}
+                <b>You have not annotated this task!</b>
+            {% endif %}
+        </span>
+    </div>
+    <h2 title="{{ task.original_file_name }}" class="headers-page">Audio: {{ task.original_file_name }}</h2>
+
+    <div id="header-div">
+        <a style="color: black;" title="Back to project page" href="{% url 'project_page' project.id %}" class="btn my-button"><i style="margin-right: 10%;" class="fas fa-caret-left"></i> Project</a>
+    </div>
+
+    <div style="margin-top: .5%;"  class="container-fluid">
+        <div class="row">
+
+            <div class="col p-0" id="left-main-div" >
+                {% if labels_count %}
+                    <div>
+                        <div class="row">
+                            <div class="col">
+                                <div id="regions-header">
+                                    Regions
+                                    
+                                </div>
+                                <a title="Remove all regions" id="remove_all_regions" style="float: right; margin-right: 2%; color: #d9534f; display: none;" href=""><i  class="fas fa-times fa-lg"></i></a>
+                                <hr class="mt-0 mb-4">
+                                <div class="container" id="regions-div" role="tablist">
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            
+
+            <div class="col-sm-10 p-0" id="right-main-div">
+                {% if labels_count %}
+                    <div id="labels-div">
+                        {% for label in labels.all %}
+                            <button style="background-color: {{ label.color }}; opacity: 0.3" class="badge my-badge badge-pill" value="{{ label.name }}" onclick="selectedLabel(this)">{{ label.name }}</button>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                <div id="wave-timeline"></div>
+                <div id="waveform"></div>
+                <div id="play-pause-btn-div">
+                    <button title="Play/Pause audio" id="play-pause-button" class="btn my-button play-pause-buttons" onclick="wavesurfer.playPause(); toggleIcon(this);"> <i style="margin-right: 10%;" class="fas fa-play fa-sm"></i> Play</button>
+                    {% comment %}
+                        <button style="margin-left: 1%;" class="btn my-button play-pause-buttons" onclick="backwardAudio();"><i class="fas fa-backward"></i></button>
+                    {% endcomment %}
+                    <i style="margin-left: 1%;" class="fas fa-search-minus"></i>
+                    <input style="width: 400px; margin-top: 1%; margin-left: .5%;" type="range" class="custom-range" min="0" max="200" step=1 value=0 id="zoom-slider">
+                    <i style="margin-left: .5%;" class="fas fa-search-plus"></i>
+                    <input style="width: 100px; margin-top: 1%; margin-left: .5%;" type="range" class="custom-range" oninput="toggleSoundIcon(this);" min="0" max="1" step=0.1 value=1 id="sound-slider">
+                    <a style="color: black;" title="Mute" href="" id="mute-unmute-btn"><i id="sound-slider-icon" style="margin-left: .5%;" class="fas fa-volume-up"></i></a>
+                    <select onchange="changeSpeed(this)" style="margin-left: 1%; width: 120px;" class="selectpicker">
+                          <option value=0.5>Speed 0.5</option>
+                          <option value=0.75>Speed 0.75</option>
+                          <option selected="selected" value=1>Speed 1.0</option>
+                          <option value=1.25>Speed 1.25</option>
+                          <option value=1.5>Speed 1.5</option>
+                          <option value=2>Speed 2.0</option>
+                    </select>
+                    <a title="Delete selected region" style="display: none; margin-left: 2%; color: #d9534f;" id="delete-region-btn" href=""><i class="fas fa-trash"></i></a>
+                    <a title="Paly selected region" style="display: none; margin-left: 1%; color: #5cb85c;" id="play-region-btn" href=""><i class="fas fa-play"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="annotation-btn-div" class="col">
+        <button title="Save annotation" class="btn btn-success my-button annotation-buttons" onclick="submitAnnotation();"><i style="margin-right: 10%;" class="fas fa-save"></i> Save</button>
+        <a href="{% url 'delete_annotation' project.id task.id %}">
+            <button title="Delete annotation" class="btn btn-danger my-button annotation-buttons" id="delete-annotation-btn"><i class="fas fa-trash-alt"></i></button>
+        </a>
+        {% if next_unlabeled_task_id == -1 %}
+            <a title="Next unlabeled task" href="{% url 'annotation_page' project.id task.id %}"><button class="btn my-button annotation-buttons">Next <i style="margin-left: 10%;" class="fas fa-caret-right"></i></button></a>
+        {% else %}
+            <a title="Next unlabeled task" href="{% url 'annotation_page' project.id next_unlabeled_task_id %}"><button class="btn my-button annotation-buttons">Next <i style="margin-left: 10%;" class="fas fa-caret-right"></i></button></a>
+        {% endif %}
+    </div>
+    {% include "project_modals.html" %}
+    {% include "project_information_modal.html" %}
+{% endblock %}

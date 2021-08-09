@@ -1,0 +1,28 @@
+#edit-link {
+    text-decoration: none !important;
+    margin-right: 20%;
+    color:  #5cb85c;
+}
+
+#delete-link {
+    margin-left: 20%;
+    color: #d9534f;
+}
+
+#header-div {
+    /* border: 2px solid purple; */
+    text-align: right;
+    margin-top: 2%;
+    margin-left: 1%;
+    margin-right: 1%;
+}
+
+/* classes */
+.table-title {
+    font-size: 13px;
+    /**Major Properties**/
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+

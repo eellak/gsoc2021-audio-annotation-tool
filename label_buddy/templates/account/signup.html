@@ -1,52 +1,25 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 
-{% load i18n %}
+{% load crispy_forms_tags %}
 
-{% block head_title %}{% trans "Signup" %}{% endblock %}
-{% block head_links %} 
-
-<title>| Sign Up</title>
-
-{% endblock %}
+{% block title %} &#9702; Sign Up {% endblock %}
 
 {% block content %}
-<div class="container-fluid">
-
- {% block messages %}
-    {% if messages %}
-    <div>
-        <ul>
-        {% for message in messages %}
-        <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                <strong>{{message}}</strong>
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-        </div>
-        {% endfor %}
-        </ul>
+  {{ block.super }}
+  <div class="container centered">
+    <div class="row justify-content-center">
+      <div class="user-form-wrap col-6">
+        <h2 class="form-headers">Sign Up</h2>
+        <hr class="mt-0 mb-4">
+        <p>Already have an account? Then please <a class="my-link" href="{{ login_url }}">sign in</a>.</p>
+        <form method="POST" action="{% url 'account_signup' %}">
+          {% csrf_token %}
+          {{ form | crispy }}
+          <button type="submit" class="btn my-button">Sign Up</button>
+        </form>
+      </div>
     </div>
-    {% endif %}
-  {% endblock %}
-  
+  </div>
 
-<h3 class="h3" id="head_banner">{% trans "Sign Up" %}</h3>
-
-<p class="exist_account_info">{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}</p>
-
-<form class="container-fluid text-center" id="signup_form" method="post" action="{% url 'account_signup' %}">
-  {% csrf_token %}
-
-  {{ form.as_p }}
-
-  {% if redirect_field_value %}
-
-  <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}" />
-  
-  {% endif %}
-  
-  <button class="btn btn-outline-primary btn-lg" type="submit">{% trans "Sign Up" %}</button>
-</form>
-
-</div>
 {% endblock %}
+
