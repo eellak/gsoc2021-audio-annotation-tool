@@ -52,11 +52,6 @@ git clone https://github.com/eellak/gsoc2021-audio-annotation-tool/
 cd gsoc2021-audio-annotation-tool
 ~~~
 
-Change to development branch
-~~~
-git checkout dev_branch
-~~~
-
 Create and activate a virtual enviroment
 ~~~
 virtualenv . -p python3
