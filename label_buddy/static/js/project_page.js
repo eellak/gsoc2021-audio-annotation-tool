@@ -74,17 +74,17 @@ function filter_tasks() {
 }
 
 // when a file is uploaded
-function checkExtension(filePath) {
-    var valid_extensions = [".mp3", ".wav", ".mp4", ".zip"];
+// function checkExtension(filePath) {
+//     var valid_extensions = [".mp3", ".wav", ".mp4", ".zip"];
 
-    var file = filePath.value;
-    var files_extension = file.substr(file.length - 4, 4);
+//     var file = filePath.value;
+//     var files_extension = file.substr(file.length - 4, 4);
     
-    if(!valid_extensions.includes(files_extension)) {
-        document.getElementById("import-file").value = "";
-        alert("The format " + files_extension + " is not accepted. Please upload another file.");
-    }
-}
+//     if(!valid_extensions.includes(files_extension)) {
+//         document.getElementById("import-file").value = "";
+//         alert("The format " + files_extension + " is not accepted. Please upload another file.");
+//     }
+// }
 
 // dix for export click
 function selectExportFormat(div) {

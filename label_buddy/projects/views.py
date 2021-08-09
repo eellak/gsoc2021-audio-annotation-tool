@@ -42,7 +42,8 @@ from .helpers import (
     delete_old_labels,
 )
 
-
+# global variables
+ACCEPTED_UPLOADED_EXTENSIONS = ['.wav', '.mp3', '.mp4', '.zip']
 
 def index(request):
     """Index view"""
@@ -237,6 +238,12 @@ def project_page_view(request, pk):
         if task_form.is_valid():
             new_task = task_form.save(commit=False)
             file_extension = str(new_task.file)[-4:]
+            
+            # check if extension is accepted
+            if file_extension not in ACCEPTED_UPLOADED_EXTENSIONS:
+                messages.add_message(request, messages.ERROR, "%s is not an accepted extension." % file_extension)
+                return HttpResponseRedirect(get_project_url(project.id))
+            
             # if file uploaded is a zip add new tasks
             if file_extension in [".zip", ".rar"]:
                 # unzip file and add as many tasks as the files in the zip/rar file

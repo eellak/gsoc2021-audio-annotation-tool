@@ -17,6 +17,19 @@
     cursor: default;
 }
 
+#import-file {
+    border: 1px solid #74deed;
+    /* border-radius: 5px; */
+    padding: 2%;
+    width: 60%;
+    cursor: pointer;
+}
+
+#import-file:hover {
+    background-color: rgba(115, 223, 237, 0.3) !important;
+}
+
+
 .export_div {
     border-radius: 5px;
     padding: 2%;
