@@ -46,12 +46,14 @@
 
         <h2 class="headers-page">{{ project.title }}</h2>
         <div id="header-div">
-            <button style="color: black; float: right;" data-toggle="modal" data-target="#exportModal" class="btn my-button">
-                Export
-            </button>
-            <button style="color: black; float: right; margin-right: 1%;" data-toggle="modal" data-target="#importModal" class="btn my-button">
-                Import
-            </button>
+            {% if user in project.managers.all %}
+                <button style="color: black; float: right;" data-toggle="modal" data-target="#exportModal" class="btn my-button">
+                    Export
+                </button>
+                <button style="color: black; float: right; margin-right: 1%;" data-toggle="modal" data-target="#importModal" class="btn my-button">
+                    Import
+                </button>
+            {% endif %}
             {% include "filters.html" %}
         </div>
         <div class="table-div">
@@ -124,7 +126,11 @@
         </table>
     {% else %}
         <h2 style="text-align:center; margin-top: .5%;">
-            No tasks for {{ project.title }}. Please <a class="my-link" data-toggle="modal" data-target="#importModal" href="">import</a> some data.
+            {% if user in project.managers.all %}
+                No tasks for project {{ project.title }}. Please <a class="my-link" data-toggle="modal" data-target="#importModal" href="">import</a> some data.
+            {% else %}
+                No tasks for project {{ project.title }} yet.
+            {% endif %}
         </h2>
     {% endif%}
 
