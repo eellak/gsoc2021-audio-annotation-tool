@@ -230,4 +230,8 @@ function exportDataRequest() {
 document.addEventListener('DOMContentLoaded', function() {
     fixFilters();
     selected_export_format = document.getElementById('export_div_json');
+
+    // progress bar
+    const import_form = document.getElementById('import-form');
+    console.log(import_form);
 });

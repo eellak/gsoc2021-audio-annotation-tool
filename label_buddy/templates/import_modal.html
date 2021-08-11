@@ -12,6 +12,9 @@
         </div>
         
         <div class="modal-body">
+            
+            <div id="progress-box" class="not-visible"></div>
+
             <div>
                 This file is for the annotation process. <br><br>Accepted formats: <b>.wav, .mp3, .mp4 and .zip.</b><br><br>
                 All <b>.zip</b> files will be uploaded excluding those who do not belong to the accepted formats.
@@ -20,7 +23,7 @@
                     <b>Tasks uploaded for this project will be assigned to a random annotator and only him/her will be able to annotate them.</b>
                 {% endif %}
             </div>
-            <form style="margin-top: 5%;" enctype="multipart/form-data" action="" method="POST">
+            <form style="margin-top: 5%;" id="import-form" enctype="multipart/form-data" action="" method="POST">
                 {% csrf_token %}
                 {{ task_form | crispy}}
                 <div class="modal-footer">
