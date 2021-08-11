@@ -1,3 +1,5 @@
+import random
+
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
@@ -36,6 +38,8 @@ from .helpers import (
     get_project_tasks,
     get_project_url,
     filter_tasks,
+    fix_tasks_after_edit,
+    check_tasks_after_edit,
     add_labels_to_project,
     next_unlabeled_task_id,
     add_tasks_from_compressed_file,
@@ -88,10 +92,17 @@ def project_create_view(request):
             project = form.save()
             # add labels to project
             add_labels_to_project(project, form.cleaned_data['new_labels'])
-            # user who created project must be in the list of managers, annotators and reviewers
+            # user who created project must be in the list of managers, annotators and reviewers as well as the managers
             project.managers.add(user)
             project.annotators.add(user)
             project.reviewers.add(user)
+
+            # add all managers to annotators and reviewers
+            for manager in form.cleaned_data['managers']:
+                project.managers.add(manager)
+                project.annotators.add(manager)
+                project.reviewers.add(manager)
+            
             messages.add_message(request, messages.SUCCESS, "Successfully created project %s." % project.title)
             return HttpResponseRedirect("/")
         else:
@@ -123,18 +134,37 @@ def project_edit_view(request, pk):
         return HttpResponseRedirect("/")
     
     if request.method == "POST":
+        users_can_see_other_queues_old = project.users_can_see_other_queues
         form = ProjectForm(request.POST, request.FILES, instance=project)
         if form.is_valid():
-            project = form.save()
+            
+            new_project = form.save()
             # delete all labels and add only written ones
-            delete_old_labels(project)
+            delete_old_labels(new_project)
             # add labels to project
-            add_labels_to_project(project, form.cleaned_data['new_labels'])
-            # user who created project must be in the list of managers, annotators and reviewers
-            project.managers.add(user)
-            project.annotators.add(user)
-            project.reviewers.add(user)
-            messages.add_message(request, messages.SUCCESS, "Successfully edited project %s." % project.title)
+            add_labels_to_project(new_project, form.cleaned_data['new_labels'])
+
+            # user who created project must be in the list of managers, annotators and reviewers as well as the managers
+            new_project.managers.add(user)
+            new_project.annotators.add(user)
+            new_project.reviewers.add(user)
+
+            # add all managers to annotators and reviewers
+            for manager in form.cleaned_data['managers']:
+                new_project.managers.add(manager)
+                new_project.annotators.add(manager)
+                new_project.reviewers.add(manager)
+            
+            
+            users_can_see_other_queues_new = new_project.users_can_see_other_queues
+            # function to fix tasks depending on changes. If user changed the users_can_see_other_queues value
+            # or if he/she remove an annotator
+            fix_tasks_after_edit(users_can_see_other_queues_old, users_can_see_other_queues_new, new_project, user)
+
+            # check if tasks ok
+            assert check_tasks_after_edit(new_project) == True, 'Tasks are not ok'
+
+            messages.add_message(request, messages.SUCCESS, "Successfully edited project %s." % new_project.title)
             return HttpResponseRedirect("/")
     else:
         # add existing labels as initial values
@@ -143,10 +173,15 @@ def project_edit_view(request, pk):
             labels_names.append(lbl.name)
         form = ProjectForm(instance=project, initial={'new_labels': ",".join(labels_names)})
 
-        # if user wants to create project, exclude him from annotators, managers and reviewers list
-        form.fields['annotators'].queryset = User.objects.exclude(username=user.username)
+        # if user wants to edit project, exclude him/her and all ohter managers from annotators and reviewers list
+        managers_ids = project.managers.values_list('id', flat=True)
+        form.fields['annotators'].queryset = User.objects.exclude(id__in=managers_ids)
+        form.fields['reviewers'].queryset = User.objects.exclude(id__in=managers_ids)
         form.fields['managers'].queryset = User.objects.exclude(username=user.username)
-        form.fields['reviewers'].queryset = User.objects.exclude(username=user.username)
+
+        form.fields['annotators'].help_text = "<b>Annotators for the project. Managers are already annotators</b>"
+        form.fields['reviewers'].help_text = "<b>Reviewers for the project. Managers are already reviewers</b>"
+        form.fields['managers'].help_text = "<b>Managers are by default annotators and reviewers for the project.</b>"
 
     context = {
         "project": project,
@@ -224,9 +259,11 @@ def project_page_view(request, pk):
     labeled = request.GET.get('labeled', '')
     reviewed = request.GET.get('reviewed', '')
 
-    user = request.user
+    user = get_user(request.user.username)
     project = get_project(pk)
-    tasks = filter_tasks(project, labeled, reviewed)
+    # if project.users_can_see_other_queues is false
+    # only tasks assigned to logged in user are returned
+    tasks = filter_tasks(user, project, labeled, reviewed)
     if not user or (user != request.user) or not project:
         if not project:
             messages.add_message(request, messages.ERROR, "Project does not exist.")
@@ -248,12 +285,22 @@ def project_page_view(request, pk):
             if file_extension in [".zip", ".rar"]:
                 # unzip file and add as many tasks as the files in the zip/rar file
                 skipped_files = add_tasks_from_compressed_file(new_task.file, project, file_extension)
+                """
+                random users assigned in function add_tasks_from_compressed_file
+                """
             else:
                 # one file is uploaded
                 new_task.original_file_name = request.FILES['file'].name
                 new_task.project = project
                 new_task.save()
-            
+
+                """
+                if project users_can_see_other_queues is false, assign task to a random annotator
+                """
+                if not project.users_can_see_other_queues:
+                    random_annotator = random.choice(list(project.annotators.all()))
+                    new_task.assigned_to.add(random_annotator)
+
             if skipped_files == 0:
                 messages.add_message(request, messages.SUCCESS, "Successful import.")
             else:
@@ -269,6 +316,11 @@ def project_page_view(request, pk):
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     setattr(request, 'view', 'projects.views.project_page_view')
+
+    # if user has annotated task
+    annotated_tasks = {}
+    for task in tasks:
+        annotated_tasks[task.id] = get_annotation(task, project, user)
     context = {
         "page_obj": page_obj,
         "list_num_of_pages": range(1, paginator.num_pages+1),
@@ -285,6 +337,7 @@ def project_page_view(request, pk):
         "labeled": Status.labeled,
         "reviewed": Review_status.reviewed,
         "host": request.build_absolute_uri("/"),
+        "annotated_tasks":annotated_tasks,
     }
     return render(request, "label_buddy/project_page.html", context)
 
@@ -303,21 +356,34 @@ def annotate_task_view(request, pk, task_pk):
         else:
             messages.add_message(request, messages.ERROR, "Project does not exist.")
             return HttpResponseRedirect("/")
-
+    
     # check if user in annotators of project
     if user not in project.annotators.all():
         messages.add_message(request, messages.ERROR, "You are not an annotator for project %s." % project.title)
         return HttpResponseRedirect(get_project_url(project.id))
-
+    
     # Check if task belongs to project
     if task.project != project:
         messages.add_message(request, messages.ERROR, "Task does not belong to project %s." % project.title)
         return HttpResponseRedirect(get_project_url(project.id))
-    
+
     labels = project.labels
     if labels.count() == 0:
-        messages.add_message(request, messages.ERROR, "Add some labels to project %s in order to annotate." % project.title)
-        return HttpResponseRedirect("/projects/" + str(project.id) + "/edit")
+        if user in project.managers.all():
+            messages.add_message(request, messages.ERROR, "Add some labels to project %s in order to annotate." % project.title)
+            return HttpResponseRedirect("/projects/" + str(project.id) + "/edit")
+        else:
+            messages.add_message(request, messages.ERROR, "Labels must be added for project %s by a manager in order to enable annotation." % project.title)
+            return HttpResponseRedirect("/")
+
+    # check if task is assigned to current user
+    if not project.users_can_see_other_queues:
+        assert task.assigned_to.exists() == True
+        if user not in task.assigned_to.all():
+            print("Hellooooo")
+            messages.add_message(request, messages.ERROR, "Task %s is not assigned to you." % str(task.id))
+            return HttpResponseRedirect(get_project_url(project.id))
+    
     annotation_result = get_annotation_result(task, project, user)
     annotation = get_annotation(task, project, user)
     

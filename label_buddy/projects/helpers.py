@@ -148,7 +148,7 @@ def str_to_bool(string):
 
 
 # return filtered tasks
-def filter_tasks(project, labeled, reviewed):
+def filter_tasks(user, project, labeled, reviewed):
 
     bool_labeled = str_to_bool(labeled)
     bool_reviewed = str_to_bool(reviewed)
@@ -169,20 +169,103 @@ def filter_tasks(project, labeled, reviewed):
     
     # if no filters applied
     if bool_labeled is None and bool_reviewed is None:
-        return tasks
+        pass
 
     # if both filters applied
     if bool_labeled is not None and bool_reviewed is not None:
-        return tasks.filter(status=status, review_status=review_status)
+        tasks = tasks.filter(status=status, review_status=review_status)
     
     # if status filter is applied
     if bool_labeled is not None:
-        return tasks.filter(status=status)
+        tasks = tasks.filter(status=status)
 
     # if review filter is applied
     if bool_reviewed is not None:
-        return tasks.filter(review_status=review_status)
+        tasks = tasks.filter(review_status=review_status)
 
+    # if users_can_see_other_queues is false return only assigned tasks
+    if not project.users_can_see_other_queues:
+        tasks = tasks.filter(Q(assigned_to__in=[user]) | Q(assigned_to=None))
+    
+    return tasks
+
+# fix taksks after edit project
+def fix_tasks_after_edit(users_can_see_other_queues_old, users_can_see_other_queues_new, project, user):
+    tasks = Task.objects.filter(project=project)
+
+    if users_can_see_other_queues_new == users_can_see_other_queues_old:
+        # if value is equal to old value and is set to true we dont have to check anything
+        # tasks are public so removed annotators wont make a difference
+
+        if not users_can_see_other_queues_new:
+            # check for every task that it's assigned to a valid annotator (belongs to project)
+            # if not assign it to another random annotator and delete annotation from old annotator
+
+            project_annotators = project.annotators.all()
+            project_annotators_ids = project.annotators.values_list('id', flat=True)
+            for task in tasks:
+                # assert task is assigned to one annotator
+                assert task.assigned_to.count() <= 1 # 1 or 0
+                if not task.assigned_to.exists() or not task.assigned_to.filter(id__in=project_annotators_ids).exists():
+
+                    # to be fixes
+                    # if task.assigned_to.exists():
+                    #     # delete annotation done by old annotator if exists
+                    #     old_annotation = get_annotation(task, project, task.assigned_to.all()[0])
+                    #     if old_annotation:
+                    #         old_annotation.delete()
+                    
+                    random_annotator = random.choice(list(project_annotators))
+                    task.assigned_to.clear()
+                    task.assigned_to.add(random_annotator)
+    else:
+        # if values different
+        if users_can_see_other_queues_new:
+            # just set assigned_to for all tasks to None
+            for task in tasks:
+                task.assigned_to.clear()
+        else:
+            # assign tasks randomly to all annotators
+            project_annotators_count = project.annotators.count()
+            users_already_assigned_id = []
+            for task in tasks:
+                # we are sure that assigned_to will be none as we came from public queues
+                assert task.assigned_to.exists() == False
+
+                # do this process if there are more than one annotators
+                if project_annotators_count > 1:
+                    # exclude those who are already addigned a task
+                    annotators = project.annotators.exclude(id__in=users_already_assigned_id)
+
+                    # choose one
+                    random_annotator = random.choice(list(annotators))
+                    task.assigned_to.add(random_annotator)
+
+                    # add id to list
+                    users_already_assigned_id.append(random_annotator.id)
+
+                    # if length of users_already_assigned_id == project.anotators, make it empty (start over)
+                    if len(users_already_assigned_id) == project_annotators_count:
+                        users_already_assigned_id = []
+                else:
+                    # just assign task to only one
+                    new_task.assigned_to.add(project.annotators.all())
+
+def check_tasks_after_edit(project):
+    tasks = Task.objects.filter(project=project)
+    project_annotators = project.annotators.all()
+    if project.users_can_see_other_queues:
+        # all tasks should have an empty assigned_to
+        for task in tasks:
+            if task.assigned_to.exists():
+                return False
+    else:
+        # all tasks should have an assigned_to value and annotator of this field must belong to the project
+        for task in tasks:
+            assert task.assigned_to.count() == 1
+            if task.assigned_to.all()[0] not in project_annotators:
+                return False
+    return True
 
 # return project's page url
 def get_project_url(pk):
@@ -216,8 +299,15 @@ def add_tasks_from_compressed_file(compressed_file, project, file_extension):
         archive = RarFile(compressed_file, 'r')
 
     files_names = archive.namelist()
-    
     skipped_files = 0
+    """
+    create array to keep users already aaigned a task
+    so the tasks are assigned with uniform distribution
+    if users_can_see_other_queues is false
+    """
+    project_annotators_count = project.annotators.count()
+    users_already_assigned_id = []
+
     for filename in files_names:
         if file_extension == ".zip":
             # zip
@@ -231,6 +321,28 @@ def add_tasks_from_compressed_file(compressed_file, project, file_extension):
             # create task
             new_task = Task.objects.create(project=project, original_file_name=filename)
             new_task.file.save(filename, File(new_file))
+
+            # assign task
+            if not project.users_can_see_other_queues:
+
+                # do this process if there are more than one annotators
+                if project_annotators_count > 1:
+                    # exclude those who are already addigned a task
+                    annotators = project.annotators.exclude(id__in=users_already_assigned_id)
+
+                    # choose one
+                    random_annotator = random.choice(list(annotators))
+                    new_task.assigned_to.add(random_annotator)
+
+                    # add id to list
+                    users_already_assigned_id.append(random_annotator.id)
+
+                    # if length of users_already_assigned_id == project.anotators, make it empty (start over)
+                    if len(users_already_assigned_id) == project_annotators_count:
+                        users_already_assigned_id = []
+                else:
+                    # just assign task to only one
+                    new_task.assigned_to.add(project.annotators.all())
         else:
             skipped_files += 1
     return skipped_files

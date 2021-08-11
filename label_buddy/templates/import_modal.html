@@ -15,6 +15,10 @@
             <div>
                 This file is for the annotation process. <br><br>Accepted formats: <b>.wav, .mp3, .mp4 and .zip.</b><br><br>
                 All <b>.zip</b> files will be uploaded excluding those who do not belong to the accepted formats.
+                {% if not project.users_can_see_other_queues %}
+                <br><br>
+                    <b>Tasks uploaded for this project will be assigned to a random annotator and only him/her will be able to annotate them.</b>
+                {% endif %}
             </div>
             <form style="margin-top: 5%;" enctype="multipart/form-data" action="" method="POST">
                 {% csrf_token %}

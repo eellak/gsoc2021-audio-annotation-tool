@@ -54,7 +54,7 @@ class Project(models.Model):
     logo = models.ImageField(upload_to='images', blank=True, help_text='Project logo')
     created_at = models.DateTimeField(auto_now=True, help_text='Date and time of project creation')
 
-    users_can_see_other_queues = models.BooleanField(default=False, help_text='If true, users can see which tasks are assinged to other users for this specific project')
+    users_can_see_other_queues = models.BooleanField(default=False, help_text='<b>If false, annotators will see only tasks assigned to them</b>')
 
     labels = models.ManyToManyField(Label, blank=False, help_text='Labels used by annotators to annotate')
     reviewers = models.ManyToManyField(User, blank=True, related_name='project_reviewer', help_text='Reviewers who will review annotations')

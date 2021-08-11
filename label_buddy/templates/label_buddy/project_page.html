@@ -41,17 +41,28 @@
         <i style="margin-top: .4%;" class="fas fa-angle-right top-icons"></i>
         <a title="Project instructions" class="my-link top-icons" data-toggle="modal" data-target="#instructionsModal" href=""><i class="fas fa-info"></i></a>
         <a title="Project description" style="margin-left: 1%;" class="my-link top-icons" data-toggle="modal" data-target="#descriptionModal" href=""><i class="fas fa-question-circle"></i></a>
+        {% if project.users_can_see_other_queues %}
+            <span title="All task are shown" style="float: right; margin-top: .2%;">
+                    <b>Public tasks: <i style="color:green" class="fas fa-check-circle" aria-hidden="true"></i></b>
+            </span>
+        {% else %}
+            <span title="Only tasks assigned to you are shown" style="float: right; margin-top: .2%;">
+                <b>Public tasks: <i style="color:red" class="fas fa-exclamation-circle" aria-hidden="true"></i></b>
+            </span>
+        {% endif %}
     </div>
     {% if tasks_count_no_filter > 0 %}
 
         <h2 class="headers-page">{{ project.title }}</h2>
         <div id="header-div">
-            <button style="color: black; float: right;" data-toggle="modal" data-target="#exportModal" class="btn my-button">
-                Export
-            </button>
-            <button style="color: black; float: right; margin-right: 1%;" data-toggle="modal" data-target="#importModal" class="btn my-button">
-                Import
-            </button>
+            {% if user in project.managers.all %}
+                <button style="color: black; float: right;" data-toggle="modal" data-target="#exportModal" class="btn my-button">
+                    Export
+                </button>
+                <button style="color: black; float: right; margin-right: 1%;" data-toggle="modal" data-target="#importModal" class="btn my-button">
+                    Import
+                </button>
+            {% endif %}
             {% include "filters.html" %}
         </div>
         <div class="table-div">
@@ -67,6 +78,9 @@
                     <th><i class="fas fa-file-audio my-table-header"></i> Audio file</th>
                     <th><i class="fas fa-check-circle my-table-header"></i> Status</th>
                     <th><i class="fas fa-check-circle my-table-header"></i> Review status</th>
+                    {% if user in project.annotators.all %}
+                        <th><i class="fas fa-paint-brush my-table-header"></i> Annotated by you</th>
+                    {% endif %}
                 </tr>
             </thead>
             <!--Table head-->
@@ -106,15 +120,23 @@
                             {% endif %}
                         </td>
                         {% if task.status == labeled %}
-                            <td title="Labeled"><i title="Labeled" style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
+                            <td title="Labeled"><i title="Labeled" style="color:green" class="fas fa-check-circle" aria-hidden="true"></i></td>
                         {% else %}
-                            <td title="Unlabeled"><i title="Unlabeled" style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
+                            <td title="Unlabeled"><i title="Unlabeled" style="color:red" class="fas fa-exclamation-circle" aria-hidden="true"></i></td>
                         {% endif %}
                         
                         {% if task.review_status == reviewed %}
-                            <td title="Reviewed"><i title="Reviewed" style="color:green" class="fa fa-thumbs-up" aria-hidden="true"></i></td>
+                            <td title="Reviewed"><i title="Reviewed" style="color:green" class="fas fa-check-circle" aria-hidden="true"></i></td>
                         {% else %}
-                            <td title="Unreviewed"><i title="Unreviewed" style="color:red" class="fa fa-thumbs-down" aria-hidden="true"></i></td>
+                            <td title="Unreviewed"><i title="Unreviewed" style="color:red" class="fas fa-exclamation-circle" aria-hidden="true"></i></td>
+                        {% endif %}
+
+                        {% if user in project.annotators.all %}
+                            {% if annotated_tasks|get_item:task.id %}
+                                <td title="Task annotated by you"><i title="Task annotated by you" style="color:green" class="fas fa-check-circle" aria-hidden="true"></i></td>
+                            {% else %}
+                                <td title="Task not annotated by you"><i title="Task not annotated by you" style="color:red" class="fas fa-exclamation-circle" aria-hidden="true"></i></td>
+                            {% endif %}
                         {% endif %}
                         
                     </tr>
@@ -124,7 +146,11 @@
         </table>
     {% else %}
         <h2 style="text-align:center; margin-top: .5%;">
-            No tasks for {{ project.title }}. Please <a class="my-link" data-toggle="modal" data-target="#importModal" href="">import</a> some data.
+            {% if user in project.managers.all %}
+                No tasks for project {{ project.title }}. Please <a class="my-link" data-toggle="modal" data-target="#importModal" href="">import</a> some data.
+            {% else %}
+                No tasks for project {{ project.title }} yet.
+            {% endif %}
         </h2>
     {% endif%}
 
