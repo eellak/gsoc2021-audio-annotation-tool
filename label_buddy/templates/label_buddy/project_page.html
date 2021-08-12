@@ -90,7 +90,7 @@
                     <tr class="clickable-row" href="{% url 'annotation_page' project.id task.id %}">
                         <td>{% get_table_id page_obj.number tasks_per_page forloop.counter %}</td>
                         {% if task.file %}
-                            <td title="{{ task.original_file_name }}" class="table-title">{{ task.original_file_name }}</td>
+                            <td data-toggle="tooltip" data-placement="top" title="{{ task.original_file_name }}" class="table-title">{{ task.original_file_name }}</td>
                         {% else %}
                             <td><b>-</b></td>
                         {% endif %}
@@ -99,9 +99,9 @@
                             {% if users_annotated|get_item:task.id%}
                                 {% for obj in users_annotated|get_item:task.id %}
                                     {% if obj == user %}
-                                        <img style="border: 2px solid #74deed;" src="{{ obj.avatar.url }}" width="27" height="27" title="You" class="rounded-circle">
+                                        <img data-toggle="tooltip" data-placement="top" style="border: 2px solid #74deed;" src="{{ obj.avatar.url }}" width="27" height="27" title="You" class="rounded-circle">
                                     {% else %}
-                                        <img src="{{ obj.avatar.url }}" width="25" height="25" title="{{ obj.username }}" class="rounded-circle">
+                                        <img data-toggle="tooltip" data-placement="top" src="{{ obj.avatar.url }}" width="25" height="25" title="{{ obj.username }}" class="rounded-circle">
                                     {% endif %}
                                 {% endfor %}
                             {% else %}
@@ -120,22 +120,22 @@
                             {% endif %}
                         </td>
                         {% if task.status == labeled %}
-                            <td title="Labeled"><i title="Labeled" style="color:green" class="fas fa-check-circle" aria-hidden="true"></i></td>
+                            <td><i data-toggle="tooltip" data-placement="top" data-title="Labeled" style="color:green" class="fas fa-check-circle tooltip-icons" aria-hidden="true"></i></td>
                         {% else %}
-                            <td title="Unlabeled"><i title="Unlabeled" style="color:red" class="fas fa-exclamation-circle" aria-hidden="true"></i></td>
+                            <td><i data-toggle="tooltip" data-placement="top" data-title="Unlabeled" style="color:red" class="fas fa-exclamation-circle tooltip-icons" aria-hidden="true"></i></td>
                         {% endif %}
                         
                         {% if task.review_status == reviewed %}
-                            <td title="Reviewed"><i title="Reviewed" style="color:green" class="fas fa-check-circle" aria-hidden="true"></i></td>
+                            <td><i data-toggle="tooltip" data-placement="top" data-title="Reviewed" style="color:green" class="fas fa-check-circle tooltip-icons" aria-hidden="true"></i></td>
                         {% else %}
-                            <td title="Unreviewed"><i title="Unreviewed" style="color:red" class="fas fa-exclamation-circle" aria-hidden="true"></i></td>
+                            <td><i data-toggle="tooltip" data-placement="top" data-title="Unreviewed" style="color:red" class="fas fa-exclamation-circle tooltip-icons" aria-hidden="true"></i></td>
                         {% endif %}
 
                         {% if user in project.annotators.all %}
                             {% if annotated_tasks|get_item:task.id %}
-                                <td title="Task annotated by you"><i title="Task annotated by you" style="color:green" class="fas fa-check-circle" aria-hidden="true"></i></td>
+                                <td><i data-toggle="tooltip" data-placement="top" data-title="Task annotated by you" style="color:green" class="fas fa-check-circle tooltip-icons" aria-hidden="true"></i></td>
                             {% else %}
-                                <td title="Task not annotated by you"><i title="Task not annotated by you" style="color:red" class="fas fa-exclamation-circle" aria-hidden="true"></i></td>
+                                <td><i data-toggle="tooltip" data-placement="top" data-title="Task not annotated by you" style="color:red" class="fas fa-exclamation-circle tooltip-icons" aria-hidden="true"></i></td>
                             {% endif %}
                         {% endif %}
                         

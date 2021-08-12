@@ -12,3 +12,11 @@ $(window).load(function(){
  $(document).ready(function() {
     NProgress.start();
  });
+
+document.addEventListener('DOMContentLoaded', function() {
+    $('.tooltip-icons').data('title'); // "This is a test";
+
+    $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+    })
+});
