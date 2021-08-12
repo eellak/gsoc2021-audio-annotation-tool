@@ -1,10 +1,11 @@
 import random
+from json import dumps
 
 from django.core.paginator import Paginator
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -274,12 +275,19 @@ def project_page_view(request, pk):
         task_form = TaskForm(request.POST, request.FILES)
         if task_form.is_valid():
             new_task = task_form.save(commit=False)
+            # check if filed uploaded
+            if not new_task.file:
+                messages.add_message(request, messages.ERROR, "Please upload a file.")
+                response = {'url': get_project_url(project.id)}
+                return HttpResponse(dumps(response), status=status.HTTP_400_BAD_REQUEST)
+            
             file_extension = str(new_task.file)[-4:]
             
             # check if extension is accepted
             if file_extension not in ACCEPTED_UPLOADED_EXTENSIONS:
                 messages.add_message(request, messages.ERROR, "%s is not an accepted extension." % file_extension)
-                return HttpResponseRedirect(get_project_url(project.id))
+                response = {'url': get_project_url(project.id)}
+                return HttpResponse(dumps(response), status=status.HTTP_400_BAD_REQUEST)
             
             # if file uploaded is a zip add new tasks
             if file_extension in [".zip", ".rar"]:
@@ -305,7 +313,8 @@ def project_page_view(request, pk):
                 messages.add_message(request, messages.SUCCESS, "Successful import.")
             else:
                 messages.add_message(request, messages.ERROR, "%s files were ignored during the import process." % str(skipped_files))
-            return HttpResponseRedirect(get_project_url(project.id))
+            response = {'url': get_project_url(project.id)}
+            return HttpResponse(dumps(response), status=status.HTTP_200_OK)
 
     else:
         task_form = TaskForm()

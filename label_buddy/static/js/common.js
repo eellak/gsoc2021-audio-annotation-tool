@@ -4,3 +4,11 @@ $(document).ready(function(){
         return false;
     });
 });
+
+$(window).load(function(){
+    NProgress.done();
+ });
+ 
+ $(document).ready(function() {
+    NProgress.start();
+ });

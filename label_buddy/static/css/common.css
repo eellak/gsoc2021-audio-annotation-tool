@@ -143,3 +143,8 @@ table
 a {
     text-decoration: none !important;
 }
+
+
+#nprogress .bar {
+    background: #74deed !important;
+}
