@@ -1,0 +1,21 @@
+#header-div {
+    /* border: 2px solid purple; */
+    text-align: left;
+    margin-top: 2%;
+    margin-left: 1%;
+    margin-right: 1%;
+}
+
+.table-title {
+    /**Major Properties**/
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+}
+
+.table-div {
+    /* border: 2px solid lightgreen; */
+    margin-left: 1%;
+    margin-right: 1%;
+    margin-top: .5%;
+}

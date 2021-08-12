@@ -2,6 +2,7 @@ import random
 from json import dumps
 
 from django.core.paginator import Paginator
+from django.db.models import Q
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -18,13 +19,19 @@ from rest_framework import (
 )
 
 from users.models import User
-from tasks.models import Task, Status, Review_status, Annotation
 from tasks.forms import TaskForm
 from tasks.serializers import TaskSerializer
 from .models import Project
 from .serializers import ProjectSerializer
 from .permissions import UserCanCreateProject
 from .forms import ProjectForm
+from tasks.models import (
+    Task,
+    Status,
+    Review_status,
+    Annotation,
+    Annotation_status
+)
 from .helpers import (
     get_projects_of_user,
     get_user,
@@ -32,6 +39,8 @@ from .helpers import (
     get_task,
     get_annotation,
     get_annotation_result,
+    get_annotation_review,
+    if_annotation_reviewed,
     get_num_of_tasks,
     project_annotations_count,
     task_annotations_count,
@@ -327,7 +336,7 @@ def project_page_view(request, pk):
         task_form = TaskForm()
     
     tasks_per_page = 8
-    paginator = Paginator(tasks, tasks_per_page) # Show 15 tasks per page
+    paginator = Paginator(tasks, tasks_per_page) # Show 8 tasks per page
     
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
@@ -368,12 +377,12 @@ def annotate_task_view(request, pk, task_pk):
 
     # check if valid url
     if not user or (user != request.user) or not project or not task:
-        if project:
+        if not task:
             messages.add_message(request, messages.ERROR, "Task does not exist.")
             return HttpResponseRedirect(get_project_url(project.id))
-        else:
+        if not project:
             messages.add_message(request, messages.ERROR, "Project does not exist.")
-            return HttpResponseRedirect("/")
+        return HttpResponseRedirect("/")
     
     # check if user in annotators of project
     if user not in project.annotators.all():
@@ -421,6 +430,85 @@ def annotate_task_view(request, pk, task_pk):
     }
 
     return render(request, "label_buddy/annotation_page.html", context)
+
+
+@login_required
+def list_annotations_for_task_view(request, pk, task_pk):
+    user = get_user(request.user.username)
+    project = get_project(pk)
+    task = get_task(task_pk)
+
+    # check if valid url
+    if not user or (user != request.user) or not project or not task:
+        if not task:
+            messages.add_message(request, messages.ERROR, "Task does not exist.")
+            return HttpResponseRedirect(get_project_url(project.id))
+        if not project:
+            messages.add_message(request, messages.ERROR, "Project does not exist.")
+        return HttpResponseRedirect("/")
+
+    # check if user in managers or reviewers of project
+    if (user not in project.managers.all()) and (user not in project.reviewers.all()):
+        messages.add_message(request, messages.ERROR, "You are not a manager or a reviewer for project %s." % project.title)
+        return HttpResponseRedirect(get_project_url(project.id))
+    
+    # Check if task belongs to project
+    if task.project != project:
+        messages.add_message(request, messages.ERROR, "Task does not belong to project %s." % project.title)
+        return HttpResponseRedirect(get_project_url(project.id))
+    
+    # get all annotations except user's
+    # user is not able to review his/her own annotations
+    task_annotations = Annotation.objects.filter(Q(task=task) & Q(project=project) & ~Q(user=user))
+    task_annotations_count = task_annotations.count()
+    user_has_annotated = get_annotation(task=task, project=project, user=user)
+
+    if task_annotations_count == 0:
+        if user_has_annotated:
+            # if user has annotation change message
+            messages.add_message(request, messages.WARNING, "No annotations to review. You cannot review your own annotation.")
+        else:
+            messages.add_message(request, messages.WARNING, "No annotations to review.")
+        return HttpResponseRedirect(get_project_url(project.id))
+    elif task_annotations_count == 1:
+        # redirect to review page
+        pass
+
+    # exclude annotations that are reviewed but not from the curremt user
+    to_exclude_ids = []
+    for annotation in task_annotations:
+        user_reviewed = if_annotation_reviewed(annotation)
+        if user_reviewed and user_reviewed != user:
+            to_exclude_ids.append(annotation.id)
+
+    task_annotations = task_annotations.exclude(id__in=to_exclude_ids)
+
+    # if annotation is revied by user, [annotation.id] = True else None
+    annotations_reviewed_by_user = {}
+    for annotation in task_annotations:
+        annotations_reviewed_by_user[annotation.id] = get_annotation_review(user, annotation)
+
+
+    annotations_per_page = 8
+    paginator = Paginator(task_annotations, annotations_per_page) # Show 8 tasks per page
+    
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    # if 2 or more annotations go to list annotations page
+    context = {
+        "page_obj": page_obj,
+        "list_num_of_pages": range(1, paginator.num_pages+1),
+        "task": task,
+        "project": project,
+        "annotations": task_annotations,
+        "annotations_count": task_annotations.count(),
+        "annotations_per_page": annotations_per_page,
+        "approved": Annotation_status.approved,
+        "rejected": Annotation_status.rejected,
+        "annotations_reviewed_by_user": annotations_reviewed_by_user,
+    }
+    return render(request, "label_buddy/list_annotations.html", context)
 
 #API VIEWS
 class ProjectList(APIView):

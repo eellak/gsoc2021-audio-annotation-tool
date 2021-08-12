@@ -15,6 +15,7 @@ from tasks.forms import TaskForm
 from tasks.models import (
     Task,
     Annotation,
+    Comment,
     Status,
     Review_status,
 )
@@ -68,6 +69,20 @@ def get_annotation_result(task, project, user):
     except Annotation.DoesNotExist:
         return dumps([])
 
+# get review of an annotation
+def get_annotation_review(user, annotation):
+    try:
+        review = Comment.objects.get(reviewed_by=user, annotation=annotation)
+        return review
+    except Comment.DoesNotExist:
+        return None
+
+def if_annotation_reviewed(annotation):
+    try:
+        review = Comment.objects.get(annotation=annotation)
+        return review.reviewed_by
+    except Comment.DoesNotExist:
+        return None
 
 # get label by name
 def get_label(name):

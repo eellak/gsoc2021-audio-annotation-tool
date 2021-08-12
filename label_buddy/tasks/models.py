@@ -27,8 +27,14 @@ class Review_status(ChoiceEnum):
 
     unreviewed = "Unreviewed"
     reviewed = "Reviewed"
-    commented = "Commented"
 
+class Annotation_status(ChoiceEnum):
+    """
+    review status for each annotation
+    """
+    approved = "Approved"
+    rejected = "Rejected"
+    no_review = "Unreviewed"
 
 class Task(models.Model):
     """
@@ -58,21 +64,6 @@ class Task(models.Model):
     def __str__(self):
         return 'Task: %d - project: %s' % (self.id, self.project)
 
-#Classes for Annotation and Comments by reviewers
-
-class Comment(models.Model):
-    """
-    Comment class for comments done by reviewers
-    Annotators will be able to see the comments on their annotations
-    """
-
-    comment = models.TextField(blank=False, help_text='Comment for an annotation')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, help_text='User creating the comment')
-    created_at = models.DateTimeField(auto_now=True, help_text='Date and time of comment creation')
-
-    def __str__(self):
-        return 'Comment from %s' % (self.user)
-
 
 class Annotation(models.Model):
     """
@@ -89,13 +80,12 @@ class Annotation(models.Model):
 
     result = models.JSONField(blank=True, null=True, help_text='The result of the annotation in JSON format')
 
-    reviewed_by = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name='annotation_reviewer', help_text='Reviewer who made the review')
     reviewed_at = models.DateTimeField(blank=True, null=True, help_text='Date and time of a review')
 
     rejected_by_user = models.BooleanField(default=False, help_text='Annotation rejected by user true/false')
     hidden_by_user = models.BooleanField(default=False, help_text='Hidden by users true/false')
 
-    comment = models.ManyToManyField(Comment, blank=True, related_name='annotation_comment', help_text='Comments done for the annotation')
+    review_status = EnumChoiceField(Annotation_status, default=Annotation_status.no_review, help_text='Status for annotation review')
 
     class Meta:
         unique_together = ('user', 'task',)
@@ -103,6 +93,26 @@ class Annotation(models.Model):
     def __str__(self):
         return 'Annotation %d - project: %s' % (self.id, self.project)
 
+#Classes for Annotation and Comments by reviewers
+
+class Comment(models.Model):
+    """
+    Comment class for comments done by reviewers
+    Annotators will be able to see the comments on their annotations
+    """
+    reviewed_by = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, related_name='annotation_reviewer', help_text='Reviewer who made the review')
+    annotation = models.ForeignKey(Annotation, on_delete=models.CASCADE, blank=False, related_name='annotation_reviewed', help_text='Annotation reviewed')
+
+    comment = models.TextField(blank=False, help_text='Comment for an annotation')
+    created_at = models.DateTimeField(auto_now=True, help_text='Date and time of comment creation')
+
+    class Meta:
+        unique_together = ('reviewed_by', 'annotation',)
+
+    def __str__(self):
+        return 'Comment from %s' % (self.reviewed_by)
+
+# SIGNALS
 
 # When an annotation is created, the task to which it belongs must be set a labeled (Task.status = labeled)
 @receiver(post_save, sender=Annotation)
@@ -112,6 +122,19 @@ def make_task_labeled(sender, instance, created, **kwargs):
         task = instance.task
         task.status = Status.labeled
         task.save()
+
+# when a comment is deleted, set annotations status to no_review
+@receiver(pre_delete, sender=Comment)
+def make_annotation_unreviewed(sender, instance, **kwargs):
+
+    try:
+        annotation = instance.annotation
+    except Annotation.DoesNotExist:
+        return False
+    
+    annotation.review_status = Annotation_status.no_review
+    annotation.save()
+
 
 # after deleting an annotation check task and if has no other annotation mark it as unlabeled
 @receiver(pre_delete, sender=Annotation)
