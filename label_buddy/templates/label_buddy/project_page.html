@@ -42,17 +42,16 @@
         <a title="Project instructions" class="my-link top-icons" data-toggle="modal" data-target="#instructionsModal" href=""><i class="fas fa-info"></i></a>
         <a title="Project description" style="margin-left: 1%;" class="my-link top-icons" data-toggle="modal" data-target="#descriptionModal" href=""><i class="fas fa-question-circle"></i></a>
         {% if project.users_can_see_other_queues %}
-            <span title="All task are shown" style="float: right; margin-top: .2%;">
+            <span data-toggle="tooltip" data-placement="bottom" offset=.5 title="All task are shown" style="float: right; margin-top: .2%;">
                     <b>Public tasks: <i style="color:green" class="fas fa-check-circle" aria-hidden="true"></i></b>
             </span>
         {% else %}
-            <span title="Only tasks assigned to you are shown" style="float: right; margin-top: .2%;">
+            <span data-toggle="tooltip" data-placement="bottom" title="Only tasks assigned to you are shown" style="float: right; margin-top: .2%;">
                 <b>Public tasks: <i style="color:red" class="fas fa-exclamation-circle" aria-hidden="true"></i></b>
             </span>
         {% endif %}
     </div>
     {% if tasks_count_no_filter > 0 %}
-
         <h2 class="headers-page">{{ project.title }}</h2>
         <div id="header-div">
             {% if user in project.managers.all %}
@@ -67,7 +66,7 @@
         </div>
         <div class="table-div">
             <!--Table-->
-            <table class="table table-bordered table-hover">
+            <table class="table table-bordered">
             <!--Table head-->
             <thead>
                 <tr>
@@ -87,7 +86,7 @@
             {% for task in page_obj %}
                 <!--Table body-->
                 <tbody>
-                    <tr class="clickable-row" href="{% url 'annotation_page' project.id task.id %}">
+                    <tr>
                         <td>{% get_table_id page_obj.number tasks_per_page forloop.counter %}</td>
                         {% if task.file %}
                             <td data-toggle="tooltip" data-placement="top" title="{{ task.original_file_name }}" class="table-title">{{ task.original_file_name }}</td>

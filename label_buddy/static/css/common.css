@@ -148,3 +148,7 @@ a {
 #nprogress .bar {
     background: #74deed !important;
 }
+
+.tooltip-icons {
+    cursor: default;
+}

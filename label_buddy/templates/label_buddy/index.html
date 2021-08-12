@@ -38,7 +38,7 @@
 					<th><i class="fa fa-user my-table-header" aria-hidden="true"></i> Annotator</th>
 					<th><i class="fa fa-user my-table-header" aria-hidden="true"></i> Reviewer</th>
 					<th><i class="fa fa-users my-table-header" aria-hidden="true"></i> Managers</th>
-					<th style="width: 110px;"><i class="fas fa-list my-table-header"></i> Options</th>
+					<th data-toggle="tooltip" data-placement="left" title="Only for managers" style="width: 110px;"><i class="fas fa-list my-table-header"></i> Options</th>
 					</tr>
 				</thead>
 				<!--Table head-->
@@ -69,7 +69,7 @@
 							{% endif %}
 							
 							{% if user in project.annotators.all %}
-								<td><i data-toggle="tooltip" data-placement="top" data-title="Annotator for this project" style="color:green" class="fas fa-check-circle tooltip-icons"></i></td>
+								<td><i data-toggle="tooltip" data-placement="top" data-title="Annotator for this project" style="color:green;" class="fas fa-check-circle tooltip-icons"></i></td>
 							{% else %}
 								<td><i data-toggle="tooltip" data-placement="top" data-title="Not an annotator for this project" style="color:red" class="fas fa-exclamation-circle tooltip-icons"></i></td>
 							{% endif %}
@@ -90,13 +90,13 @@
 							</td>
 
 							{% if user in project.managers.all %}
-								<td title="You are a manager. You can Edit/Delete">
-									<a title="Edit {{ project.title }}" id="edit-link" href="{% url 'edit_project' project.id %}">
-										<i class="fas fa-edit"></i> </i>
+								<td>
+									<a id="edit-link" href="{% url 'edit_project' project.id %}">
+										<i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Edit {{ project.title }}" class="fas fa-edit tooltip-icons"></i> </i>
 									</a>
 									<b>/</b>
-									<a title="Delete {{ project.title }}"id="delete-link" href="{% url 'delete_project' project.id %}">
-										<i class="fas fa-trash-alt"></i>
+									<a id="delete-link" href="{% url 'delete_project' project.id %}">
+										<i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Delete {{ project.title }}" class="fas fa-trash-alt tooltip-icons"></i>
 									</a>
 								</td>
 							{% else %}
