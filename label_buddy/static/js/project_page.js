@@ -132,9 +132,11 @@ function downloadExportedFile(result, status) {
     let exported_name = result['exported_name'];
     if(format == "JSON") {
         downloadJSON(JSON.stringify(exported_json), exported_name, 'text/plain');
+        NProgress.done();
         showAlert(result['message'], status);
     } else if(format == "CSV") {
         downloadCSV(exported_json, exported_name);
+        NProgress.done();
         showAlert(result['message'], status);
     } else {
         // something is wrong
@@ -224,6 +226,7 @@ function exportDataRequest() {
     xhttp.open("POST", url, true);
     xhttp.setRequestHeader("X-CSRFToken", django_csrf_token);
     xhttp.setRequestHeader("Content-Type", "application/json");
+    NProgress.start();
     xhttp.send(JSON.stringify($("input[name=exampleRadios]:checked").val()));
 }
 

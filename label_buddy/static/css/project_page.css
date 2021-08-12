@@ -29,6 +29,17 @@
     background-color: rgba(115, 223, 237, 0.3) !important;
 }
 
+#annotate-link {
+    text-decoration: none !important;
+    margin-right: 20%;
+    color: #5cb85c;
+}
+
+#review-link {
+    margin-left: 20%;
+    color: #5cb85c;
+}
+
 
 .export_div {
     border-radius: 5px;

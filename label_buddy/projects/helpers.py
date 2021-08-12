@@ -3,6 +3,7 @@ import random
 from zipfile import ZipFile
 from rarfile import RarFile
 from json import dumps
+from itertools import chain
 
 from django.core.files import File
 from django.db.models import Q
@@ -184,10 +185,19 @@ def filter_tasks(user, project, labeled, reviewed):
         tasks = tasks.filter(review_status=review_status)
 
     # if users_can_see_other_queues is false return only assigned tasks
+    # if user is a reviewer he/she must see all tasks in order to review them!
     if not project.users_can_see_other_queues:
-        tasks = tasks.filter(Q(assigned_to__in=[user]) | Q(assigned_to=None))
-    
-    return tasks
+
+        assigned_tasks = tasks.filter(Q(assigned_to__in=[user]) | Q(assigned_to=None))
+        if user not in project.reviewers.all():
+            # if only annotator return assigned tasks
+            return assigned_tasks, assigned_tasks.count()
+        else:
+            # return all tasks but annotate only assigned ones
+            # concat result so first task shown are the assigned ones
+            all_other_tasks = tasks.exclude(pk__in=assigned_tasks.values_list('id', flat=True))
+            return list(chain(assigned_tasks, all_other_tasks)), assigned_tasks.count()
+    return tasks, 0
 
 # fix taksks after edit project
 def fix_tasks_after_edit(users_can_see_other_queues_old, users_can_see_other_queues_new, project, user):

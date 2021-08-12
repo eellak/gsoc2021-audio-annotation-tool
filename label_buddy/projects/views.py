@@ -262,13 +262,20 @@ def project_page_view(request, pk):
 
     user = get_user(request.user.username)
     project = get_project(pk)
-    # if project.users_can_see_other_queues is false
-    # only tasks assigned to logged in user are returned
-    tasks = filter_tasks(user, project, labeled, reviewed)
     if not user or (user != request.user) or not project:
         if not project:
             messages.add_message(request, messages.ERROR, "Project does not exist.")
         return HttpResponseRedirect("/")
+
+    # check if user is involved to project
+    if (user not in project.annotators.all()) and (user not in project.reviewers.all()):
+        messages.add_message(request, messages.ERROR, "You are not involved to requested project")
+        return HttpResponseRedirect("/")
+    # if project.users_can_see_other_queues is false
+    # only tasks assigned to logged in user are returned
+    # if user is a reviewer all tasks are returned but he/she can annotate
+    # only assigned
+    tasks, assigned_tasks_count = filter_tasks(user, project, labeled, reviewed)
 
     if request.method == "POST":
         skipped_files = 0
@@ -330,13 +337,14 @@ def project_page_view(request, pk):
     annotated_tasks = {}
     for task in tasks:
         annotated_tasks[task.id] = get_annotation(task, project, user)
+
     context = {
         "page_obj": page_obj,
         "list_num_of_pages": range(1, paginator.num_pages+1),
         "user": user,
         "project": project,
         "tasks_per_page": tasks_per_page,
-        "tasks_count_filtered": tasks.count(),
+        "tasks_count_filtered": len(tasks),
         "tasks_count_no_filter": get_project_tasks(project).count(),
         "tasks": tasks,
         "annotations_count": Annotation.objects.filter(project=project).count(),
@@ -347,6 +355,7 @@ def project_page_view(request, pk):
         "reviewed": Review_status.reviewed,
         "host": request.build_absolute_uri("/"),
         "annotated_tasks":annotated_tasks,
+        "assigned_tasks_count": assigned_tasks_count
     }
     return render(request, "label_buddy/project_page.html", context)
 
@@ -389,7 +398,6 @@ def annotate_task_view(request, pk, task_pk):
     if not project.users_can_see_other_queues:
         assert task.assigned_to.exists() == True
         if user not in task.assigned_to.all():
-            print("Hellooooo")
             messages.add_message(request, messages.ERROR, "Task %s is not assigned to you." % str(task.id))
             return HttpResponseRedirect(get_project_url(project.id))
     

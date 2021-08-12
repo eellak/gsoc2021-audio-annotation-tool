@@ -90,7 +90,7 @@
 							</td>
 
 							{% if user in project.managers.all %}
-								<td>
+								<td style="text-align: center;">
 									<a id="edit-link" href="{% url 'edit_project' project.id %}">
 										<i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Edit {{ project.title }}" class="fas fa-edit tooltip-icons"></i> </i>
 									</a>
@@ -100,7 +100,7 @@
 									</a>
 								</td>
 							{% else %}
-								<td title="You cannot Edit/Delete this project"><b>-</b></td>
+								<td data-toggle="tooltip" data-placement="top" title="You cannot Edit/Delete this project"><b>-</b></td>
 							{% endif %}
 						</tr>
 					
