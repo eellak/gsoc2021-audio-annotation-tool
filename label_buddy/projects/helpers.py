@@ -61,6 +61,14 @@ def get_annotation(task, project, user):
     except Annotation.DoesNotExist:
         return None
 
+# get annotation by pk
+def get_annotation_by_id(pk):
+    try:
+        annotation = Annotation.objects.get(pk=pk)
+        return annotation
+    except Annotation.DoesNotExist:
+        return None
+
 # get annotation updated_at and result by task, project and user
 def get_annotation_result(task, project, user):
     try:
@@ -76,6 +84,11 @@ def get_annotation_review(user, annotation):
         return review
     except Comment.DoesNotExist:
         return None
+
+# check if user involved at project
+def is_user_involved(user, project):
+    return (user in project.annotators.all()) or (user in project.reviewers.all()) or (user in project.managers.all())
+
 
 def if_annotation_reviewed(annotation):
     try:

@@ -10,6 +10,7 @@ urlpatterns = [
     url(r"^projects/(?P<pk>\d+)/tasks$", views.project_page_view, name="project_page"),
     url(r"^projects/(?P<pk>\d+)/tasks/(?P<task_pk>\d+)/annotation$", views.annotate_task_view, name="annotation_page"),
     url(r"^projects/(?P<pk>\d+)/tasks/(?P<task_pk>\d+)/list_annotations$", views.list_annotations_for_task_view, name="list_task_annotations"),
+    url(r"^projects/(?P<pk>\d+)/tasks/(?P<task_pk>\d+)/list_annotations/(?P<annotation_pk>\d+)/review$", views.review_annotation_view, name="review_page"),
     url(r"^projects/(?P<pk>\d+)/tasks/(?P<task_pk>\d+)/annotation/delete$", views.annotation_delete_view, name="delete_annotation"),
     url(r"^projects/(?P<pk>\d+)/edit$", views.project_edit_view, name="edit_project"),
     url(r"^projects/(?P<pk>\d+)/delete$", views.project_delete_view, name="delete_project"),

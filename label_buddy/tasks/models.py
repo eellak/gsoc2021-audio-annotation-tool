@@ -105,7 +105,8 @@ class Comment(models.Model):
 
     comment = models.TextField(blank=False, help_text='Comment for an annotation')
     created_at = models.DateTimeField(auto_now=True, help_text='Date and time of comment creation')
-
+    updated_at = models.DateTimeField(blank=True, null=True, help_text='Date and time of update')
+    
     class Meta:
         unique_together = ('reviewed_by', 'annotation',)
 
