@@ -49,8 +49,13 @@
             {% endif %}
         </span>
     </div>
-    <h2 style="cursor: default;" data-toggle="tooltip" data-placement="top" title="{{ task.original_file_name }}" class="headers-page">
-        Audio: {{ task.original_file_name }}
+    <h2 style="cursor: default;" class="headers-page">
+        <span data-toggle="tooltip" data-placement="top" title="{{ task.original_file_name }}">
+            Audio: {{ task.original_file_name }}
+        </span>
+        <sup>
+            <i style="cursor: pointer; color: #74deed;" data-toggle="modal" data-target="#annotationPageModal" class="far fa-question-circle tooltip-icons fa-xs"></i>
+        </sup>
     </h2>
 
     <div id="header-div">
@@ -129,4 +134,5 @@
     </div>
     {% include "project_modals.html" %}
     {% include "project_information_modal.html" %}
+    {% include "annotation_page_modal.html" %}
 {% endblock %}
