@@ -48,12 +48,10 @@
     </div>
 
     <div style="text-align: center; margin-left: 1%; margin-right: 1%;">
-        {% if reviewer %}
-            {% if annotation.review_status == status_approved %}
-                <span style="cursor: default;" data-toggle="tooltip" data-placement="top" title="Annotation status" class="badge badge-pill badge-success">Approved</span>
-            {% elif annotation.review_status == status_rejected %}
-                <span style="cursor: default;" data-toggle="tooltip" data-placement="top" title="Annotation status" class="badge badge-pill badge-danger">Rejected</span>
-            {% endif %}
+        {% if annotation.review_status == status_approved %}
+            <span style="cursor: default;" data-toggle="tooltip" data-placement="top" title="Annotation status" class="badge badge-pill badge-success">Approved</span>
+        {% elif annotation.review_status == status_rejected %}
+            <span style="cursor: default;" data-toggle="tooltip" data-placement="top" title="Annotation status" class="badge badge-pill badge-danger">Rejected</span>
         {% else %}
             <span style="border: 1px solid black; cursor: default;" data-toggle="tooltip" data-placement="top" title="Annotation status" class="badge badge-pill badge-light">Unreviewed</span>
         {% endif %}
@@ -129,13 +127,21 @@
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-8 p-0" id="commentDiv">
-                <textarea id="commentArea" class="form-control" placeholder="Review comment here...">{{ comment }}</textarea>
+                {% if comment %}
+                    <textarea id="commentArea" class="form-control" placeholder="Review comment here...">{{ comment }}</textarea>
+                {% else %}
+                    <textarea id="commentArea" class="form-control" placeholder="Review comment here..."></textarea>
+                {% endif %}
+                
             </div>
 
             <div class="col p-0" id="review-btn-div">
                 <button title="Approve annotation" class="btn btn-success my-button review-buttons" value="APPROVE" onclick="submitReview(this);"><i style="margin-right: 1%;" class="fas fa-thumbs-up"></i> Approve</button>
-                
-                <button title="Delete review" class="btn btn-light my-button review-buttons" id="delete-annotation-btn" value="DELETE" onclick="submitReview(this);"><i class="fas fa-trash-alt"></i></button>
+                {% if reviewer %}
+                    <button title="Delete review" class="btn btn-light my-button review-buttons" id="delete-annotation-btn" value="DELETE" onclick="submitReview(this);"><i class="fas fa-trash-alt"></i></button>
+                {% else %}
+                    <button disabled title="No review to delete" class="btn btn-light my-button review-buttons" id="delete-annotation-btn" value="DELETE" onclick="submitReview(this);"><i class="fas fa-trash-alt"></i></button>
+                {% endif %}
                 <button title="Reject annotation" class="btn btn-danger my-button review-buttons" value="REJECT" onclick="submitReview(this);"><i style="margin-right: 1%;" class="fas fa-thumbs-down"></i> Reject</button>
             </div>
         </div>

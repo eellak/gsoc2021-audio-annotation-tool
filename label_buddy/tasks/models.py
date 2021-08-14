@@ -2,7 +2,7 @@ import os
 
 from django.db import models
 from django.core.exceptions import ValidationError
-from django.db.models.signals import post_save, pre_delete
+from django.db.models.signals import post_save, pre_save, pre_delete
 from django.dispatch import receiver
 from enumchoicefield import ChoiceEnum, EnumChoiceField
 from url_or_relative_url_field.fields import URLOrRelativeURLField
@@ -123,6 +123,21 @@ def make_task_labeled(sender, instance, created, **kwargs):
         task = instance.task
         task.status = Status.labeled
         task.save()
+
+@receiver(pre_save, sender=Annotation)
+def make_annotation_unreviewed(sender, instance, **kwargs):
+    """
+    if annotation result updated, make status unreviewed so reviewer can
+    review the new annotaion.
+    """
+    try:
+        annotation = Annotation.objects.get(pk=instance.pk)
+    except Annotation.DoesNotExist:
+        return False
+    
+    if not (instance.result == annotation.result):
+        instance.review_status = Annotation_status.no_review
+    # print(annotation.result)
 
 # when a comment is deleted, set annotations status to no_review
 @receiver(pre_delete, sender=Comment)

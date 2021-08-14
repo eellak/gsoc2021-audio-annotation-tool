@@ -534,7 +534,7 @@ def list_annotations_for_task_view(request, pk, task_pk):
     # if annotation is revied by user, [annotation.id] = True else None
     annotations_reviewed_by_user = {}
     for annotation in task_annotations:
-        annotations_reviewed_by_user[annotation.id] = True if get_annotation_review(user, annotation) and annotation.review_status != Annotation_status.no_review else False
+        annotations_reviewed_by_user[annotation.id] = get_annotation_review(user, annotation)
 
 
     annotations_per_page = 8
@@ -665,6 +665,9 @@ def review_annotation_view(request, pk, task_pk, annotation_pk):
                 user_review.delete()
                 messages.add_message(request, messages.SUCCESS, "Review deleted successfully. You can review the annotation again as long as it's still unreviewed.")
                 return HttpResponse(status=status.HTTP_200_OK)
+            else:
+                messages.add_message(request, messages.ERROR, "No review to delete.")
+                return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
         else:
             messages.add_message(request, messages.ERROR, "Something is wrong.")
             return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
