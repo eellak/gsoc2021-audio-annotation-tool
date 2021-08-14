@@ -315,6 +315,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
 });
 
+function showAlert() {
+    NProgress.done();
+    location.reload(true);
+}
+
 // Load regions from annotation.
 function loadRegions(result) {
     for(const region of result) {
@@ -331,6 +336,30 @@ function loadRegions(result) {
         });
     }
 }
+
+function submitReview(button) {
+    // xmlhttp request for exporting data
+    const xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            // Typical action to be performed when the document is ready:
+            showAlert();
+        } else if(this.readyState == 4 && (this.status == 400 || this.status == 401)) {
+            showAlert();
+        }
+    };
+    xhr.open("POST", "", true);
+    xhr.setRequestHeader("X-CSRFToken", django_csrf_token);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    let data = {
+        "value": button.value,
+        "comment": $('#commentArea').val(),
+    };
+    NProgress.start();
+    xhr.send(JSON.stringify(data));
+}
+
+// buttons
 
 // play region link
 $('#play-region-btn').click( function(e) {

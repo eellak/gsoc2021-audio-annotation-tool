@@ -93,9 +93,9 @@ def is_user_involved(user, project):
 def if_annotation_reviewed(annotation):
     try:
         review = Comment.objects.get(annotation=annotation)
-        return review.reviewed_by
+        return review.reviewed_by, review.comment
     except Comment.DoesNotExist:
-        return None
+        return None, None
 
 # get label by name
 def get_label(name):

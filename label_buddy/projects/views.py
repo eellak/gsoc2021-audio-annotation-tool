@@ -1,8 +1,9 @@
 import random
-from json import dumps
+from json import dumps, loads
 
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.utils import timezone
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -27,10 +28,11 @@ from .permissions import UserCanCreateProject
 from .forms import ProjectForm
 from tasks.models import (
     Task,
+    Annotation,
+    Comment,
+    Annotation_status,
     Status,
     Review_status,
-    Annotation,
-    Annotation_status
 )
 from .helpers import (
     get_projects_of_user,
@@ -523,8 +525,8 @@ def list_annotations_for_task_view(request, pk, task_pk):
     # exclude annotations that are reviewed but not from the current user
     to_exclude_ids = []
     for annotation in task_annotations:
-        user_reviewed = if_annotation_reviewed(annotation)
-        if user_reviewed and user_reviewed != user:
+        user_reviewed, _ = if_annotation_reviewed(annotation)
+        if user_reviewed and annotation.review_status != Annotation_status.no_review and user_reviewed != user:
             to_exclude_ids.append(annotation.id)
 
     task_annotations = task_annotations.exclude(id__in=to_exclude_ids)
@@ -532,7 +534,7 @@ def list_annotations_for_task_view(request, pk, task_pk):
     # if annotation is revied by user, [annotation.id] = True else None
     annotations_reviewed_by_user = {}
     for annotation in task_annotations:
-        annotations_reviewed_by_user[annotation.id] = get_annotation_review(user, annotation)
+        annotations_reviewed_by_user[annotation.id] = True if get_annotation_review(user, annotation) and annotation.review_status != Annotation_status.no_review else False
 
 
     annotations_per_page = 8
@@ -612,7 +614,7 @@ def review_annotation_view(request, pk, task_pk, annotation_pk):
         return HttpResponseRedirect(get_project_url(project.id) + "/" + str(task.id) + "/list_annotations")
 
     # assert that annotation is either reviewed by user or is unreviewed
-    annotation_reviewer = if_annotation_reviewed(to_review_annotation)
+    annotation_reviewer, _ = if_annotation_reviewed(to_review_annotation)
     if annotation_reviewer and annotation_reviewer != user:
         messages.add_message(request, messages.WARNING, "This annotation is being reviewed by another user.")
         return HttpResponseRedirect(get_project_url(project.id) + "/" + str(task.id) + "/list_annotations")
@@ -622,9 +624,60 @@ def review_annotation_view(request, pk, task_pk, annotation_pk):
     if to_review_annotation.user == user:
         messages.add_message(request, messages.WARNING, "You cannot review your own annotation.")
         return HttpResponseRedirect(get_project_url(project.id) + "/" + str(task.id) + "/list_annotations")
+    
+    if request.method == "POST":
+        data = loads(request.body)
+        action = data['value']
 
+        # if annotation unreviewd create reviewapproved set annotation's status to approved 
+        if action in ["APPROVE", "REJECT"]:
+            annotation_status = ""
+            if action == "APPROVE":
+                annotation_status = Annotation_status.approved
+            else:
+                annotation_status = Annotation_status.rejected
 
+            user_review = get_annotation_review(user, to_review_annotation)
+            to_review_annotation.review_status = annotation_status # set annotation's status either way
+            to_review_annotation.save()
+            # if there is no a review yet, create one else update
+            if user_review:
+                user_review.comment = data['comment']
+                user_review.updated_at = timezone.now()
+                user_review.save()
+            else:
+                Comment.objects.create(
+                    reviewed_by=user,
+                    annotation=to_review_annotation,
+                    comment=data['comment']
+                )
+            if data['comment'] == "":
+                messages.add_message(request, messages.WARNING, "You submitted a review with an empty comment.")
+            else:
+                if user_review:
+                    messages.add_message(request, messages.SUCCESS, "Review updated successfully.")
+                else:
+                    messages.add_message(request, messages.SUCCESS, "Review created successfully.")
+            return HttpResponse(status=status.HTTP_200_OK)
+        elif action == "DELETE":
+            user_review = get_annotation_review(user, to_review_annotation)
+            if user_review:
+                user_review.delete()
+                messages.add_message(request, messages.SUCCESS, "Review deleted successfully. You can review the annotation again as long as it's still unreviewed.")
+                return HttpResponse(status=status.HTTP_200_OK)
+        else:
+            messages.add_message(request, messages.ERROR, "Something is wrong.")
+            return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
+    
+    reviewer, comment = if_annotation_reviewed(to_review_annotation)
+    # get review of annotation, assert that if exists user == current user
+    if reviewer:
+        assert reviewer == user
     context = {
+        "reviewer": reviewer,
+        "comment": comment,
+        "status_approved": Annotation_status.approved,
+        "status_rejected": Annotation_status.rejected,
         "labels": project.labels,
         "labels_count": project.labels.count(),
         "annotation": to_review_annotation,
