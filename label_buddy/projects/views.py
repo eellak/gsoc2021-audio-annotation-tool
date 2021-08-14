@@ -371,9 +371,11 @@ def project_page_view(request, pk):
 
     # if user has annotated task
     annotated_tasks = {}
+    annotated_tasks_status = {}
     for task in tasks:
-        annotated_tasks[task.id] = get_annotation(task, project, user)
-
+        user_annotation = get_annotation(task, project, user)
+        annotated_tasks[task.id] = user_annotation
+        annotated_tasks_status[task.id] = user_annotation.review_status.name if user_annotation else None
     context = {
         "page_obj": page_obj,
         "list_num_of_pages": range(1, paginator.num_pages+1),
@@ -391,6 +393,7 @@ def project_page_view(request, pk):
         "reviewed": Review_status.reviewed,
         "host": request.build_absolute_uri("/"),
         "annotated_tasks":annotated_tasks,
+        "annotated_tasks_status": annotated_tasks_status,
         "assigned_tasks_count": assigned_tasks_count
     }
     return render(request, "label_buddy/project_page.html", context)
@@ -454,15 +457,26 @@ def annotate_task_view(request, pk, task_pk):
     created_at = annotation.created_at if annotation else None
     updated_at = annotation.updated_at if annotation else None
 
+    annotation_status = annotation.review_status if annotation else None
+
+    reviewer, comment, review_created_at , review_updated_at = if_annotation_reviewed(annotation)
     context = {
         "labels": labels,
         "labels_count": labels.count(),
         "task": task,
         "project": project,
         "next_unlabeled_task_id": next_unlabeled_task_id(task.id, project),
-        "annotation": annotation_result,
+        "annotation_result": annotation_result,
         "created_at": created_at,
         "updated_at": updated_at,
+        "annotation_status": annotation_status,
+        "status_approved": Annotation_status.approved,
+        "status_rejected": Annotation_status.rejected,
+        "status_no_review": Annotation_status.no_review,
+        "reviewer": reviewer,
+        "comment": comment,
+        "review_created_at": review_created_at,
+        "review_updated_at": review_updated_at,
         "tasks_count_no_filter": get_project_tasks(project).count(),
         "host": request.build_absolute_uri("/"),
     }
@@ -525,7 +539,7 @@ def list_annotations_for_task_view(request, pk, task_pk):
     # exclude annotations that are reviewed but not from the current user
     to_exclude_ids = []
     for annotation in task_annotations:
-        user_reviewed, _ = if_annotation_reviewed(annotation)
+        user_reviewed, _, _, _= if_annotation_reviewed(annotation)
         if user_reviewed and annotation.review_status != Annotation_status.no_review and user_reviewed != user:
             to_exclude_ids.append(annotation.id)
 
@@ -614,7 +628,7 @@ def review_annotation_view(request, pk, task_pk, annotation_pk):
         return HttpResponseRedirect(get_project_url(project.id) + "/" + str(task.id) + "/list_annotations")
 
     # assert that annotation is either reviewed by user or is unreviewed
-    annotation_reviewer, _ = if_annotation_reviewed(to_review_annotation)
+    annotation_reviewer, _, _, _ = if_annotation_reviewed(to_review_annotation)
     if annotation_reviewer and annotation_reviewer != user:
         messages.add_message(request, messages.WARNING, "This annotation is being reviewed by another user.")
         return HttpResponseRedirect(get_project_url(project.id) + "/" + str(task.id) + "/list_annotations")
@@ -672,7 +686,7 @@ def review_annotation_view(request, pk, task_pk, annotation_pk):
             messages.add_message(request, messages.ERROR, "Something is wrong.")
             return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
     
-    reviewer, comment = if_annotation_reviewed(to_review_annotation)
+    reviewer, comment, _, _ = if_annotation_reviewed(to_review_annotation)
     # get review of annotation, assert that if exists user == current user
     if reviewer:
         assert reviewer == user
