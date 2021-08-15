@@ -6,6 +6,7 @@ from .models import (
     Annotation,
     Task,
     Status,
+    Annotation_status,
 )
 
 # get user by username
@@ -25,15 +26,14 @@ def get_annotation(task, project, user):
         return None
 
 # export data for project
-def export_data(project):
+def export_data(project, export_only_approved):
     """
     for all tasks of project which have been annotated.
     Result will be an array of dicts. Each dict will represent a task
     which will contain all annotation completed for this task.
     """
-
     exported_result = []
-
+    skipped_annotations = 0
     # get all annotated tasks of project
     annotated_tasks = Task.objects.filter(project=project, status=Status.labeled)
 
@@ -53,21 +53,40 @@ def export_data(project):
 
         # for every annotation, push it
         for annotation in task_annotations:
-            annotation_user = annotation.user
-            annotation_dict = {
-                "id": annotation.id,
-                "completed_by":{
-                    "id": annotation_user.id,
-                    "username": annotation_user.username,
-                    "email": annotation_user.email,
-                    "name": annotation_user.name,
-                },
-                "result": annotation.result,
-                "created_at": annotation.created_at.strftime("%Y-%m-%d %H:%M:%S"),
-                "updated_at": annotation.updated_at.strftime("%Y-%m-%d %H:%M:%S") if annotation.updated_at else "",
-                "task": task.id,
-            }
-            task_dict["annotations"].append(annotation_dict)
+            if export_only_approved:
+                if annotation.review_status == Annotation_status.approved:
+                    annotation_user = annotation.user
+                    annotation_dict = {
+                        "id": annotation.id,
+                        "completed_by":{
+                            "id": annotation_user.id,
+                            "username": annotation_user.username,
+                            "email": annotation_user.email,
+                            "name": annotation_user.name,
+                        },
+                        "result": annotation.result,
+                        "created_at": annotation.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+                        "updated_at": annotation.updated_at.strftime("%Y-%m-%d %H:%M:%S") if annotation.updated_at else "",
+                        "task": task.id,
+                    }
+                    task_dict["annotations"].append(annotation_dict)
+            else:
+                annotation_user = annotation.user
+                annotation_dict = {
+                    "id": annotation.id,
+                    "completed_by":{
+                        "id": annotation_user.id,
+                        "username": annotation_user.username,
+                        "email": annotation_user.email,
+                        "name": annotation_user.name,
+                    },
+                    "result": annotation.result,
+                    "created_at": annotation.created_at.strftime("%Y-%m-%d %H:%M:%S"),
+                    "updated_at": annotation.updated_at.strftime("%Y-%m-%d %H:%M:%S") if annotation.updated_at else "",
+                    "task": task.id,
+                }
+                task_dict["annotations"].append(annotation_dict)
+
         exported_result.append(task_dict)
     return exported_result
 

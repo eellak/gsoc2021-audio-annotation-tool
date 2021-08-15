@@ -1,5 +1,4 @@
 var selected_export_format = null;
-
 // fix filters after page reload
 function fixFilters() {
     var parameters = window.location.href.split('?')[1];
@@ -86,7 +85,7 @@ function filter_tasks() {
 //     }
 // }
 
-// dix for export click
+// fix for export click
 function selectExportFormat(div) {
 
     // execute only if div not already selected
@@ -121,6 +120,18 @@ function selectExportFormat(div) {
             export_div_json.style.cursor = 'pointer';
             json_radio.checked = false;
         }
+    }
+}
+
+function selectApprovedOrNot(div) {
+    let exportApproved = $('#exportApproved').is(':checked');
+
+    if(exportApproved) {
+        div.style.backgroundColor = 'white';
+        $('#exportApproved').prop('checked', false);
+    } else {
+        div.style.backgroundColor = 'rgba(115, 223, 237, 0.3)';
+        $('#exportApproved').prop('checked', true);
     }
 }
 
@@ -227,7 +238,10 @@ function exportDataRequest() {
     xhttp.setRequestHeader("X-CSRFToken", django_csrf_token);
     xhttp.setRequestHeader("Content-Type", "application/json");
     NProgress.start();
-    xhttp.send(JSON.stringify($("input[name=exampleRadios]:checked").val()));
+    xhttp.send(JSON.stringify( {
+        "format": $("input[name=exampleRadios]:checked").val(),
+        "exportApproved": $('#exportApproved').is(':checked')
+    }));
 }
 
 document.addEventListener('DOMContentLoaded', function() {
