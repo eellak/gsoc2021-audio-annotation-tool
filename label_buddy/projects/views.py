@@ -52,6 +52,7 @@ from .helpers import (
     get_project_tasks,
     get_project_url,
     filter_tasks,
+    filter_list_annotations,
     fix_tasks_after_edit,
     check_tasks_after_edit,
     add_labels_to_project,
@@ -550,6 +551,14 @@ def list_annotations_for_task_view(request, pk, task_pk):
     for annotation in task_annotations:
         annotations_reviewed_by_user[annotation.id] = get_annotation_review(user, annotation)
 
+    # read filter parameters
+    approved_filter = request.GET.get('approved', '')
+    rejected_filter = request.GET.get('rejected', '')
+    unreviewed_filter = request.GET.get('unreviewed', '')
+
+    # Only if filters are set call function
+    if approved_filter or rejected_filter or unreviewed_filter:
+        task_annotations = filter_list_annotations(task_annotations, approved_filter, rejected_filter, unreviewed_filter)
 
     annotations_per_page = 8
     paginator = Paginator(task_annotations, annotations_per_page) # Show 8 tasks per page
@@ -643,7 +652,7 @@ def review_annotation_view(request, pk, task_pk, annotation_pk):
         data = loads(request.body)
         action = data['value']
 
-        # if annotation unreviewd create reviewapproved set annotation's status to approved 
+        # if annotation unreviewed create reviewapproved set annotation's status to approved 
         if action in ["APPROVE", "REJECT"]:
             annotation_status = ""
             if action == "APPROVE":

@@ -1,0 +1,27 @@
+<div class="dropdown show">
+    <button style="color: black; float: left;" class="btn my-button"  role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <i style="margin-right: 10%;" class="fas fa-filter"></i> Filters
+    </button>
+    <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+        <div style="margin-left: 10%;" class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="approved">
+            <label class="form-check-label" for="flexCheckDefault">
+                Approved
+            </label>
+        </div>
+        <div style="margin-left: 10%;" class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="rejected">
+            <label class="form-check-label" for="flexCheckChecked">
+                Rejected
+            </label>
+        </div>
+        <div style="margin-left: 10%;" class="form-check">
+            <input class="form-check-input" type="checkbox" value="" id="unreviewed">
+            <label class="form-check-label" for="flexCheckChecked">
+                Unreviewed
+            </label>
+        </div>
+        <div class="dropdown-divider"></div>
+        <a onclick="filter_tasks()" style="text-align: center;" class="dropdown-item" href="javascript:void(0);"><b>Apply</b></a>
+    </div> 
+</div>

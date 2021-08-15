@@ -18,6 +18,7 @@ from tasks.models import (
     Comment,
     Status,
     Review_status,
+    Annotation_status,
 )
 
 # global variables
@@ -226,6 +227,45 @@ def filter_tasks(user, project, labeled, reviewed):
             all_other_tasks = tasks.exclude(pk__in=assigned_tasks.values_list('id', flat=True))
             return list(chain(assigned_tasks, all_other_tasks)), assigned_tasks.count()
     return tasks, 0
+
+# filter annotations for list annotations page
+def filter_list_annotations(annotations, approved_filter, rejected_filter, unreviewed_filter):
+    bool_approved_filter = str_to_bool(approved_filter)
+    bool_rejected_filter = str_to_bool(rejected_filter)
+    bool_unreviewed_filter = str_to_bool(unreviewed_filter)
+    filters_true = 0
+    if bool_approved_filter:
+        filters_true += 1
+    
+    if bool_rejected_filter:
+        filters_true += 1
+
+    if bool_unreviewed_filter:
+        filters_true += 1
+
+    # return all annotations
+    if not (bool_approved_filter and bool_rejected_filter and bool_unreviewed_filter) and not filters_true == 3:
+        if filters_true == 1:
+            # only one filter checked
+            if bool_approved_filter:
+                annotations = annotations.filter(review_status=Annotation_status.approved)
+
+            if bool_rejected_filter:
+                annotations = annotations.filter(review_status=Annotation_status.rejected)
+
+            if bool_unreviewed_filter:
+                annotations = annotations.filter(review_status=Annotation_status.no_review)
+        else:
+            # two filters checked
+            if bool_approved_filter:
+                if bool_rejected_filter:
+                    annotations = annotations.filter(Q(review_status=Annotation_status.approved) | Q(review_status=Annotation_status.rejected))
+                else:
+                    annotations = annotations.filter(Q(review_status=Annotation_status.approved) | Q(review_status=Annotation_status.no_review))
+            else:
+                annotations = annotations.filter(Q(review_status=Annotation_status.rejected) | Q(review_status=Annotation_status.no_review))
+
+    return annotations
 
 # fix taksks after edit project
 def fix_tasks_after_edit(users_can_see_other_queues_old, users_can_see_other_queues_new, project, user):
