@@ -165,15 +165,23 @@ class ExportData(APIView):
             return Response({"message": "You are not involved to this project!"}, status=status.HTTP_400_BAD_REQUEST)
 
         # if all validations pass, return exported json
-        exported_json = export_data(project, request.data['exportApproved'])
+        exported_json, skipped_annotations = export_data(project, request.data['exportApproved'])
 
         # create filename
-        exported_name = "project-" + str(project.id) + "-export_at-" + project.created_at.strftime("%Y-%m-%d-%H:%M:%S")
+        if request.data['exportApproved']:
+            exported_name = "project-" + str(project.id) + "-ONLY_APPROVED-export_at-" + project.created_at.strftime("%Y-%m-%d-%H:%M:%S")
+        else:
+            exported_name = "project-" + str(project.id) + "-export_at-" + project.created_at.strftime("%Y-%m-%d-%H:%M:%S")
+
+        if request.data['exportApproved']:
+            message = str(skipped_annotations) + " unapproved annotations were skipped. Succesfully exported " + exported_name + "."
+        else:
+            message = "Succesfully exported " + exported_name + "."
         exported_name += ".json" if request.data['format'] == "JSON" else ".csv"
         data = {
             "format": request.data['format'],
             "exported_json": exported_json,
             "exported_name": exported_name,
-            "message": "Succesfully exported " + exported_name + "."
+            "message": message
         }
         return Response(data, status=status.HTTP_200_OK)

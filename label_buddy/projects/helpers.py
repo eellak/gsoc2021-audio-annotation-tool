@@ -242,7 +242,7 @@ def filter_list_annotations(annotations, approved_filter, rejected_filter, unrev
 
     if bool_unreviewed_filter:
         filters_true += 1
-
+    
     # return all annotations
     if not (bool_approved_filter and bool_rejected_filter and bool_unreviewed_filter) and not filters_true == 3:
         if filters_true == 1:
