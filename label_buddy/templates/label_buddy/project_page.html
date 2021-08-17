@@ -37,10 +37,10 @@
         </button>
     </div>
     <div class="top-div">
-        <a href="{% url 'index_page' %}"><img style="border: 2px solid #74deed; float: left;" src="{{ project.logo.url }}" width="30" height="30" href="{% url 'index_page' %}" title="Projects page" class="rounded-circle"></a>
+        <a href="{% url 'index_page' %}"><img style="border: 2px solid #74deed; float: left;" src="{{ project.logo.url }}" width="30" height="30" href="{% url 'index_page' %}" data-toggle="tooltip" data-target="top" title="{{ project.title }}" class="rounded-circle"></a>
         <i style="margin-top: .5%;" class="fas fa-angle-right fa-xs top-icons"></i>
-        <a title="Project instructions" class="my-link top-icons" data-toggle="modal" data-target="#instructionsModal" href=""><i class="fas fa-info"></i></a>
-        <a title="Project description" style="margin-left: 1%;" class="my-link top-icons" data-toggle="modal" data-target="#descriptionModal" href=""><i class="fas fa-question-circle"></i></a>
+        <a data-toggle="tooltip" data-target="top" title="Project instructions" class="top-icons"><i style="cursor: pointer;" data-toggle="modal" data-target="#instructionsModal" class="fas fa-info"></i></a>
+        <a data-toggle="tooltip" data-target="top" title="Project description" style="margin-left: 1%;" class="top-icons"><i style="cursor: pointer;" data-toggle="modal" data-target="#descriptionModal" class="fas fa-question-circle"></i></a>
         {% if project.users_can_see_other_queues %}
             <span data-toggle="tooltip" data-placement="bottom" offset=.5 title="All task are shown" style="float: right; margin-top: .2%;">
                     <b>Public tasks: <i style="color:green" class="fas fa-check-circle" aria-hidden="true"></i></b>

@@ -189,14 +189,13 @@ function downloadJSON(content, fileName, contentType) {
 
 function downloadCSV(content, fileName) {
     let rows = [
-        ["audio", "audio_length", "id", "regions", "completed_at", "annotator_email", "annotator_username", "annotation_id", "project_id"]
+        ["audio", "audio_length", "id", "regions", "completed_at", "annotator_email", "annotator_username",
+            "reviewer_email", "reviewer_username", "review_status", "review_created_at", "review_updated_at", "annotation_id", "project_id"]
     ];
-    
     for(task of content) {
         for(annotation of task['annotations']) {
             let regions = []
             for(region of annotation['result']) regions.push(region['value'])
-
             var arr = [
                 task['data']['audio'],
                 annotation['result'][0]['audio_length'],
@@ -205,11 +204,16 @@ function downloadCSV(content, fileName) {
                 JSON.stringify(annotation['created_at']),
                 annotation['completed_by']['email'],
                 annotation['completed_by']['username'],
+                annotation['reviewed_by']['email'],
+                annotation['reviewed_by']['username'],
+                annotation['reviewed_by']['review_status'],
+                annotation['reviewed_by']['review_created_at'],
+                annotation['reviewed_by']['review_updated_at'],
                 annotation['id'],
                 task['project']
             ];
+            rows.push(arr);
         }
-        rows.push(arr);
     }
 
     let csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");

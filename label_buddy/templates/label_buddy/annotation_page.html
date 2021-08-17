@@ -38,7 +38,7 @@
     <div class="top-div">
         <img style="border: 2px solid #74deed; float: left;" src="{{ project.logo.url }}" width="30" height="30" data-toggle="modal" data-target="#informationModal" href="" title="{{ project.title }} information" class="rounded-circle">
         <i style="margin-top: .5%;" class="fas fa-angle-right fa-xs top-icons"></i>
-        <a title="Project instructions" class="my-link top-icons" data-toggle="modal" data-target="#instructionsModal" href=""><i class="fas fa-info"></i></a>
+        <a data-toggle="tooltip" data-target="top" title="Project instructions" class="my-link top-icons"><i style="cursor: pointer;" data-toggle="modal" data-target="#instructionsModal" class="fas fa-info"></i></a>
         <span style="float: right; margin-top: .2%;">
             {% if updated_at %}
                 <b>Last update: </b>{{ updated_at|date:"d-m-y" }}
