@@ -139,8 +139,6 @@
                 <button title="Approve annotation" class="btn btn-success my-button review-buttons" value="APPROVE" onclick="submitReview(this);"><i style="margin-right: 1%;" class="fas fa-thumbs-up"></i> Approve</button>
                 {% if reviewer %}
                     <button title="Delete review" class="btn btn-light my-button review-buttons" id="delete-annotation-btn" value="DELETE" onclick="submitReview(this);"><i class="fas fa-trash-alt"></i></button>
-                {% else %}
-                    <button title="No review to delete" class="btn btn-light my-button review-buttons" id="delete-annotation-btn" value="DELETE" onclick="submitReview(this);"><i class="fas fa-trash-alt"></i></button>
                 {% endif %}
                 <button title="Reject annotation" class="btn btn-danger my-button review-buttons" value="REJECT" onclick="submitReview(this);"><i style="margin-right: 1%;" class="fas fa-thumbs-down"></i> Reject</button>
             </div>

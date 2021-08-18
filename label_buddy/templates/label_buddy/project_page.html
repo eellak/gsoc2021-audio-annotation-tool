@@ -132,9 +132,9 @@
                         {% endif %}
                         
                         {% if task.review_status == reviewed %}
-                            <td><i data-toggle="tooltip" data-placement="top" data-title="Reviewed" style="color: #5cb85c" class="fas fa-check-circle tooltip-icons" aria-hidden="true"></i></td>
+                            <td><i data-toggle="tooltip" data-placement="top" data-title="All annotations reviewed" style="color: #5cb85c" class="fas fa-check-circle tooltip-icons" aria-hidden="true"></i></td>
                         {% else %}
-                            <td><i data-toggle="tooltip" data-placement="top" data-title="Unreviewed" style="color: #d9534f" class="fas fa-exclamation-circle tooltip-icons" aria-hidden="true"></i></td>
+                            <td><i data-toggle="tooltip" data-placement="top" data-title="Some annotations are unreviewed" style="color: #d9534f" class="fas fa-exclamation-circle tooltip-icons" aria-hidden="true"></i></td>
                         {% endif %}
 
                         {% if user in project.annotators.all %}

@@ -2,7 +2,7 @@ import os
 
 from django.db import models
 from django.core.exceptions import ValidationError
-from django.db.models.signals import post_save, pre_save, pre_delete
+from django.db.models.signals import post_save, pre_save, pre_delete, post_delete
 from django.dispatch import receiver
 from enumchoicefield import ChoiceEnum, EnumChoiceField
 from url_or_relative_url_field.fields import URLOrRelativeURLField
@@ -10,6 +10,13 @@ from url_or_relative_url_field.fields import URLOrRelativeURLField
 from users.models import User
 from projects.models import Project
 
+
+def get_review(annotation):
+    try:
+        review = Comment.objects.get(annotation=annotation)
+        return review
+    except Comment.DoesNotExist:
+        return None
 # Create your models here.
 
 class Status(ChoiceEnum):
@@ -119,9 +126,28 @@ class Comment(models.Model):
 @receiver(post_save, sender=Annotation)
 def make_task_labeled(sender, instance, created, **kwargs):
 
-    if created:
+    task = instance.task
+    if created and task.status == Status.unlabeled:
         task = instance.task
         task.status = Status.labeled
+        task.save()
+    
+@receiver(post_save, sender=Comment)
+def check_if_task_reviewed(sender, instance, created, **kwargs):
+    print("Hello")
+    """
+    If all annotationbs which belong to the task are reviewed,
+    then make task reviewed
+    """
+    task = instance.annotation.task
+    all_annotations = Annotation.objects.filter(task=task, project=task.project)
+    task_reviewed = True # if passes all validations it will be reviewed
+    for annotation in all_annotations:
+        if not get_review(annotation):
+            task_reviewed = False
+            break
+    if task_reviewed:
+        task.review_status = Review_status.reviewed
         task.save()
 
 @receiver(pre_save, sender=Annotation)
@@ -147,9 +173,31 @@ def make_annotation_unreviewed(sender, instance, **kwargs):
         annotation = instance.annotation
     except Annotation.DoesNotExist:
         return False
-    
+
     annotation.review_status = Annotation_status.no_review
     annotation.save()
+
+@receiver(post_delete, sender=Comment)
+def make_annotation_unreviewed(sender, instance, **kwargs):
+
+    try:
+        annotation = instance.annotation
+    except Annotation.DoesNotExist:
+        return False
+    
+    """
+    if task's annotations are not reviewed make it unreviewed
+    """
+    task = instance.annotation.task
+    all_annotations = Annotation.objects.filter(task=task, project=task.project)
+    task_reviewed = True # if passes all validations it will be reviewed
+    for annotation in all_annotations:
+        if not get_review(annotation):
+            task_reviewed = False
+            break
+    if not task_reviewed:
+        task.review_status = Review_status.unreviewed
+        task.save()
 
 
 # after deleting an annotation check task and if has no other annotation mark it as unlabeled
