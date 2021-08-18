@@ -219,19 +219,12 @@ document.addEventListener('DOMContentLoaded', function() {
         pixelRatio: 1,
         scrollParent: true,
         normalize: true,
-        minimap: true,
         splitChannels: false,
         waveColor: '#ddd',
-        progressColor: '#ddd',//'#74deed',
+        progressColor: '#ddd',
         backend: 'MediaElement',
         plugins: [
             WaveSurfer.regions.create(),
-            // WaveSurfer.minimap.create({
-            //     height: 30,
-            //     waveColor: '#ddd',
-            //     progressColor: '#74deed',
-            //     cursorColor: '#999'
-            // }),
             WaveSurfer.timeline.create({
                 container: '#wave-timeline'
             }),

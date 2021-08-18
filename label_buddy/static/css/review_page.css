@@ -22,6 +22,7 @@
     /* border: 2px solid green; */
     margin-top: 2%;
     margin-left: 1%;
+    margin-right: 1%;
 }
 
 #review-btn-div {
@@ -64,7 +65,7 @@
 }
 
 #regions-div {
-    max-height: 270px;
+    max-height: 250px;
     overflow-y: auto;
     -ms-overflow-style: none;
     scrollbar-width: none;

@@ -22,7 +22,7 @@
     text-align: center;
     margin-right: 1%; 
     margin-left: 1%;
-    margin-top: 3%;
+    margin-top: 2%;
 }
 
 #commentDiv {
@@ -73,7 +73,7 @@
 }
 
 #regions-div {
-    max-height: 400px;
+    max-height: 250px;
     overflow-y: auto;
     -ms-overflow-style: none;
     scrollbar-width: none;

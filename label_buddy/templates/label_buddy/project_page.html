@@ -56,13 +56,13 @@
         <div id="header-div">
             {% if user in project.managers.all %}
                 <button style="color: black; float: right;" data-toggle="modal" data-target="#exportModal" class="btn my-button">
-                    Export
+                    <i style="margin-right: 10%;" class="fas fa-file-export"></i> Export
                 </button>
                 <button style="color: black; float: right; margin-right: .5%;" data-toggle="modal" data-target="#importModal" class="btn my-button">
-                    Import
+                    <i style="margin-right: 10%;" class="fas fa-cloud-upload-alt"></i> Import
                 </button>
             {% endif %}
-            <a style="color: black; margin-right: .5%; float: left;" data-toggle="tooltip" data-placement="top" title="Back to projects page" href="{% url 'index_page' %}" class="btn my-button"><i style="margin-right: 10%;" class="fas fa-caret-left"></i> Projects</a>
+            <a style="color: black; margin-right: .5%; float: left;" data-toggle="tooltip" data-placement="top" title="Back to projects page" href="{% url 'index_page' %}" class="btn my-button"><i style="margin-right: 10%;" class="fas fa-caret-left"></i> Back</a>
             {% include "project_page_filters.html" %}
         </div>
         <div class="table-div">
