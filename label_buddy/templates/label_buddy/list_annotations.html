@@ -53,7 +53,12 @@
                         {% endif %}
 
                         <td>
-                            <img style="margin-right: 4%;" data-toggle="tooltip" data-placement="top" src="{{ annotation.user.avatar.url }}" width="25" height="25" title="{{ annotation.user.email }}" class="rounded-circle">
+                            {% if annotation.user == user %}
+                                <img style="margin-right: 4%; border: 2px solid #74deed;" data-toggle="tooltip" data-placement="top" src="{{ annotation.user.avatar.url }}" width="27" height="27" title="{{ annotation.user.email }}" class="rounded-circle">
+                            {% else %}
+                                <img style="margin-right: 4%;" data-toggle="tooltip" data-placement="top" src="{{ annotation.user.avatar.url }}" width="25" height="25" title="{{ annotation.user.email }}" class="rounded-circle">
+                            {% endif %}
+                            
                             {{ annotation.user.name }}
                         </td>
 

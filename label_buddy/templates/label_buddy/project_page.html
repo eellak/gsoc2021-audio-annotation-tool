@@ -82,17 +82,18 @@
                         <th><i class="fas fa-paint-brush my-table-header"></i> Annotated by you</th>
                     {% endif %}
                     <th data-toggle="tooltip" data-placement="left" title="Annotate/Review task" style="width: 110px;"><i class="fas fa-list my-table-header"></i> Options</th>
+                    {% if user in project.managers.all %}
+                        <th data-toggle="tooltip" data-placement="left" title="Delete task" style="width: 50px; text-align: center;">
+                            <i style="cursor: default;" class="fas fa-trash-alt tooltip-icons"></i>
+                        </th>
+                    {% endif %}
                 </tr>
             </thead>
             <!--Table head-->
             {% for task in page_obj %}
                 <!--Table body-->
                 <tbody>
-                    {% if assigned_tasks_count == forloop.counter and user in task.assigned_to.all and user in project.reviewers.all %}
-                    <tr style="border-bottom: 2px solid black;">
-                    {% else %}
                     <tr>
-                    {% endif %}
                         <td>{% get_table_id page_obj.number tasks_per_page forloop.counter %}</td>
                         {% if task.file %}
                             <td data-toggle="tooltip" data-placement="top" title="{{ task.original_file_name }}" class="table-title">{{ task.original_file_name }}</td>
@@ -125,22 +126,22 @@
                             {% endif %}
                         </td>
                         {% if task.status == labeled %}
-                            <td><i data-toggle="tooltip" data-placement="top" data-title="Labeled" style="color:green" class="fas fa-check-circle tooltip-icons" aria-hidden="true"></i></td>
+                            <td><i data-toggle="tooltip" data-placement="top" data-title="Labeled" style="color: #5cb85c" class="fas fa-check-circle tooltip-icons" aria-hidden="true"></i></td>
                         {% else %}
-                            <td><i data-toggle="tooltip" data-placement="top" data-title="Unlabeled" style="color:red" class="fas fa-exclamation-circle tooltip-icons" aria-hidden="true"></i></td>
+                            <td><i data-toggle="tooltip" data-placement="top" data-title="Unlabeled" style="color: #d9534f" class="fas fa-exclamation-circle tooltip-icons" aria-hidden="true"></i></td>
                         {% endif %}
                         
                         {% if task.review_status == reviewed %}
-                            <td><i data-toggle="tooltip" data-placement="top" data-title="Reviewed" style="color:green" class="fas fa-check-circle tooltip-icons" aria-hidden="true"></i></td>
+                            <td><i data-toggle="tooltip" data-placement="top" data-title="Reviewed" style="color: #5cb85c" class="fas fa-check-circle tooltip-icons" aria-hidden="true"></i></td>
                         {% else %}
-                            <td><i data-toggle="tooltip" data-placement="top" data-title="Unreviewed" style="color:red" class="fas fa-exclamation-circle tooltip-icons" aria-hidden="true"></i></td>
+                            <td><i data-toggle="tooltip" data-placement="top" data-title="Unreviewed" style="color: #d9534f" class="fas fa-exclamation-circle tooltip-icons" aria-hidden="true"></i></td>
                         {% endif %}
 
                         {% if user in project.annotators.all %}
                             {% if annotated_tasks|get_item:task.id %}
-                                <td><i data-toggle="tooltip" data-placement="top" data-title="Task annotated by you" style="color:green" class="fas fa-check-circle tooltip-icons" aria-hidden="true"></i></td>
+                                <td><i data-toggle="tooltip" data-placement="top" data-title="Task annotated by you" style="color: #5cb85c" class="fas fa-check-circle tooltip-icons" aria-hidden="true"></i></td>
                             {% else %}
-                                <td><i data-toggle="tooltip" data-placement="top" data-title="Task not annotated by you" style="color:red" class="fas fa-exclamation-circle tooltip-icons" aria-hidden="true"></i></td>
+                                <td><i data-toggle="tooltip" data-placement="top" data-title="Task not annotated by you" style="color: #d9534f" class="fas fa-exclamation-circle tooltip-icons" aria-hidden="true"></i></td>
                             {% endif %}
                         {% endif %}
 
@@ -164,7 +165,7 @@
                                             <i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Review task" class="fas fa-comment-dots tooltip-icons"></i>
                                         </a>
                                     {% else %}
-                                        You should not be here!
+                                        <b>-</b>
                                     {% endif %}
                                 {% endif %}
                             {% else %}
@@ -186,11 +187,18 @@
                                             <i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Review task" class="fas fa-comment-dots tooltip-icons"></i>
                                         </a>
                                     {% else %}
-                                        You should not be here!
+                                        <b>-</b>
                                     {% endif %}
                                 {% endif %}
                             {% endif %}
                         </td>
+                        {% if user in project.managers.all %}
+                            <td style="text-align: center;">
+                                <a style="color:  #d9534f;" href="{% url 'delete_task' project.id task.id %}">
+                                    <i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Delete {{ task.original_file_name }}" class="fas fa-times-circle tooltip-icons"></i>
+                                </a>
+                            </td>
+                        {% endif %}
                         
                     </tr>
                 </tbody>

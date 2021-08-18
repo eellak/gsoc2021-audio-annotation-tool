@@ -4,7 +4,7 @@ var selected_region = null;
 var selected_region_button = null;
 var regions_count = 0;
 var color_when_selected = '#74deed';
-var initial_opacity = .4;
+var initial_opacity = .2;
 var selected_region_opacity = .9;
 var wavesurfer; // eslint-disable-line no-var
 
@@ -215,23 +215,23 @@ document.addEventListener('DOMContentLoaded', function() {
     // Init wavesurfer
     wavesurfer = WaveSurfer.create({
         container: '#waveform',
-        height: 150,
+        height: 250,
         pixelRatio: 1,
         scrollParent: true,
         normalize: true,
         minimap: true,
-        splitChannels: true,
+        splitChannels: false,
         waveColor: '#ddd',
-        progressColor: '#74deed',
+        progressColor: '#ddd',//'#74deed',
         backend: 'MediaElement',
         plugins: [
             WaveSurfer.regions.create(),
-            WaveSurfer.minimap.create({
-                height: 30,
-                waveColor: '#ddd',
-                progressColor: '#74deed',
-                cursorColor: '#999'
-            }),
+            // WaveSurfer.minimap.create({
+            //     height: 30,
+            //     waveColor: '#ddd',
+            //     progressColor: '#74deed',
+            //     cursorColor: '#999'
+            // }),
             WaveSurfer.timeline.create({
                 container: '#wave-timeline'
             }),
@@ -260,8 +260,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // if there is a result load regions of annotation
         if(result && result.length != 0) {
             loadRegions(result);
-        } else {
-            document.getElementById('delete-annotation-btn').disabled = 'true';
         }
     });
 

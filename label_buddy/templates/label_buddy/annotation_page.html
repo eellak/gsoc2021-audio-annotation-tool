@@ -107,7 +107,7 @@
                 {% if labels_count %}
                     <div id="labels-div">
                         {% for label in labels.all %}
-                            <button style="background-color: {{ label.color }}; opacity: 0.3" class="badge my-badge badge-pill" value="{{ label.name }}" onclick="selectedLabel(this)">{{ label.name }}</button>
+                            <button style="background-color: {{ label.color }}; opacity: 0.2" class="badge my-badge badge-pill" value="{{ label.name }}" onclick="selectedLabel(this)">{{ label.name }}</button>
                         {% endfor %}
                     </div>
                 {% endif %}
@@ -137,44 +137,41 @@
             </div>
         </div>
     </div>
-    {% if not annotation_status or annotation_status == status_no_review %}
-        <div id="annotation-btn-div">
-            <button title="Save annotation" class="btn btn-success my-button annotation-buttons" onclick="submitAnnotation();"><i style="margin-right: 10%;" class="fas fa-save"></i> Save</button>
+    
+    <div id="annotation-btn-div">
+        <button title="Save annotation" class="btn btn-success annotation-buttons" onclick="submitAnnotation();"><i style="margin-right: 10%;" class="fas fa-save"></i> Save</button>
+        {% if reviewer and review_created_at %}
+            <button class="btn btn-light annotation-buttons" type="button" data-toggle="collapse" data-target="#commentDiv" aria-expanded="false" aria-controls="collapseExample">
+                <i style="margin-right: 10%;" class="fas fa-eye"></i>Review
+            </button>
+        {% endif %}
+        {% if created_at %}
             <a href="{% url 'delete_annotation' project.id task.id %}">
-                <button title="Delete annotation" class="btn btn-light my-button annotation-buttons" id="delete-annotation-btn"><i class="fas fa-trash-alt"></i></button>
+                <button title="Delete annotation" class="btn btn-light annotation-buttons" id="delete-annotation-btn"><i class="fas fa-trash-alt"></i></button>
             </a>
-            {% if next_unlabeled_task_id == -1 %}
-                <a title="Next unlabeled task" href="{% url 'annotation_page' project.id task.id %}"><button class="btn my-button annotation-buttons">Next <i style="margin-left: 10%;" class="fas fa-caret-right"></i></button></a>
-            {% else %}
-                <a title="Next unlabeled task" href="{% url 'annotation_page' project.id next_unlabeled_task_id %}"><button class="btn my-button annotation-buttons">Next <i style="margin-left: 10%;" class="fas fa-caret-right"></i></button></a>
-            {% endif %}
-        </div>
-        
-    {% elif reviewer and review_created_at %}
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-sm-8 p-0" id="commentDiv">
-                    <div style="height: 20%; text-align: left;">
-                        <span style="cursor: default;" data-toggle="tooltip" data-target="top" title="{{ reviewer.email }}"><b>Reviewer:</b> {{ reviewer }}</span>
-                    </div>
-                    {% if comment %}
-                        <textarea disabled id="commentArea" class="form-control">{{ comment }}</textarea>
+        {% endif %}
+        {% if next_unlabeled_task_id == -1 %}
+            <a title="Next unlabeled task" href="{% url 'annotation_page' project.id task.id %}"><button class="btn my-button annotation-buttons">Next <i style="margin-left: 10%;" class="fas fa-caret-right"></i></button></a>
+        {% else %}
+            <a title="Next unlabeled task" href="{% url 'annotation_page' project.id next_unlabeled_task_id %}"><button class="btn my-button annotation-buttons">Next <i style="margin-left: 10%;" class="fas fa-caret-right"></i></button></a>
+        {% endif %}
+    </div>
+    {% if reviewer and review_created_at %}
+        <div class="collapse" id="commentDiv">
+            <div class="card card-body">
+                <div style="margin-bottom: .5%;">
+                    <span style="cursor: default;" data-toggle="tooltip" data-target="top" title="{{ reviewer.email }}"><b>Reviewer:</b> {{ reviewer }}</span>
+                    {% if review_updated_at %}
+                        <span style="cursor: default; float: right;" data-toggle="tooltip" data-target="top" title="{{ reviewer.email }}"><b>Updated at:</b> {{ review_updated_at|date:"d-m-y" }}</span>
                     {% else %}
-                        <textarea disabled id="commentArea" class="form-control" placeholder="No comment for annotation.."></textarea>
+                        <span style="cursor: default; float: right;" data-toggle="tooltip" data-target="top" title="{{ reviewer.email }}"><b>Created at:</b> {{ review_created_at|date:"d-m-y" }}</span>
                     {% endif %}
                 </div>
-
-                <div class="col p-0" id="review-btn-div">
-                    <button title="Save annotation" class="btn btn-success my-button annotation-buttons" onclick="submitAnnotation();"><i style="margin-right: 10%;" class="fas fa-save"></i> Save</button>
-                    <a href="{% url 'delete_annotation' project.id task.id %}">
-                        <button title="Delete annotation" class="btn btn-light my-button annotation-buttons" id="delete-annotation-btn"><i class="fas fa-trash-alt"></i></button>
-                    </a>
-                    {% if next_unlabeled_task_id == -1 %}
-                        <a title="Next unlabeled task" href="{% url 'annotation_page' project.id task.id %}"><button class="btn my-button annotation-buttons">Next <i style="margin-left: 10%;" class="fas fa-caret-right"></i></button></a>
-                    {% else %}
-                        <a title="Next unlabeled task" href="{% url 'annotation_page' project.id next_unlabeled_task_id %}"><button class="btn my-button annotation-buttons">Next <i style="margin-left: 10%;" class="fas fa-caret-right"></i></button></a>
-                    {% endif %}
-                </div>
+                {% if comment %}
+                    <textarea style="resize: none;" disabled id="commentArea" class="form-control">{{ comment }}</textarea>
+                {% else %}
+                    <textarea style="resize: none;" disabled id="commentArea" class="form-control" placeholder="No comment for annotation.."></textarea>
+                {% endif %}
             </div>
         </div>
     {% endif %}

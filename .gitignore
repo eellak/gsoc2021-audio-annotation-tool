@@ -1,7 +1,7 @@
 # virtual enviroment folders
 bin/
 lib/
-
+share/
 
 
 *.pyc

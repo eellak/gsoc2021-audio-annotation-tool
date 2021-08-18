@@ -215,7 +215,8 @@ def filter_tasks(user, project, labeled, reviewed):
 
     # if users_can_see_other_queues is false return only assigned tasks
     # if user is a reviewer he/she must see all tasks in order to review them!
-    if not project.users_can_see_other_queues:
+    # manager must see all tasks
+    if not project.users_can_see_other_queues and user not in project.managers.all():
 
         assigned_tasks = tasks.filter(Q(assigned_to__in=[user]) | Q(assigned_to=None))
         if user not in project.reviewers.all():
@@ -327,7 +328,7 @@ def fix_tasks_after_edit(users_can_see_other_queues_old, users_can_see_other_que
                         users_already_assigned_id = []
                 else:
                     # just assign task to only one
-                    new_task.assigned_to.add(project.annotators.all())
+                    task.assigned_to.add(project.annotators.all())
 
 def check_tasks_after_edit(project):
     tasks = Task.objects.filter(project=project)

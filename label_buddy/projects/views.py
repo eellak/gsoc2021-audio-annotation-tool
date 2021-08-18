@@ -106,27 +106,18 @@ def project_create_view(request):
             project = form.save()
             # add labels to project
             add_labels_to_project(project, form.cleaned_data['new_labels'])
-            # user who created project must be in the list of managers, annotators and reviewers as well as the managers
             project.managers.add(user)
-            project.annotators.add(user)
-            project.reviewers.add(user)
-
-            # add all managers to annotators and reviewers
-            for manager in form.cleaned_data['managers']:
-                project.managers.add(manager)
-                project.annotators.add(manager)
-                project.reviewers.add(manager)
-            
             messages.add_message(request, messages.SUCCESS, "Successfully created project %s." % project.title)
             return HttpResponseRedirect("/")
         else:
             raise forms.ValidationError("Something is wrong")
     else:
-        # if user wants to create project, exclude him from annotators, managers and reviewers list
-        form.fields['annotators'].queryset = User.objects.exclude(username=user.username)
+        # user creating project is manager of the project
         form.fields['managers'].queryset = User.objects.exclude(username=user.username)
-        form.fields['reviewers'].queryset = User.objects.exclude(username=user.username)
-    
+        form.fields['annotators'].help_text = "<b>Annotators for the project.</b>"
+        form.fields['reviewers'].help_text = "<b>Reviewers for the project.</b>"
+        form.fields['managers'].help_text = "<b>Managers for the project. The creator of the project is by default manager.</b>"
+
     context = {
         "form":form,
     }
@@ -163,19 +154,7 @@ def project_edit_view(request, pk):
             delete_old_labels(new_project)
             # add labels to project
             add_labels_to_project(new_project, form.cleaned_data['new_labels'])
-
-            # user who created project must be in the list of managers, annotators and reviewers as well as the managers
-            new_project.managers.add(user)
-            new_project.annotators.add(user)
-            new_project.reviewers.add(user)
-
-            # add all managers to annotators and reviewers
-            for manager in form.cleaned_data['managers']:
-                new_project.managers.add(manager)
-                new_project.annotators.add(manager)
-                new_project.reviewers.add(manager)
-            
-            
+            project.managers.add(user)
             users_can_see_other_queues_new = new_project.users_can_see_other_queues
             # function to fix tasks depending on changes. If user changed the users_can_see_other_queues value
             # or if he/she remove an annotator
@@ -193,15 +172,9 @@ def project_edit_view(request, pk):
             labels_names.append(lbl.name)
         form = ProjectForm(instance=project, initial={'new_labels': ",".join(labels_names)})
 
-        # if user wants to edit project, exclude him/her and all ohter managers from annotators and reviewers list
-        managers_ids = project.managers.values_list('id', flat=True)
-        form.fields['annotators'].queryset = User.objects.exclude(id__in=managers_ids)
-        form.fields['reviewers'].queryset = User.objects.exclude(id__in=managers_ids)
-        form.fields['managers'].queryset = User.objects.exclude(username=user.username)
-
-        form.fields['annotators'].help_text = "<b>Annotators for the project. Managers are already annotators</b>"
-        form.fields['reviewers'].help_text = "<b>Reviewers for the project. Managers are already reviewers</b>"
-        form.fields['managers'].help_text = "<b>Managers are by default annotators and reviewers for the project.</b>"
+        form.fields['annotators'].help_text = "<b>Annotators for the project.</b>"
+        form.fields['reviewers'].help_text = "<b>Reviewers for the project.</b>"
+        form.fields['managers'].help_text = "<b>Managers for the project.</b>"
 
     context = {
         "project": project,
@@ -289,6 +262,55 @@ def annotation_delete_view(request, pk, task_pk):
         "project_id": project.id,
     }
     return render(request, "label_buddy/delete_annotation.html", context)
+
+@login_required
+def task_delete_view(request, pk, task_pk):
+    task = get_task(task_pk)
+    project = get_project(pk)
+    user = get_user(request.user.username)
+
+    # check if valid url
+    if not user or (user != request.user) or not project or not task:
+        if not user or (user != request.user):
+            messages.add_message(request, messages.ERROR, "Error")
+            return HttpResponseRedirect('/')
+        if not project:
+            messages.add_message(request, messages.ERROR, "Project does not exist.")
+            return HttpResponseRedirect('/')
+        if not task:
+            if is_user_involved(user, project):
+                messages.add_message(request, messages.ERROR, "Task does not exist.")
+                return HttpResponseRedirect(get_project_url(project.id))
+            else:
+                messages.add_message(request, messages.ERROR, "You are not an annotator for project %s." % project.title)
+                return HttpResponseRedirect("/")
+
+
+    # check if user involved to project
+    if not is_user_involved(user, project):
+        messages.add_message(request, messages.ERROR, "You are not involved to requested project.")
+        return HttpResponseRedirect("/")
+    
+    # check if user in magaers of project
+    if user not in project.managers.all():
+        messages.add_message(request, messages.ERROR, "You are not a manager for the project")
+        return HttpResponseRedirect("/")
+
+    # Check if task belongs to project
+    if task.project != project:
+        messages.add_message(request, messages.ERROR, "Task does not belong to project %s." % project.title)
+        return HttpResponseRedirect(get_project_url(project.id))
+
+    if request.method == "POST":
+            task.delete()
+            messages.add_message(request, messages.SUCCESS, "Successfully deleted task.")
+            return HttpResponseRedirect(get_project_url(project.id))
+
+    context = {
+        "task": task,
+        "project_id": project.id,
+    }
+    return render(request, "label_buddy/delete_task.html", context)
 
 @login_required
 def project_page_view(request, pk):
@@ -511,8 +533,8 @@ def list_annotations_for_task_view(request, pk, task_pk):
         return HttpResponseRedirect("/")
     
     # check if user in managers or reviewers of project
-    if (user not in project.managers.all()) and (user not in project.reviewers.all()):
-        messages.add_message(request, messages.ERROR, "You are not a manager or a reviewer for project %s." % project.title)
+    if user not in project.reviewers.all():
+        messages.add_message(request, messages.ERROR, "You are not a reviewer for project %s." % project.title)
         return HttpResponseRedirect(get_project_url(project.id))
     
     # Check if task belongs to project
@@ -520,33 +542,24 @@ def list_annotations_for_task_view(request, pk, task_pk):
         messages.add_message(request, messages.ERROR, "Task does not belong to project %s." % project.title)
         return HttpResponseRedirect(get_project_url(project.id))
     
-    # get all annotations except user's
-    # user is not able to review his/her own annotations
-    task_annotations = Annotation.objects.filter(Q(task=task) & Q(project=project) & ~Q(user=user))
+    # get all annotations
+    task_annotations = Annotation.objects.filter(Q(task=task) & Q(project=project))
     task_annotations_count = task_annotations.count()
     user_has_annotated = get_annotation(task=task, project=project, user=user)
 
     if task_annotations_count == 0:
-        if user_has_annotated:
-            # if user has annotation change message
-            messages.add_message(request, messages.WARNING, "No annotations to review. You cannot review your own annotation.")
-        else:
-            messages.add_message(request, messages.WARNING, "No annotations to review.")
+        messages.add_message(request, messages.WARNING, "No annotations to review.")
         return HttpResponseRedirect(get_project_url(project.id))
-    elif task_annotations_count == 1:
-        # redirect to review page
-        pass
 
     # exclude annotations that are reviewed but not from the current user
     to_exclude_ids = []
     for annotation in task_annotations:
         user_reviewed, _, _, _= if_annotation_reviewed(annotation)
-        if user_reviewed and annotation.review_status != Annotation_status.no_review and user_reviewed != user:
+        if user_reviewed and user_reviewed != user:
             to_exclude_ids.append(annotation.id)
 
     task_annotations = task_annotations.exclude(id__in=to_exclude_ids)
 
-    # if annotation is revied by user, [annotation.id] = True else None
     annotations_reviewed_by_user = {}
     for annotation in task_annotations:
         annotations_reviewed_by_user[annotation.id] = get_annotation_review(user, annotation)
@@ -568,6 +581,7 @@ def list_annotations_for_task_view(request, pk, task_pk):
 
     # if 2 or more annotations go to list annotations page
     context = {
+        "user": user,
         "page_obj": page_obj,
         "list_num_of_pages": range(1, paginator.num_pages+1),
         "task": task,
@@ -617,8 +631,8 @@ def review_annotation_view(request, pk, task_pk, annotation_pk):
         return HttpResponseRedirect("/")
     
     # check if user in managers or reviewers of project
-    if (user not in project.managers.all()) and (user not in project.reviewers.all()):
-            messages.add_message(request, messages.ERROR, "You are not a manager or a reviewer for project %s." % project.title)
+    if user not in project.reviewers.all():
+            messages.add_message(request, messages.ERROR, "You are not a reviewer for project %s." % project.title)
             return HttpResponseRedirect(get_project_url(project.id))
     
     # Check if task belongs to project
@@ -642,12 +656,6 @@ def review_annotation_view(request, pk, task_pk, annotation_pk):
         messages.add_message(request, messages.WARNING, "This annotation is being reviewed by another user.")
         return HttpResponseRedirect(get_project_url(project.id) + "/" + str(task.id) + "/list_annotations")
 
-    # check that annotation does not belong to current user
-    # reviewers cannot review their annotations
-    if to_review_annotation.user == user:
-        messages.add_message(request, messages.WARNING, "You cannot review your own annotation.")
-        return HttpResponseRedirect(get_project_url(project.id) + "/" + str(task.id) + "/list_annotations")
-    
     if request.method == "POST":
         data = loads(request.body)
         action = data['value']
