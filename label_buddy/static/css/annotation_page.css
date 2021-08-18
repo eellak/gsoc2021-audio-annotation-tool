@@ -57,7 +57,7 @@
 }
 
 #left-main-div {
-    /* border: 3px solid #74deed; */
+    border: 2px solid #74deed;
     background-color: rgb(245,245,245);
     margin-left: 1%;
     border-radius: 5px;
@@ -73,7 +73,7 @@
 }
 
 #regions-div {
-    max-height: 250px;
+    max-height: 280px;
     overflow-y: auto;
     -ms-overflow-style: none;
     scrollbar-width: none;

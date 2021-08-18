@@ -36,23 +36,30 @@
         <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    <div class="top-div">
-        <a href="{% url 'index_page' %}"><img style="border: 2px solid #74deed; float: left;" src="{{ project.logo.url }}" width="30" height="30" href="{% url 'index_page' %}" data-toggle="tooltip" data-target="top" title="{{ project.title }}" class="rounded-circle"></a>
-        <i style="margin-top: .5%;" class="fas fa-angle-right fa-xs top-icons"></i>
-        <a data-toggle="tooltip" data-target="top" title="Project instructions" class="top-icons"><i style="cursor: pointer;" data-toggle="modal" data-target="#instructionsModal" class="fas fa-info"></i></a>
-        <a data-toggle="tooltip" data-target="top" title="Project description" style="margin-left: 1%;" class="top-icons"><i style="cursor: pointer;" data-toggle="modal" data-target="#descriptionModal" class="fas fa-question-circle"></i></a>
-        {% if project.users_can_see_other_queues %}
-            <span data-toggle="tooltip" data-placement="bottom" offset=.5 title="All task are shown" style="float: right; margin-top: .2%;">
-                    <b>Public tasks: <i style="color:green" class="fas fa-check-circle" aria-hidden="true"></i></b>
-            </span>
-        {% else %}
-            <span data-toggle="tooltip" data-placement="bottom" title="Annotate only assigned tasks" style="float: right; margin-top: .2%;">
-                <b>Public tasks: <i style="color:red" class="fas fa-exclamation-circle" aria-hidden="true"></i></b>
-            </span>
-        {% endif %}
-    </div>
+    {% comment %}
+        <!-- <div class="top-div">
+            <a href="{% url 'index_page' %}"><img style="border: 2px solid #74deed; float: left;" src="{{ project.logo.url }}" width="30" height="30" href="{% url 'index_page' %}" data-toggle="tooltip" data-target="top" title="{{ project.title }}" class="rounded-circle"></a>
+            <i style="margin-top: .5%;" class="fas fa-angle-right fa-xs top-icons"></i>
+            <a data-toggle="tooltip" data-target="top" title="Project instructions" class="top-icons"><i style="cursor: pointer;" data-toggle="modal" data-target="#projectModal" class="fas fa-info"></i></a>
+            <a data-toggle="tooltip" data-target="top" title="Project description" style="margin-left: 1%;" class="top-icons"><i style="cursor: pointer;" data-toggle="modal" data-target="#descriptionModal" class="fas fa-question-circle"></i></a>
+            {% if project.users_can_see_other_queues %}
+                <span data-toggle="tooltip" data-placement="bottom" offset=.5 title="All task are shown" style="float: right; margin-top: .2%;">
+                        <b>Public tasks: <i style="color:green" class="fas fa-check-circle" aria-hidden="true"></i></b>
+                </span>
+            {% else %}
+                <span data-toggle="tooltip" data-placement="bottom" title="Annotate only assigned tasks" style="float: right; margin-top: .2%;">
+                    <b>Public tasks: <i style="color:red" class="fas fa-exclamation-circle" aria-hidden="true"></i></b>
+                </span>
+            {% endif %}
+        </div> -->
+    {% endcomment %}
     {% if tasks_count_no_filter > 0 %}
-        <h2 class="headers-page">{{ project.title }}</h2>
+        <h2 class="headers-page">
+            {{ project.title }}
+            <sup>
+                <i style="cursor: pointer; color: #74deed;" data-toggle="modal" data-target="#projectModal" class="far fa-question-circle tooltip-icons fa-xs"></i>
+            </sup>
+        </h2>
         <div id="header-div">
             {% if user in project.managers.all %}
                 <button style="color: black; float: right;" data-toggle="modal" data-target="#exportModal" class="btn my-button">
@@ -76,8 +83,8 @@
                     <th><i class="fa fa-paint-brush my-table-header" aria-hidden="true"></i> Annotations done</th>
                     <th><i class="fas fa-users my-table-header"></i> Annotated by</th>
                     <th><i class="fas fa-file-audio my-table-header"></i> Audio file</th>
-                    <th><i class="fas fa-check-circle my-table-header"></i> Status</th>
-                    <th><i class="fas fa-check-circle my-table-header"></i> Review status</th>
+                    <th style="width: 170px;"><i class="fas fa-check-circle my-table-header"></i> Status</th>
+                    <th style="width: 170px;"><i class="fas fa-check-circle my-table-header"></i> Review status</th>
                     {% if user in project.annotators.all %}
                         <th><i class="fas fa-paint-brush my-table-header"></i> Annotated by you</th>
                     {% endif %}

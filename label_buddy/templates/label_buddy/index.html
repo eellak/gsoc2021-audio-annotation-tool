@@ -56,7 +56,7 @@
 								<img data-toggle="tooltip" data-placement="top" style="margin-right: 4%;" src="{{ project.logo.url }}" width="27" height="27" title="{{ project.title }}" class="rounded-circle">
 								{{ project.title }}
 							</td>
-							<td>{{ project.created_at|date:"d-m-y" }}</td>
+							<td>{{ project.created_at|date:"D d M Y" }}</td>
 							
 							{% if project.users_can_see_other_queues %}
 								<td><i data-toggle="tooltip" data-placement="top" data-title="Tasks assigned to all annotators" style="color:green" class="fas fa-check-circle tooltip-icons"></i></td>

@@ -703,12 +703,14 @@ def review_annotation_view(request, pk, task_pk, annotation_pk):
             messages.add_message(request, messages.ERROR, "Something is wrong.")
             return HttpResponse(status=status.HTTP_400_BAD_REQUEST)
     
-    reviewer, comment, _, _ = if_annotation_reviewed(to_review_annotation)
+    reviewer, comment, review_created_at, review_updated_at = if_annotation_reviewed(to_review_annotation)
     # get review of annotation, assert that if exists user == current user
     if reviewer:
         assert reviewer == user
     context = {
         "reviewer": reviewer,
+        "review_created_at": review_created_at,
+        "review_updated_at": review_updated_at,
         "comment": comment,
         "status_approved": Annotation_status.approved,
         "status_rejected": Annotation_status.rejected,

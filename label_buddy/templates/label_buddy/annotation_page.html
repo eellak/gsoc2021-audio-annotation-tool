@@ -34,20 +34,22 @@
 
 {% block content %}
     {{ block.super }}
-    <div class="top-div">
-        <img style="border: 2px solid #74deed; float: left;" src="{{ project.logo.url }}" width="30" height="30" data-toggle="modal" data-target="#informationModal" href="" title="{{ project.title }} information" class="rounded-circle">
-        <i style="margin-top: .5%;" class="fas fa-angle-right fa-xs top-icons"></i>
-        <a data-toggle="tooltip" data-target="top" title="Project instructions" class="my-link top-icons"><i style="cursor: pointer;" data-toggle="modal" data-target="#instructionsModal" class="fas fa-info"></i></a>
-        <span style="float: right; margin-top: .2%;">
-            {% if updated_at %}
-                <b>Last update: </b>{{ updated_at|date:"d-m-y" }}
-            {% elif created_at %}
-                <b>Annotation created at: </b>{{ created_at|date:"d-m-y" }}
-            {% endif %}
-        </span>
-    </div>
+    {% comment %}
+        <!-- <div class="top-div">
+            <img style="border: 2px solid #74deed; float: left;" src="{{ project.logo.url }}" width="30" height="30" data-toggle="modal" data-target="#informationModal" href="" title="{{ project.title }} information" class="rounded-circle">
+            <i style="margin-top: .5%;" class="fas fa-angle-right fa-xs top-icons"></i>
+            <a data-toggle="tooltip" data-target="top" title="Project instructions" class="my-link top-icons"><i style="cursor: pointer;" data-toggle="modal" data-target="#instructionsModal" class="fas fa-info"></i></a>
+            <span style="float: right; margin-top: .2%;">
+                {% if updated_at %}
+                    <b>Last update: </b>{{ updated_at|date:"d-m-y" }}
+                {% elif created_at %}
+                    <b>Annotation created at: </b>{{ created_at|date:"d-m-y" }}
+                {% endif %}
+            </span>
+        </div> -->
+    {% endcomment %}
 
-    <div style="text-align: center; margin-left: 1%; margin-right: 1%;">
+    <div style="text-align: center; margin-left: 1%; margin-right: 1%; margin-top: .5%;">
         {% if created_at %}
             {% if annotation_status == status_approved %}
                 <span style="cursor: default;" data-toggle="tooltip" data-placement="top" title="Annotation review status" class="badge badge-pill badge-success">Approved</span>
@@ -76,6 +78,16 @@
 
     <div id="header-div">
         <a style="color: black; margin-right: 1%;" data-toggle="tooltip" data-placement="top" title="Back to project page" href="{% url 'project_page' project.id %}" class="btn my-button"><i style="margin-right: 10%;" class="fas fa-caret-left"></i> Back</a>
+        {% if updated_at %}
+            <span data-toggle="tooltip" data-placement="top" title="{{ updated_at|date:'d M y, H:i:s' }}" style="cursor: default; float: right;">
+                <b>Last update: </b>{{ updated_at|date:"D d M Y" }}
+            </span>
+        {% elif created_at %}
+            <span data-toggle="tooltip" data-placement="top" title="{{ created_at|date:'d M y, H:i:s' }}" style="cursor: default; float: right;">
+                <b>Annotation created at: </b>{{ created_at|date:"D d M Y" }}
+            </span>
+        {% endif %}
+        
     </div>
 
     <div style="margin-top: .5%;"  class="container-fluid">

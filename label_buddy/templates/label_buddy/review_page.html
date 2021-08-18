@@ -32,21 +32,25 @@
 
 {% block content %}
     {{ block.super }}
-    <div class="top-div">
-        Annotator
-        <i style="margin-top: .6%; margin-left: 1%; margin-right: 1%;" class="fas fa-angle-right fa-xs"></i>
-        <img style="border: 2px solid #74deed;" data-toggle="tooltip" data-placement="top" src="{{ annotation.user.avatar.url }}" width="25" height="25" title="{{ annotation.user.email }}" class="rounded-circle">
-        {{ annotation.user.name }}
-        <span style="float: right; margin-top: .2%;">
+    {% comment %}
+        <!-- <div class="top-div">
+            Annotator
+            <i style="margin-top: .6%; margin-left: 1%; margin-right: 1%;" class="fas fa-angle-right fa-xs"></i>
+            <img style="border: 2px solid #74deed;" data-toggle="tooltip" data-placement="top" src="{{ annotation.user.avatar.url }}" width="25" height="25" title="{{ annotation.user.email }}" class="rounded-circle">
+            {{ annotation.user.name }}
             {% if annotation.updated_at %}
-                <b>Last update: </b>{{ annotation.updated_at|date:"d-m-y" }}
+                <span data-toggle="tooltip" data-target="left" title="{{annotation.created_at|date:'d-m-y H:m:s'}}" style="float: right; margin-top: .2%; cursor: default;">
+                    <b>Last annotation update: </b>{{ annotation.updated_at|date:"d-m-y" }}
+                </span>
             {% else %}
-                <b>Annotation created at: </b>{{ annotation.created_at|date:"d-m-y" }}
+                <span data-toggle="tooltip" data-target="left" title="{{annotation.created_at|date:'d-m-y'}}" style="float: right; margin-top: .2%; cursor: default;">
+                    <b>Annotation created at: </b>{{ annotation.created_at|date:"d-m-y" }}
+                </span>
             {% endif %}
-        </span>
-    </div>
+        </div> -->
+    {% endcomment %}
 
-    <div style="text-align: center; margin-left: 1%; margin-right: 1%;">
+    <div style="text-align: center; margin-left: 1%; margin-right: 1%; margin-top: .5%;">
         {% if annotation.review_status == status_approved %}
             <span style="cursor: default;" data-toggle="tooltip" data-placement="top" title="Annotation status" class="badge badge-pill badge-success">Approved</span>
         {% elif annotation.review_status == status_rejected %}
@@ -64,6 +68,15 @@
 
     <div id="header-div">
         <a style="color: black;" data-toggle="tooltip" data-placement="top" title="Back to annotations page" href="{% url 'list_task_annotations' project.id task.id %}" class="btn my-button"><i style="margin-right: 10%;" class="fas fa-caret-left"></i> Back</a>
+        {% if annotation.updated_at %}
+            <span data-toggle="tooltip" data-placement="top" title="{{ annotation.updated_at|date:'d M y, H:i:s' }}" style="float: right; cursor: default;">
+                <b>Last annotation update: </b>{{ annotation.updated_at|date:"D d M Y" }}
+            </span>
+        {% else %}
+            <span data-toggle="tooltip" data-placement="top" title="{{ annotation.created_at|date:'d M y, H:i:s' }}" style="float: right;cursor: default;">
+                <b>Annotation created at: </b>{{ annotation.created_at|date:"D d M Y" }}
+            </span>
+        {% endif %}
     </div>
 
     <div style="margin-top: .5%;"  class="container-fluid">
@@ -93,7 +106,7 @@
                 {% if labels_count %}
                     <div id="labels-div">
                         {% for label in labels.all %}
-                            <button style="background-color: {{ label.color }}; opacity: 0.2" class="badge my-badge badge-pill" value="{{ label.name }}" onclick="selectedLabel(this)">{{ label.name }}</button>
+                            <button style="background-color: {{ label.color }}; opacity: 0.2;" class="badge my-badge badge-pill" value="{{ label.name }}" onclick="selectedLabel(this)">{{ label.name }}</button>
                         {% endfor %}
                     </div>
                 {% endif %}
@@ -124,7 +137,7 @@
     </div>
 
     
-    <div class="col p-0" id="review-btn-div">
+    <div id="review-btn-div">
         <button title="Approve annotation" class="btn btn-success my-button review-buttons" value="APPROVE" onclick="submitReview(this);"><i style="margin-right: 1%;" class="fas fa-thumbs-up"></i> Approve</button>
         {% if reviewer %}
             <button title="Delete review" class="btn btn-light my-button review-buttons" id="delete-annotation-btn" value="DELETE" onclick="submitReview(this);"><i class="fas fa-trash-alt"></i></button>
@@ -132,7 +145,25 @@
         <button title="Reject annotation" class="btn btn-danger my-button review-buttons" value="REJECT" onclick="submitReview(this);"><i style="margin-right: 1%;" class="fas fa-thumbs-down"></i> Reject</button>
     </div>
 
-    <div id="commentDiv">
+    {% if reviewer %}
+        <div id="review-date-div">
+            {% if review_updated_at %}
+                <span data-toggle="tooltip" data-placement="top" title="{{ review_updated_at|date:'d M y, H:i:s' }}" style="cursor: default;">
+                    <b>Last review update: </b>{{ review_updated_at|date:"D d M Y" }}
+                </span>
+            {% else %}
+                <span data-toggle="tooltip" data-placement="top" title="{{ review_created_at|date:'d M y, H:i:s' }}" style="cursor: default;">
+                    <b>Review created at: </b>{{ review_created_at|date:"D d M Y" }}
+                </span>
+            {% endif %}
+        </div>
+    {% endif %}
+
+    {% if reviewer %}
+        <div id="commentDiv">
+    {% else %}
+        <div id="commentDiv" style="margin-top: 1%;">
+    {% endif %}
         {% if comment %}
             <textarea id="commentArea" class="form-control" placeholder="Review comment here...">{{ comment }}</textarea>
         {% else %}
