@@ -406,7 +406,7 @@ def add_tasks_from_compressed_file(compressed_file, project, file_extension):
             new_task.file.save(filename, File(new_file))
 
             # assign task
-            if not project.users_can_see_other_queues:
+            if not project.users_can_see_other_queues and project.annotators.exists():
 
                 # do this process if there are more than one annotators
                 if project_annotators_count > 1:

@@ -19,7 +19,7 @@
     <!-- Goole fonts API-->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Georama">
 
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <!-- My JavaScript -->
     <script src="{% static 'js/common.js' %}"></script>
     <!-- Font Awesome icons (free version)-->
@@ -40,8 +40,14 @@
     <a class="navbar-brand py-0" href="/">
       <img src="{% static '/images/favicons/logo_transparent_165x25.png' %}" title="Label Buddy">
     </a>
-    <div style="border-left: 2px solid white;" class="collapse navbar-collapse py-0" id="navbarNavAltMarkup">
-      {% block breadcrumbs %}{% endblock %}
+    {% if user.is_authenticated %}
+      <div style="border-left: 2px solid white;" class="collapse navbar-collapse py-0" id="navbarNavAltMarkup">
+    {% else %}
+      <div class="collapse navbar-collapse py-0" id="navbarNavAltMarkup">
+    {% endif %}
+      {% if user.is_authenticated %}
+        {% block breadcrumbs %}{% endblock %}
+      {% endif %}
       <div class="navbar-nav  ml-auto">
         {% if user.is_authenticated %}
           <div class="btn-group dropleft py-0">
