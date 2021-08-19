@@ -72,7 +72,9 @@
                             {% endif %}
                         </td>
 
-                        <td data-toggle="tooltip" data-placement="top" title="{{ annotation.result }}" class="table-title">{{ annotation.result }}</td>
+                        <td data-toggle="tooltip" data-placement="top" title="{{ annotation.result }}" class="table-title">
+                            {{ annotation.result }}
+                        </td>
 
                         <td>
                             {% if annotation.review_status == approved %}

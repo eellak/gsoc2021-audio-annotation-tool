@@ -544,12 +544,6 @@ def list_annotations_for_task_view(request, pk, task_pk):
     
     # get all annotations
     task_annotations = Annotation.objects.filter(Q(task=task) & Q(project=project))
-    task_annotations_count = task_annotations.count()
-    user_has_annotated = get_annotation(task=task, project=project, user=user)
-
-    if task_annotations_count == 0:
-        messages.add_message(request, messages.WARNING, "No annotations to review.")
-        return HttpResponseRedirect(get_project_url(project.id))
 
     # exclude annotations that are reviewed but not from the current user
     to_exclude_ids = []
@@ -559,7 +553,10 @@ def list_annotations_for_task_view(request, pk, task_pk):
             to_exclude_ids.append(annotation.id)
 
     task_annotations = task_annotations.exclude(id__in=to_exclude_ids)
-
+    if task_annotations.count() == 0:
+        messages.add_message(request, messages.WARNING, "No annotations to review.")
+        return HttpResponseRedirect(get_project_url(project.id))
+    
     annotations_reviewed_by_user = {}
     for annotation in task_annotations:
         annotations_reviewed_by_user[annotation.id] = get_annotation_review(user, annotation)

@@ -22,7 +22,7 @@ from tasks.models import (
 )
 
 # global variables
-ACCEPTED_EXTENSIONS = ['.wav', '.mp3', '.mp4',]
+ACCEPTED_FORMATS = ['.wav', '.mp3', '.mp4',]
 
 # Functions
 
@@ -216,17 +216,22 @@ def filter_tasks(user, project, labeled, reviewed):
     # if users_can_see_other_queues is false return only assigned tasks
     # if user is a reviewer he/she must see all tasks in order to review them!
     # manager must see all tasks
-    if not project.users_can_see_other_queues and user not in project.managers.all():
+    if not project.users_can_see_other_queues:
 
         assigned_tasks = tasks.filter(Q(assigned_to__in=[user]) | Q(assigned_to=None))
-        if user not in project.reviewers.all():
-            # if only annotator return assigned tasks
-            return assigned_tasks, assigned_tasks.count()
-        else:
-            # return all tasks but annotate only assigned ones
-            # concat result so first task shown are the assigned ones
+        # if user manager show all tasks
+        if user in project.managers.all():
             all_other_tasks = tasks.exclude(pk__in=assigned_tasks.values_list('id', flat=True))
             return list(chain(assigned_tasks, all_other_tasks)), assigned_tasks.count()
+        else:
+            if user not in project.reviewers.all():
+                # if only annotator return assigned tasks
+                return assigned_tasks, assigned_tasks.count()
+            else:
+                # return all tasks but annotate only assigned ones
+                # concat result so first task shown are the assigned ones
+                all_other_tasks = tasks.exclude(pk__in=assigned_tasks.values_list('id', flat=True))
+                return list(chain(assigned_tasks, all_other_tasks)), assigned_tasks.count()
     return tasks, 0
 
 # filter annotations for list annotations page
@@ -386,7 +391,6 @@ def add_tasks_from_compressed_file(compressed_file, project, file_extension):
     """
     project_annotators_count = project.annotators.count()
     users_already_assigned_id = []
-
     for filename in files_names:
         if file_extension == ".zip":
             # zip
@@ -394,9 +398,9 @@ def add_tasks_from_compressed_file(compressed_file, project, file_extension):
         else:
             # rar
             pass # to be fixed
-    
+
         # for every file that has an extension in [.wav, .mp3, .mp4] create a task
-        if filename[-4:] in ACCEPTED_EXTENSIONS:
+        if filename[-4:] in ACCEPTED_FORMATS:
             # create task
             new_task = Task.objects.create(project=project, original_file_name=filename)
             new_task.file.save(filename, File(new_file))
