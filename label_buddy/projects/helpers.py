@@ -278,30 +278,35 @@ def fix_tasks_after_edit(users_can_see_other_queues_old, users_can_see_other_que
     tasks = Task.objects.filter(project=project)
 
     if users_can_see_other_queues_new == users_can_see_other_queues_old:
+        pass
+        """
+        When an annotor is removed, his/her assigned tasks remain unasigned until the manager
+        assigns them again to another annotator. Future work
+        """
         # if value is equal to old value and is set to true we dont have to check anything
         # tasks are public so removed annotators wont make a difference
 
-        if not users_can_see_other_queues_new:
-            # check for every task that it's assigned to a valid annotator (belongs to project)
-            # if not assign it to another random annotator and delete annotation from old annotator
+        # if not users_can_see_other_queues_new:
+        #     # check for every task that it's assigned to a valid annotator (belongs to project)
+        #     # if not assign it to another random annotator and delete annotation from old annotator
 
-            project_annotators = project.annotators.all()
-            project_annotators_ids = project.annotators.values_list('id', flat=True)
-            for task in tasks:
-                # assert task is assigned to one annotator
-                assert task.assigned_to.count() <= 1 # 1 or 0
-                if not task.assigned_to.exists() or not task.assigned_to.filter(id__in=project_annotators_ids).exists():
+        #     project_annotators = project.annotators.all()
+        #     project_annotators_ids = project.annotators.values_list('id', flat=True)
+        #     for task in tasks:
+        #         # assert task is assigned to one annotator
+        #         assert task.assigned_to.count() <= 1 # 1 or 0
+        #         if not task.assigned_to.exists() or not task.assigned_to.filter(id__in=project_annotators_ids).exists():
 
-                    # to be fixes
-                    # if task.assigned_to.exists():
-                    #     # delete annotation done by old annotator if exists
-                    #     old_annotation = get_annotation(task, project, task.assigned_to.all()[0])
-                    #     if old_annotation:
-                    #         old_annotation.delete()
+        #             # to be fixes
+        #             # if task.assigned_to.exists():
+        #             #     # delete annotation done by old annotator if exists
+        #             #     old_annotation = get_annotation(task, project, task.assigned_to.all()[0])
+        #             #     if old_annotation:
+        #             #         old_annotation.delete()
                     
-                    random_annotator = random.choice(list(project_annotators))
-                    task.assigned_to.clear()
-                    task.assigned_to.add(random_annotator)
+        #             random_annotator = random.choice(list(project_annotators))
+        #             task.assigned_to.clear()
+        #             task.assigned_to.add(random_annotator)
     else:
         # if values different
         if users_can_see_other_queues_new:
@@ -309,31 +314,32 @@ def fix_tasks_after_edit(users_can_see_other_queues_old, users_can_see_other_que
             for task in tasks:
                 task.assigned_to.clear()
         else:
-            # assign tasks randomly to all annotators
-            project_annotators_count = project.annotators.count()
-            users_already_assigned_id = []
-            for task in tasks:
-                # we are sure that assigned_to will be none as we came from public queues
-                assert task.assigned_to.exists() == False
+            # assign tasks randomly to all annotators if annotator exists
+            if project.annotators.exists():
+                project_annotators_count = project.annotators.count()
+                users_already_assigned_id = []
+                for task in tasks:
+                    # we are sure that assigned_to will be none as we came from public queues
+                    assert task.assigned_to.exists() == False
 
-                # do this process if there are more than one annotators
-                if project_annotators_count > 1:
-                    # exclude those who are already addigned a task
-                    annotators = project.annotators.exclude(id__in=users_already_assigned_id)
+                    # do this process if there are more than one annotators
+                    if project_annotators_count > 1:
+                        # exclude those who are already addigned a task
+                        annotators = project.annotators.exclude(id__in=users_already_assigned_id)
 
-                    # choose one
-                    random_annotator = random.choice(list(annotators))
-                    task.assigned_to.add(random_annotator)
+                        # choose one
+                        random_annotator = random.choice(list(annotators))
+                        task.assigned_to.add(random_annotator)
 
-                    # add id to list
-                    users_already_assigned_id.append(random_annotator.id)
+                        # add id to list
+                        users_already_assigned_id.append(random_annotator.id)
 
-                    # if length of users_already_assigned_id == project.anotators, make it empty (start over)
-                    if len(users_already_assigned_id) == project_annotators_count:
-                        users_already_assigned_id = []
-                else:
-                    # just assign task to only one
-                    task.assigned_to.add(project.annotators.all())
+                        # if length of users_already_assigned_id == project.anotators, make it empty (start over)
+                        if len(users_already_assigned_id) == project_annotators_count:
+                            users_already_assigned_id = []
+                    else:
+                        # just assign task to only one
+                        task.assigned_to.add(project.annotators.all())
 
 def check_tasks_after_edit(project):
     tasks = Task.objects.filter(project=project)

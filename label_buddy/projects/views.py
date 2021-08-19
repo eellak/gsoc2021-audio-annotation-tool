@@ -161,7 +161,7 @@ def project_edit_view(request, pk):
             fix_tasks_after_edit(users_can_see_other_queues_old, users_can_see_other_queues_new, new_project, user)
 
             # check if tasks ok
-            assert check_tasks_after_edit(new_project) == True, 'Tasks are not ok'
+            # assert check_tasks_after_edit(new_project) == True, 'Tasks are not ok'
 
             messages.add_message(request, messages.SUCCESS, "Successfully edited project %s." % new_project.title)
             return HttpResponseRedirect("/")
@@ -187,7 +187,7 @@ def project_delete_view(request, pk):
     project = get_project(pk)
     user = get_user(request.user.username)
 
-    # check if user is manager of current project
+    # if user is manager of current project
     if not user or (user != request.user) or not project or not user in project.managers.all():
         if not project:
             messages.add_message(request, messages.ERROR, "Project does not exist.")
