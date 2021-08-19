@@ -33,16 +33,14 @@ We will try to develop a web application (audio annotation tool) which will prov
 **Reviewers will:**
 
 * See all annotations done by annotators
-* Set annotations as reviewed (completed)
+* Set annotations as approved or rejected
 * Add comments to annotations done
-* Delete annotations
 
 **Annotators will:**
 
-* Annotate audio files (tasks) assigned  to them (by managers)
+* Annotate audio files (tasks) assigned to them (by managers)
 * Update annotations
 * Submit tasks as annotated
-* Skip annotation process (for a specific task)
 
 # Steps to run
 
