@@ -17,6 +17,17 @@
     cursor: default;
 }
 
+#export_approved_div {
+    /* border: 2px solid blue; */
+    padding: 2%;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#export_approved_div:hover {
+    background-color: rgba(115, 223, 237, 0.3) !important;
+}
+
 #import-file {
     border: 1px solid #74deed;
     /* border-radius: 5px; */
@@ -27,6 +38,17 @@
 
 #import-file:hover {
     background-color: rgba(115, 223, 237, 0.3) !important;
+}
+
+#annotate-link {
+    text-decoration: none !important;
+    margin-right: 20%;
+    color: #5cb85c;
+}
+
+#review-link {
+    margin-left: 20%;
+    color: #5cb85c;
 }
 
 
@@ -71,4 +93,26 @@ p {
     text-overflow:ellipsis;
 }
 
+/* import progress bar */
 
+.my-progress-bar {
+    /* display: none; */
+
+    border-radius: 5px;
+    border: 1px solid #74deed;
+}
+
+.progress-bar-fill {
+    border-radius: 5px;
+    height: 100%;
+    width: 0%;
+    background: rgba(115, 223, 237, 0.3);
+    display: flex;
+    align-items: center;
+    transition: width 0.25s;
+}
+
+.progress-bar-text {
+    margin-left: 10px;
+    font-weight: bold;
+}

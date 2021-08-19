@@ -3,6 +3,7 @@ import random
 from zipfile import ZipFile
 from rarfile import RarFile
 from json import dumps
+from itertools import chain
 
 from django.core.files import File
 from django.db.models import Q
@@ -14,12 +15,14 @@ from tasks.forms import TaskForm
 from tasks.models import (
     Task,
     Annotation,
+    Comment,
     Status,
     Review_status,
+    Annotation_status,
 )
 
 # global variables
-ACCEPTED_EXTENSIONS = ['.wav', '.mp3', '.mp4',]
+ACCEPTED_FORMATS = ['.wav', '.mp3', '.mp4',]
 
 # Functions
 
@@ -59,6 +62,14 @@ def get_annotation(task, project, user):
     except Annotation.DoesNotExist:
         return None
 
+# get annotation by pk
+def get_annotation_by_id(pk):
+    try:
+        annotation = Annotation.objects.get(pk=pk)
+        return annotation
+    except Annotation.DoesNotExist:
+        return None
+
 # get annotation updated_at and result by task, project and user
 def get_annotation_result(task, project, user):
     try:
@@ -67,6 +78,25 @@ def get_annotation_result(task, project, user):
     except Annotation.DoesNotExist:
         return dumps([])
 
+# get review of an annotation
+def get_annotation_review(user, annotation):
+    try:
+        review = Comment.objects.get(reviewed_by=user, annotation=annotation)
+        return review
+    except Comment.DoesNotExist:
+        return None
+
+# check if user involved at project
+def is_user_involved(user, project):
+    return (user in project.annotators.all()) or (user in project.reviewers.all()) or (user in project.managers.all())
+
+
+def if_annotation_reviewed(annotation):
+    try:
+        review = Comment.objects.get(annotation=annotation)
+        return review.reviewed_by, review.comment, review.created_at, review.updated_at
+    except Comment.DoesNotExist:
+        return None, None, None, None
 
 # get label by name
 def get_label(name):
@@ -184,10 +214,64 @@ def filter_tasks(user, project, labeled, reviewed):
         tasks = tasks.filter(review_status=review_status)
 
     # if users_can_see_other_queues is false return only assigned tasks
+    # if user is a reviewer he/she must see all tasks in order to review them!
+    # manager must see all tasks
     if not project.users_can_see_other_queues:
-        tasks = tasks.filter(Q(assigned_to__in=[user]) | Q(assigned_to=None))
+
+        assigned_tasks = tasks.filter(Q(assigned_to__in=[user]) | Q(assigned_to=None))
+        # if user manager show all tasks
+        if user in project.managers.all():
+            all_other_tasks = tasks.exclude(pk__in=assigned_tasks.values_list('id', flat=True))
+            return list(chain(assigned_tasks, all_other_tasks)), assigned_tasks.count()
+        else:
+            if user not in project.reviewers.all():
+                # if only annotator return assigned tasks
+                return assigned_tasks, assigned_tasks.count()
+            else:
+                # return all tasks but annotate only assigned ones
+                # concat result so first task shown are the assigned ones
+                all_other_tasks = tasks.exclude(pk__in=assigned_tasks.values_list('id', flat=True))
+                return list(chain(assigned_tasks, all_other_tasks)), assigned_tasks.count()
+    return tasks, 0
+
+# filter annotations for list annotations page
+def filter_list_annotations(annotations, approved_filter, rejected_filter, unreviewed_filter):
+    bool_approved_filter = str_to_bool(approved_filter)
+    bool_rejected_filter = str_to_bool(rejected_filter)
+    bool_unreviewed_filter = str_to_bool(unreviewed_filter)
+    filters_true = 0
+    if bool_approved_filter:
+        filters_true += 1
     
-    return tasks
+    if bool_rejected_filter:
+        filters_true += 1
+
+    if bool_unreviewed_filter:
+        filters_true += 1
+    
+    # return all annotations
+    if not (bool_approved_filter and bool_rejected_filter and bool_unreviewed_filter) and not filters_true == 3:
+        if filters_true == 1:
+            # only one filter checked
+            if bool_approved_filter:
+                annotations = annotations.filter(review_status=Annotation_status.approved)
+
+            if bool_rejected_filter:
+                annotations = annotations.filter(review_status=Annotation_status.rejected)
+
+            if bool_unreviewed_filter:
+                annotations = annotations.filter(review_status=Annotation_status.no_review)
+        else:
+            # two filters checked
+            if bool_approved_filter:
+                if bool_rejected_filter:
+                    annotations = annotations.filter(Q(review_status=Annotation_status.approved) | Q(review_status=Annotation_status.rejected))
+                else:
+                    annotations = annotations.filter(Q(review_status=Annotation_status.approved) | Q(review_status=Annotation_status.no_review))
+            else:
+                annotations = annotations.filter(Q(review_status=Annotation_status.rejected) | Q(review_status=Annotation_status.no_review))
+
+    return annotations
 
 # fix taksks after edit project
 def fix_tasks_after_edit(users_can_see_other_queues_old, users_can_see_other_queues_new, project, user):
@@ -249,7 +333,7 @@ def fix_tasks_after_edit(users_can_see_other_queues_old, users_can_see_other_que
                         users_already_assigned_id = []
                 else:
                     # just assign task to only one
-                    new_task.assigned_to.add(project.annotators.all())
+                    task.assigned_to.add(project.annotators.all())
 
 def check_tasks_after_edit(project):
     tasks = Task.objects.filter(project=project)
@@ -307,7 +391,6 @@ def add_tasks_from_compressed_file(compressed_file, project, file_extension):
     """
     project_annotators_count = project.annotators.count()
     users_already_assigned_id = []
-
     for filename in files_names:
         if file_extension == ".zip":
             # zip
@@ -315,9 +398,9 @@ def add_tasks_from_compressed_file(compressed_file, project, file_extension):
         else:
             # rar
             pass # to be fixed
-    
+
         # for every file that has an extension in [.wav, .mp3, .mp4] create a task
-        if filename[-4:] in ACCEPTED_EXTENSIONS:
+        if filename[-4:] in ACCEPTED_FORMATS:
             # create task
             new_task = Task.objects.create(project=project, original_file_name=filename)
             new_task.file.save(filename, File(new_file))

@@ -4,6 +4,8 @@
 <html>
 <head>
     {% block head_files %}
+    <link href="https://unpkg.com/nprogress@0.2.0/nprogress.css" rel="stylesheet" type="text/css">
+    <script src="https://unpkg.com/nprogress@0.2.0/nprogress.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro" rel="stylesheet">
 
     <!-- Required meta tags -->
@@ -88,6 +90,14 @@
         {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
           <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <i style="margin-right: .5%;" class="fas fa-times-circle"></i><strong>{{ message }}</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        {% endif %}
+        {% if message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+          <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <i style="margin-right: .5%;" class="fas fa-exclamation-triangle"></i><strong>{{ message }}</strong>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
             </button>

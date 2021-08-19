@@ -18,6 +18,7 @@ function toggleIcon(button){
     }
 }
 
+// same as annotation page but removed drug feature
 function selectedLabel(button) {
 
     if(selected_label == button) {
@@ -28,8 +29,6 @@ function selectedLabel(button) {
         selected_label.style.opacity = initial_opacity;
         selected_label = null;
         selected_label_color = null;
-        // if no label is selected user cannot drag
-        wavesurfer.disableDragSelection();
     } else {
         // if label already selected, unselect it
         if(selected_label) {
@@ -42,11 +41,6 @@ function selectedLabel(button) {
         // set new selected label
         selected_label = button;
         selected_label_color = button.style.backgroundColor;
-        
-        // enable drag selection with label's color
-        wavesurfer.enableDragSelection({
-            color: rgbToRgba(selected_label_color, initial_opacity)
-        });
         selected_label.style.opacity = 1;
 
         // change cursor
@@ -154,11 +148,6 @@ function getLabelColorByValue(label)
     }
 }
 
-function showAlert() {
-    NProgress.done();
-    location.reload(true);
-}
-
 function getRegionButton(new_region) {
     let new_region_button = document.createElement('BUTTON');
     // set attributes
@@ -200,14 +189,6 @@ function add_region_to_section(region) {
     let new_region_button = getRegionButton(region);
     $('#regions-div').append(new_region_button);
 }
-
-function fixNumberOfRegions() {
-    let counter = 1;
-    region_buttons = document.getElementsByClassName('region-buttons');
-    for(btn of region_buttons) {
-        $(btn).find('#count').text(counter++ + ".")
-    }
-}
 //----------------------------------------------------------------------------------------------
 
 
@@ -224,7 +205,7 @@ document.addEventListener('DOMContentLoaded', function() {
         progressColor: '#ddd',
         backend: 'MediaElement',
         plugins: [
-            WaveSurfer.regions.create(),
+            WaveSurfer.regions.create({}),
             WaveSurfer.timeline.create({
                 container: '#wave-timeline'
             }),
@@ -241,7 +222,6 @@ document.addEventListener('DOMContentLoaded', function() {
         ]
     });
     wavesurfer.load(audio_url);
-
     /* Regions */
 
     // load regions of existing annotation (if exists)
@@ -249,7 +229,7 @@ document.addEventListener('DOMContentLoaded', function() {
         wavesurfer.setPlaybackRate(1);
         wavesurfer.zoom(0); // initial zoom
         wavesurfer.setVolume(1); // initial volume
-        let result = annotation
+        let result = annotation;
         // if there is a result load regions of annotation
         if(result && result.length != 0) {
             loadRegions(result);
@@ -267,7 +247,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 color: rgbToRgba(region.data['color'], initial_opacity)
             });
             selected_region = null;
-            document.getElementById('delete-region-btn').style.display = 'none';
             document.getElementById('play-region-btn').style.display = 'none';
 
             // deactivate label of region
@@ -301,7 +280,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 color: rgbToRgba(region.data['color'], selected_region_opacity)
             });
             selected_region = region;
-            document.getElementById('delete-region-btn').style.display = 'inline';
             document.getElementById('play-region-btn').style.display = 'inline';
 
             // activate label of region
@@ -319,78 +297,20 @@ document.addEventListener('DOMContentLoaded', function() {
     // on region created set its data to current label
     wavesurfer.on('region-created', function(region) {
         // increase counter
-        if(++regions_count == 1) {
-            document.getElementById('remove_all_regions').style.display = 'block';
-        }
-        if(selected_label) {
-            region.data['label'] = selected_label.value;
-            region.data['color'] = selected_label_color;
-        } else {
-            add_region_to_section(region);
-        }
-    });
-
-    // on region created set its data to current label
-    wavesurfer.on('region-update-end', function(region) {
-        let region_button = document.getElementById(region.id);
-        if(!document.getElementById(region.id)) {
-            // if region does not exists, add it
-            add_region_to_section(region);
-        } else {
-            // else update it
-            $("#" + region.id).find('#timings').text(
-                (Math.round((region.start + Number.EPSILON) * 100) / 100) + " - " + (Math.round((region.end + Number.EPSILON) * 100) / 100)
-                );
-        }
+        regions_count++;
+        add_region_to_section(region);
     });
 
     // when region plays, take audio to the beggining of the region
-    wavesurfer.on('region-update-end', function(region) {
-        region.once('out', function() {
-            wavesurfer.pause();
-            toggleIcon(document.getElementById('play-pause-button'));
-        });
+    wavesurfer.on('pause', function() {
+        toggleIcon(document.getElementById('play-pause-button'));
     });
 
 });
 
-
-function createResult() {
-    // annotation result will be an array of dictionaries
-    // each dict will represent a region
-    let result = [];
-    Object.keys(wavesurfer.regions.list).map(function(id) {
-        let region = wavesurfer.regions.list[id];
-        let region_dict = {
-            "audio_length": wavesurfer.getDuration(),
-            "value": {
-                "start": region.start,
-                "end": region.end,
-                "label": region.data['label'],
-            }
-        }
-        result.push(region_dict);
-    })
-    return result;
-}
-
-function submitAnnotation() {
-    // xmlhttp request for saving the annotation
-    let xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-           // Typical action to be performed when the document is ready:
-            showAlert();
-        } else if(this.readyState == 4 && (this.status == 400 || this.status == 401)){
-            showAlert();
-        }
-    };
-    let url = host + "api/v1/projects/" + project_id + "/tasks/" + task_id + "/annotation/save";
-    xhttp.open("POST", url, true);
-    xhttp.setRequestHeader("X-CSRFToken", django_csrf_token);
-    xhttp.setRequestHeader("Content-Type", "application/json");
-    NProgress.start();
-    xhttp.send(JSON.stringify(createResult()));
+function showAlert() {
+    NProgress.done();
+    location.reload(true);
 }
 
 // Load regions from annotation.
@@ -400,6 +320,8 @@ function loadRegions(result) {
             start: region['value']['start'],
             end: region['value']['end'],
             color: rgbToRgba(getLabelColorByValue(region['value']['label']), initial_opacity),
+            resize: false,
+            drag: false,
             data: {
                 label: region['value']['label'],
                 color: getLabelColorByValue(region['value']['label'])
@@ -408,31 +330,29 @@ function loadRegions(result) {
     }
 }
 
-// delete region link
-$('#delete-region-btn').click( function(e) {
-    e.preventDefault(); 
-    if(selected_region){
-
-        // if label is selected, unselect it
-        let lbl = getLabelButton(selected_region.data['label'])
-        if(selected_label == lbl) lbl.click();
-
-        // delete region button
-        let region_button = document.getElementById(selected_region.id);
-        region_button.remove();
-
-        selected_region.remove();
-        fixNumberOfRegions();
-        // decrease counter
-        if(--regions_count == 0) {
-            document.getElementById('remove_all_regions').style.display = 'none';
+function submitReview(button) {
+    // xmlhttp request for exporting data
+    const xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            // Typical action to be performed when the document is ready:
+            showAlert();
+        } else if(this.readyState == 4 && (this.status == 400 || this.status == 401)) {
+            showAlert();
         }
-        selected_region = null;
-        document.getElementById('delete-region-btn').style.display = 'none';
-        document.getElementById('play-region-btn').style.display = 'none';
-    }
-    return false; 
-} );
+    };
+    xhr.open("POST", "", true);
+    xhr.setRequestHeader("X-CSRFToken", django_csrf_token);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    let data = {
+        "value": button.value,
+        "comment": $('#commentArea').val(),
+    };
+    NProgress.start();
+    xhr.send(JSON.stringify(data));
+}
+
+// buttons
 
 // play region link
 $('#play-region-btn').click( function(e) {
@@ -445,10 +365,10 @@ $('#play-region-btn').click( function(e) {
 } );
 
 // backwardAudio audio to start
-function backwardAudio() {
-    wavesurfer.stop();
-    toggleIcon(document.getElementById('play-pause-button'));
-}
+// function backwardAudio() {
+//     wavesurfer.stop();
+//     toggleIcon(document.getElementById('play-pause-button'));
+// }
 
 document.getElementById('zoom-slider').oninput = function () {
     wavesurfer.zoom(Number(this.value));
@@ -486,24 +406,3 @@ $('#mute-unmute-btn').click( function(e) {
 function changeSpeed(selector) {
     wavesurfer.setPlaybackRate(selector.value);
 }
-
-// remove all regions button
-$('#remove_all_regions').click( function(e) {
-    e.preventDefault(); 
-    Object.keys(wavesurfer.regions.list).forEach(function (id) {
-        let region = wavesurfer.regions.list[id];
-        let region_button = document.getElementById(region.id);
-
-        // if label is selected, unselect it
-        region.remove();
-        region_button.remove();
-        // set counter to 0
-        regions_count = 0;
-        selected_region = null;
-        selected_region_button = null;
-        document.getElementById('remove_all_regions').style.display = 'none';
-        document.getElementById('delete-region-btn').style.display = 'none';
-        document.getElementById('play-region-btn').style.display = 'none';
-    });
-    return false; 
-} );

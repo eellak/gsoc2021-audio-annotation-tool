@@ -3,7 +3,7 @@
 {% load static %}
 
 {% block head_files%}
-    {{ block.super }}
+	{{ block.super }}
 	<link href="{% static 'css/index.css' %}" rel="stylesheet" type="text/css">
 	<script src="{% static '/js/index.js'%}"></script>
 {% endblock %}
@@ -14,7 +14,12 @@
 	{{ block.super }}
 	{% if user.is_authenticated %}
 		{% if projects %}
-			<h2 class="headers-page">Projects</h2>
+			<h2 class="headers-page">
+				Projects
+				<sup>
+					<i style="cursor: pointer; color: #74deed;" data-toggle="modal" data-target="#indexModal" class="far fa-question-circle tooltip-icons fa-xs"></i>
+				</sup>
+			</h2>
 			{% if user.can_create_projects %}
 				<div id="header-div">
 					<a style="color: black;" title="Create new project" href="{% url 'create_project'%}" class="btn my-button"> Create</a>
@@ -30,7 +35,7 @@
 					<th><i class="fa fa-caret-right my-table-header" aria-hidden="true"></i> Title</th>
 					<th><i class="fa fa-calendar my-table-header" aria-hidden="true"></i> Date of Creation</th>
 					<th>
-						<i style="cursor: pointer; color: #74deed;" data-toggle="modal" data-target="#publicQueues" class="fas fa-eye my-table-header" aria-hidden="true"></i> Public tasks
+						<i style="cursor: pointer; color: #74deed;" data-toggle="modal" data-target="#publicQueues" class="fas fa-eye my-table-header" aria-hidden="true"></i> Task permissions
 					</th>
 					<th><i class="fa fa-tasks my-table-header" aria-hidden="true"></i> Number of tasks</th>
 					<th><i class="fa fa-paint-brush my-table-header" aria-hidden="true"></i> Annotations</th>
@@ -38,7 +43,7 @@
 					<th><i class="fa fa-user my-table-header" aria-hidden="true"></i> Annotator</th>
 					<th><i class="fa fa-user my-table-header" aria-hidden="true"></i> Reviewer</th>
 					<th><i class="fa fa-users my-table-header" aria-hidden="true"></i> Managers</th>
-					<th style="width: 110px;"><i class="fas fa-list my-table-header"></i> Options</th>
+					<th data-toggle="tooltip" data-placement="left" title="Only for managers" style="width: 110px;"><i class="fas fa-list my-table-header"></i> Options</th>
 					</tr>
 				</thead>
 				<!--Table head-->
@@ -47,16 +52,16 @@
 				<tbody>
 					{% for project in page_obj %}
 						<tr class="clickable-row" href="{% url 'project_page' project.id %}">
-							<td title="{{ project.title }}" class="table-title">
-								<img style="margin-right: 4%;" src="{{ project.logo.url }}" width="27" height="27" title="{{ project.title }}" class="rounded-circle">
+							<td class="table-title">
+								<img data-toggle="tooltip" data-placement="top" style="margin-right: 4%;" src="{{ project.logo.url }}" width="27" height="27" title="{{ project.title }}" class="rounded-circle">
 								{{ project.title }}
 							</td>
-							<td>{{ project.created_at|date:"d-m-y" }}</td>
+							<td>{{ project.created_at|date:"D d M Y" }}</td>
 							
 							{% if project.users_can_see_other_queues %}
-								<td title="Tasks assigned to all annotators"><i title="Tasks assigned to all annotators" style="color:green" class="fas fa-check-circle"></i></td>
+								<td><i data-toggle="tooltip" data-placement="top" data-title="Tasks assigned to all annotators" style="color:green" class="fas fa-check-circle tooltip-icons"></i></td>
 							{% else %}
-								<td title="Tasks assigned randmomly to annotators"><i title="Tasks assigned randmomly to annotators" style="color:red" class="fas fa-exclamation-circle"></i></td>
+								<td><i data-toggle="tooltip" data-placement="top" data-title="Tasks assigned randmomly to annotators" style="color:red" class="fas fa-exclamation-circle tooltip-icons"></i></td>
 							{% endif %}
 							
 							<td><b>{{ tasks_count|get_item:project.id }}</b></td>
@@ -69,38 +74,38 @@
 							{% endif %}
 							
 							{% if user in project.annotators.all %}
-								<td title="Annotator for this project"><i title="Annotator for this project" style="color:green" class="fas fa-check-circle"></i></td>
+								<td><i data-toggle="tooltip" data-placement="top" data-title="Annotator for this project" style="color:green;" class="fas fa-check-circle tooltip-icons"></i></td>
 							{% else %}
-								<td title="Not an annotator for this project"><i title="Not an annotator for this project" style="color:red" class="fas fa-exclamation-circle"></i></td>
+								<td><i data-toggle="tooltip" data-placement="top" data-title="Not an annotator for this project" style="color:red" class="fas fa-exclamation-circle tooltip-icons"></i></td>
 							{% endif %}
 
 							{% if user in project.reviewers.all %}
-								<td title="Reviewer for this project"><i title="Reviewer for this project" style="color:green" class="fas fa-check-circle"></i></td>
+								<td><i data-toggle="tooltip" data-placement="top" data-title="Reviewer for this project" style="color:green" class="fas fa-check-circle tooltip-icons"></i></td>
 							{% else %}
-								<td title="Not a reviewer for this project"><i title="Not a reviewer for this project" style="color:red" class="fas fa-exclamation-circle"></i></td>
+								<td><i data-toggle="tooltip" data-placement="top" data-title="Not a reviewer for this project" style="color:red" class="fas fa-exclamation-circle tooltip-icons"></i></td>
 							{% endif %}
 							<td>
 								{% for obj in project.managers.all %}
 									{% if obj == user %}
-										<img style="border: 2px solid #74deed;" src="{{ obj.avatar.url }}" width="27" height="27" title="You" class="rounded-circle">
+										<img style="border: 2px solid #74deed;" data-toggle="tooltip" data-placement="top" src="{{ obj.avatar.url }}" width="27" height="27" title="You" class="rounded-circle">
 									{% else %}
-										<img src="{{ obj.avatar.url }}" width="25" height="25" title="{{ obj.username }}" class="rounded-circle">
+										<img src="{{ obj.avatar.url }}" width="25" data-toggle="tooltip" data-placement="top" height="25" title="{{ obj.username }}" class="rounded-circle">
 									{% endif %}
 								{% endfor %}
 							</td>
 
 							{% if user in project.managers.all %}
-								<td title="You are a manager. You can Edit/Delete">
-									<a title="Edit {{ project.title }}" id="edit-link" href="{% url 'edit_project' project.id %}">
-										<i class="fas fa-edit"></i> </i>
+								<td style="text-align: center;">
+									<a id="edit-link" href="{% url 'edit_project' project.id %}">
+										<i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Edit {{ project.title }}" class="fas fa-edit tooltip-icons"></i> </i>
 									</a>
 									<b>/</b>
-									<a title="Delete {{ project.title }}"id="delete-link" href="{% url 'delete_project' project.id %}">
-										<i class="fas fa-trash-alt"></i>
+									<a id="delete-link" href="{% url 'delete_project' project.id %}">
+										<i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Delete {{ project.title }}" class="fas fa-trash-alt tooltip-icons"></i>
 									</a>
 								</td>
 							{% else %}
-								<td title="You cannot Edit/Delete this project"><b>-</b></td>
+								<td data-toggle="tooltip" data-placement="top" title="You cannot Edit/Delete this project"><b>-</b></td>
 							{% endif %}
 						</tr>
 					
@@ -151,4 +156,5 @@
 			</p>
 		</div>
 	{% endif %}
+	{% include "index_modal.html" %}
 {% endblock %}

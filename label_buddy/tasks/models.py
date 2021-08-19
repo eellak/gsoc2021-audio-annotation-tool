@@ -2,7 +2,7 @@ import os
 
 from django.db import models
 from django.core.exceptions import ValidationError
-from django.db.models.signals import post_save, pre_delete
+from django.db.models.signals import post_save, pre_save, pre_delete, post_delete
 from django.dispatch import receiver
 from enumchoicefield import ChoiceEnum, EnumChoiceField
 from url_or_relative_url_field.fields import URLOrRelativeURLField
@@ -10,6 +10,13 @@ from url_or_relative_url_field.fields import URLOrRelativeURLField
 from users.models import User
 from projects.models import Project
 
+
+def get_review(annotation):
+    try:
+        review = Comment.objects.get(annotation=annotation)
+        return review
+    except Comment.DoesNotExist:
+        return None
 # Create your models here.
 
 class Status(ChoiceEnum):
@@ -27,8 +34,14 @@ class Review_status(ChoiceEnum):
 
     unreviewed = "Unreviewed"
     reviewed = "Reviewed"
-    commented = "Commented"
 
+class Annotation_status(ChoiceEnum):
+    """
+    review status for each annotation
+    """
+    approved = "Approved"
+    rejected = "Rejected"
+    no_review = "Unreviewed"
 
 class Task(models.Model):
     """
@@ -58,21 +71,6 @@ class Task(models.Model):
     def __str__(self):
         return 'Task: %d - project: %s' % (self.id, self.project)
 
-#Classes for Annotation and Comments by reviewers
-
-class Comment(models.Model):
-    """
-    Comment class for comments done by reviewers
-    Annotators will be able to see the comments on their annotations
-    """
-
-    comment = models.TextField(blank=False, help_text='Comment for an annotation')
-    user = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, help_text='User creating the comment')
-    created_at = models.DateTimeField(auto_now=True, help_text='Date and time of comment creation')
-
-    def __str__(self):
-        return 'Comment from %s' % (self.user)
-
 
 class Annotation(models.Model):
     """
@@ -89,13 +87,12 @@ class Annotation(models.Model):
 
     result = models.JSONField(blank=True, null=True, help_text='The result of the annotation in JSON format')
 
-    reviewed_by = models.ForeignKey(User, on_delete=models.CASCADE, blank=True, null=True, related_name='annotation_reviewer', help_text='Reviewer who made the review')
     reviewed_at = models.DateTimeField(blank=True, null=True, help_text='Date and time of a review')
 
     rejected_by_user = models.BooleanField(default=False, help_text='Annotation rejected by user true/false')
     hidden_by_user = models.BooleanField(default=False, help_text='Hidden by users true/false')
 
-    comment = models.ManyToManyField(Comment, blank=True, related_name='annotation_comment', help_text='Comments done for the annotation')
+    review_status = EnumChoiceField(Annotation_status, default=Annotation_status.no_review, help_text='Status for annotation review')
 
     class Meta:
         unique_together = ('user', 'task',)
@@ -103,15 +100,105 @@ class Annotation(models.Model):
     def __str__(self):
         return 'Annotation %d - project: %s' % (self.id, self.project)
 
+#Classes for Annotation and Comments by reviewers
+
+class Comment(models.Model):
+    """
+    Comment class for comments done by reviewers
+    Annotators will be able to see the comments on their annotations
+    """
+    reviewed_by = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, related_name='annotation_reviewer', help_text='Reviewer who made the review')
+    annotation = models.ForeignKey(Annotation, on_delete=models.CASCADE, blank=False, related_name='annotation_reviewed', help_text='Annotation reviewed')
+
+    comment = models.TextField(blank=False, help_text='Comment for an annotation')
+    created_at = models.DateTimeField(auto_now=True, help_text='Date and time of comment creation')
+    updated_at = models.DateTimeField(blank=True, null=True, help_text='Date and time of update')
+    
+    class Meta:
+        unique_together = ('reviewed_by', 'annotation',)
+
+    def __str__(self):
+        return 'Comment from %s' % (self.reviewed_by)
+
+# SIGNALS
 
 # When an annotation is created, the task to which it belongs must be set a labeled (Task.status = labeled)
 @receiver(post_save, sender=Annotation)
 def make_task_labeled(sender, instance, created, **kwargs):
 
-    if created:
+    task = instance.task
+    if created and task.status == Status.unlabeled:
         task = instance.task
         task.status = Status.labeled
         task.save()
+    
+@receiver(post_save, sender=Comment)
+def check_if_task_reviewed(sender, instance, created, **kwargs):
+    print("Hello")
+    """
+    If all annotationbs which belong to the task are reviewed,
+    then make task reviewed
+    """
+    task = instance.annotation.task
+    all_annotations = Annotation.objects.filter(task=task, project=task.project)
+    task_reviewed = True # if passes all validations it will be reviewed
+    for annotation in all_annotations:
+        if not get_review(annotation):
+            task_reviewed = False
+            break
+    if task_reviewed:
+        task.review_status = Review_status.reviewed
+        task.save()
+
+@receiver(pre_save, sender=Annotation)
+def make_annotation_unreviewed(sender, instance, **kwargs):
+    """
+    if annotation result updated, make status unreviewed so reviewer can
+    review the new annotaion.
+    """
+    try:
+        annotation = Annotation.objects.get(pk=instance.pk)
+    except Annotation.DoesNotExist:
+        return False
+    
+    if not (instance.result == annotation.result):
+        instance.review_status = Annotation_status.no_review
+    # print(annotation.result)
+
+# when a comment is deleted, set annotations status to no_review
+@receiver(pre_delete, sender=Comment)
+def make_annotation_unreviewed(sender, instance, **kwargs):
+
+    try:
+        annotation = instance.annotation
+    except Annotation.DoesNotExist:
+        return False
+
+    annotation.review_status = Annotation_status.no_review
+    annotation.save()
+
+@receiver(post_delete, sender=Comment)
+def make_annotation_unreviewed(sender, instance, **kwargs):
+
+    try:
+        annotation = instance.annotation
+    except Annotation.DoesNotExist:
+        return False
+    
+    """
+    if task's annotations are not reviewed make it unreviewed
+    """
+    task = instance.annotation.task
+    all_annotations = Annotation.objects.filter(task=task, project=task.project)
+    task_reviewed = True # if passes all validations it will be reviewed
+    for annotation in all_annotations:
+        if not get_review(annotation):
+            task_reviewed = False
+            break
+    if not task_reviewed:
+        task.review_status = Review_status.unreviewed
+        task.save()
+
 
 # after deleting an annotation check task and if has no other annotation mark it as unlabeled
 @receiver(pre_delete, sender=Annotation)

@@ -36,50 +36,63 @@
         <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    <div class="top-div">
-        <a href="{% url 'index_page' %}"><img style="border: 2px solid #74deed; float: left;" src="{{ project.logo.url }}" width="30" height="30" href="{% url 'index_page' %}" title="Projects page" class="rounded-circle"></a>
-        <i style="margin-top: .4%;" class="fas fa-angle-right top-icons"></i>
-        <a title="Project instructions" class="my-link top-icons" data-toggle="modal" data-target="#instructionsModal" href=""><i class="fas fa-info"></i></a>
-        <a title="Project description" style="margin-left: 1%;" class="my-link top-icons" data-toggle="modal" data-target="#descriptionModal" href=""><i class="fas fa-question-circle"></i></a>
-        {% if project.users_can_see_other_queues %}
-            <span title="All task are shown" style="float: right; margin-top: .2%;">
-                    <b>Public tasks: <i style="color:green" class="fas fa-check-circle" aria-hidden="true"></i></b>
-            </span>
-        {% else %}
-            <span title="Only tasks assigned to you are shown" style="float: right; margin-top: .2%;">
-                <b>Public tasks: <i style="color:red" class="fas fa-exclamation-circle" aria-hidden="true"></i></b>
-            </span>
-        {% endif %}
-    </div>
+    {% comment %}
+        <!-- <div class="top-div">
+            <a href="{% url 'index_page' %}"><img style="border: 2px solid #74deed; float: left;" src="{{ project.logo.url }}" width="30" height="30" href="{% url 'index_page' %}" data-toggle="tooltip" data-target="top" title="{{ project.title }}" class="rounded-circle"></a>
+            <i style="margin-top: .5%;" class="fas fa-angle-right fa-xs top-icons"></i>
+            <a data-toggle="tooltip" data-target="top" title="Project instructions" class="top-icons"><i style="cursor: pointer;" data-toggle="modal" data-target="#projectModal" class="fas fa-info"></i></a>
+            <a data-toggle="tooltip" data-target="top" title="Project description" style="margin-left: 1%;" class="top-icons"><i style="cursor: pointer;" data-toggle="modal" data-target="#descriptionModal" class="fas fa-question-circle"></i></a>
+            {% if project.users_can_see_other_queues %}
+                <span data-toggle="tooltip" data-placement="bottom" offset=.5 title="All task are shown" style="float: right; margin-top: .2%;">
+                        <b>Public tasks: <i style="color:green" class="fas fa-check-circle" aria-hidden="true"></i></b>
+                </span>
+            {% else %}
+                <span data-toggle="tooltip" data-placement="bottom" title="Annotate only assigned tasks" style="float: right; margin-top: .2%;">
+                    <b>Public tasks: <i style="color:red" class="fas fa-exclamation-circle" aria-hidden="true"></i></b>
+                </span>
+            {% endif %}
+        </div> -->
+    {% endcomment %}
     {% if tasks_count_no_filter > 0 %}
-
-        <h2 class="headers-page">{{ project.title }}</h2>
+        <h2 class="headers-page">
+            {{ project.title }}
+            <sup>
+                <i style="cursor: pointer; color: #74deed;" data-toggle="modal" data-target="#projectModal" class="far fa-question-circle tooltip-icons fa-xs"></i>
+            </sup>
+        </h2>
         <div id="header-div">
             {% if user in project.managers.all %}
                 <button style="color: black; float: right;" data-toggle="modal" data-target="#exportModal" class="btn my-button">
-                    Export
+                    <i style="margin-right: 10%;" class="fas fa-file-export"></i> Export
                 </button>
-                <button style="color: black; float: right; margin-right: 1%;" data-toggle="modal" data-target="#importModal" class="btn my-button">
-                    Import
+                <button style="color: black; float: right; margin-right: .5%;" data-toggle="modal" data-target="#importModal" class="btn my-button">
+                    <i style="margin-right: 10%;" class="fas fa-cloud-upload-alt"></i> Import
                 </button>
             {% endif %}
-            {% include "filters.html" %}
+            <a style="color: black; margin-right: .5%; float: left;" data-toggle="tooltip" data-placement="top" title="Back to projects page" href="{% url 'index_page' %}" class="btn my-button"><i style="margin-right: 10%;" class="fas fa-caret-left"></i> Back</a>
+            {% include "project_page_filters.html" %}
         </div>
         <div class="table-div">
             <!--Table-->
-            <table class="table table-bordered table-hover">
+            <table class="table table-bordered">
             <!--Table head-->
             <thead>
                 <tr>
                     <th style="width: 100px;" title="Task ID"><i class="fas fa-hashtag my-table-header"></i> ID</th>
                     <th><i class="fa fa-caret-right my-table-header" aria-hidden="true"></i> Title</th>
-                    <th><i class="fa fa-paint-brush my-table-header" aria-hidden="true"></i> Annotations completed</th>
+                    <th><i class="fa fa-paint-brush my-table-header" aria-hidden="true"></i> Annotations done</th>
                     <th><i class="fas fa-users my-table-header"></i> Annotated by</th>
                     <th><i class="fas fa-file-audio my-table-header"></i> Audio file</th>
-                    <th><i class="fas fa-check-circle my-table-header"></i> Status</th>
-                    <th><i class="fas fa-check-circle my-table-header"></i> Review status</th>
+                    <th style="width: 170px;"><i class="fas fa-check-circle my-table-header"></i> Status</th>
+                    <th style="width: 170px;"><i class="fas fa-check-circle my-table-header"></i> Review status</th>
                     {% if user in project.annotators.all %}
                         <th><i class="fas fa-paint-brush my-table-header"></i> Annotated by you</th>
+                    {% endif %}
+                    <th data-toggle="tooltip" data-placement="left" title="Annotate/Review task" style="width: 110px;"><i class="fas fa-list my-table-header"></i> Options</th>
+                    {% if user in project.managers.all %}
+                        <th data-toggle="tooltip" data-placement="left" title="Delete task" style="width: 50px; text-align: center;">
+                            <i style="cursor: default;" class="fas fa-trash-alt tooltip-icons"></i>
+                        </th>
                     {% endif %}
                 </tr>
             </thead>
@@ -87,21 +100,21 @@
             {% for task in page_obj %}
                 <!--Table body-->
                 <tbody>
-                    <tr class="clickable-row" href="{% url 'annotation_page' project.id task.id %}">
+                    <tr>
                         <td>{% get_table_id page_obj.number tasks_per_page forloop.counter %}</td>
                         {% if task.file %}
-                            <td title="{{ task.original_file_name }}" class="table-title">{{ task.original_file_name }}</td>
+                            <td data-toggle="tooltip" data-placement="top" title="{{ task.original_file_name }}" class="table-title">{{ task.original_file_name }}</td>
                         {% else %}
                             <td><b>-</b></td>
                         {% endif %}
                         <td><b>{{ count_annotations_for_task|get_item:task.id }}</b></td>
                         <td>
-                            {% if users_annotated|get_item:task.id%}
+                            {% if users_annotated|get_item:task.id %}
                                 {% for obj in users_annotated|get_item:task.id %}
                                     {% if obj == user %}
-                                        <img style="border: 2px solid #74deed;" src="{{ obj.avatar.url }}" width="27" height="27" title="You" class="rounded-circle">
+                                        <img data-toggle="tooltip" data-placement="top" style="border: 2px solid #74deed;" src="{{ obj.avatar.url }}" width="27" height="27" title="You" class="rounded-circle">
                                     {% else %}
-                                        <img src="{{ obj.avatar.url }}" width="25" height="25" title="{{ obj.username }}" class="rounded-circle">
+                                        <img data-toggle="tooltip" data-placement="top" src="{{ obj.avatar.url }}" width="25" height="25" title="{{ obj.username }}" class="rounded-circle">
                                     {% endif %}
                                 {% endfor %}
                             {% else %}
@@ -120,23 +133,78 @@
                             {% endif %}
                         </td>
                         {% if task.status == labeled %}
-                            <td title="Labeled"><i title="Labeled" style="color:green" class="fas fa-check-circle" aria-hidden="true"></i></td>
+                            <td><i data-toggle="tooltip" data-placement="top" data-title="Labeled" style="color: #5cb85c" class="fas fa-check-circle tooltip-icons" aria-hidden="true"></i></td>
                         {% else %}
-                            <td title="Unlabeled"><i title="Unlabeled" style="color:red" class="fas fa-exclamation-circle" aria-hidden="true"></i></td>
+                            <td><i data-toggle="tooltip" data-placement="top" data-title="Unlabeled" style="color: #d9534f" class="fas fa-exclamation-circle tooltip-icons" aria-hidden="true"></i></td>
                         {% endif %}
                         
                         {% if task.review_status == reviewed %}
-                            <td title="Reviewed"><i title="Reviewed" style="color:green" class="fas fa-check-circle" aria-hidden="true"></i></td>
+                            <td><i data-toggle="tooltip" data-placement="top" data-title="All annotations reviewed" style="color: #5cb85c" class="fas fa-check-circle tooltip-icons" aria-hidden="true"></i></td>
                         {% else %}
-                            <td title="Unreviewed"><i title="Unreviewed" style="color:red" class="fas fa-exclamation-circle" aria-hidden="true"></i></td>
+                            <td><i data-toggle="tooltip" data-placement="top" data-title="Some annotations are unreviewed" style="color: #d9534f" class="fas fa-exclamation-circle tooltip-icons" aria-hidden="true"></i></td>
                         {% endif %}
 
                         {% if user in project.annotators.all %}
                             {% if annotated_tasks|get_item:task.id %}
-                                <td title="Task annotated by you"><i title="Task annotated by you" style="color:green" class="fas fa-check-circle" aria-hidden="true"></i></td>
+                                <td><i data-toggle="tooltip" data-placement="top" data-title="Task annotated by you" style="color: #5cb85c" class="fas fa-check-circle tooltip-icons" aria-hidden="true"></i></td>
                             {% else %}
-                                <td title="Task not annotated by you"><i title="Task not annotated by you" style="color:red" class="fas fa-exclamation-circle" aria-hidden="true"></i></td>
+                                <td><i data-toggle="tooltip" data-placement="top" data-title="Task not annotated by you" style="color: #d9534f" class="fas fa-exclamation-circle tooltip-icons" aria-hidden="true"></i></td>
                             {% endif %}
+                        {% endif %}
+
+                        <td style="text-align: center;">
+                            {% if project.users_can_see_other_queues %}
+                                {% if user in project.annotators.all and user in project.reviewers.all %}
+                                    <a id="annotate-link" href="{% url 'annotation_page' project.id task.id %}">
+                                        <i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Annotate task" class="fas fa-paint-brush tooltip-icons"></i> </i>
+                                    </a>
+                                    <b>/</b>
+                                    <a id="review-link" href="{% url 'list_task_annotations' project.id task.id %}">
+                                        <i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Review task" class="fas fa-comment-dots tooltip-icons"></i>
+                                    </a>
+                                {% else %}
+                                    {% if user in project.annotators.all %}
+                                        <a style="margin-right: 0%;" id="annotate-link" href="{% url 'annotation_page' project.id task.id %}">
+                                            <i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Annotate task" class="fas fa-paint-brush tooltip-icons"></i> </i>
+                                        </a>
+                                    {% elif user in project.reviewers.all %}
+                                        <a style="margin-left: 0%;" id="review-link" href="{% url 'list_task_annotations' project.id task.id %}">
+                                            <i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Review task" class="fas fa-comment-dots tooltip-icons"></i>
+                                        </a>
+                                    {% else %}
+                                        <b>-</b>
+                                    {% endif %}
+                                {% endif %}
+                            {% else %}
+                                {% if user in project.annotators.all and user in task.assigned_to.all and user in project.reviewers.all %}
+                                    <a id="annotate-link" href="{% url 'annotation_page' project.id task.id %}">
+                                        <i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Annotate task" class="fas fa-paint-brush tooltip-icons"></i> </i>
+                                    </a>
+                                    <b>/</b>
+                                    <a id="review-link" href="{% url 'list_task_annotations' project.id task.id %}">
+                                        <i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Review task" class="fas fa-comment-dots tooltip-icons"></i>
+                                    </a>
+                                {% else %}
+                                    {% if user in project.annotators.all and user in task.assigned_to.all %}
+                                        <a style="margin-right: 0%;" id="annotate-link" href="{% url 'annotation_page' project.id task.id %}">
+                                            <i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Annotate task" class="fas fa-paint-brush tooltip-icons"></i> </i>
+                                        </a>
+                                    {% elif user in project.reviewers.all %}
+                                        <a style="margin-left: 0%;" id="review-link" href="{% url 'list_task_annotations' project.id task.id %}">
+                                            <i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Review task" class="fas fa-comment-dots tooltip-icons"></i>
+                                        </a>
+                                    {% else %}
+                                        <b>-</b>
+                                    {% endif %}
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                        {% if user in project.managers.all %}
+                            <td style="text-align: center;">
+                                <a style="color:  #d9534f;" href="{% url 'delete_task' project.id task.id %}">
+                                    <i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Delete {{ task.original_file_name }}" class="fas fa-times-circle tooltip-icons"></i>
+                                </a>
+                            </td>
                         {% endif %}
                         
                     </tr>

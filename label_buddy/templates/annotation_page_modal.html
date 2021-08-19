@@ -1,0 +1,34 @@
+<div class="modal fade" id="annotationPageModal" tabindex="-1" role="dialog" aria-labelledby="annotationPageModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle"><b>How to annotate</b></h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        
+        <div class="modal-body">
+            <div>
+                <b>Select a label and drug on the waveform</b> in order to create a region. The region created will be labeled with
+                the selected label and you will be able to see the region's starting and ending point to the left of your screen.
+                You can delete or play selected regions by clicking on them and after clicking the play/delete buttons which appear under 
+                the waveform.<br><br>
+                <b style="color:  #5cb85c;">Save</b> your annotation by clicking the Save button.<br><br>
+                <b>View</b> the comment (if review exists) of the reviewer by clicking the Review button<br><br>
+                <b style="color: #d9534f;">Delete</b> your annotation (if exists) by clicking the Delete button.<br><br>
+                Click <b style="color: #74deed;">Next</b> to start annotating the next <b>unlabeled</b> task.
+            </div>
+            <br><br>
+        </div>
+
+        <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLongTitle"><b>Projects instructions</b></h5>
+        </div>
+        
+        <div class="modal-body">
+            {{ project.instructions }}
+        </div>
+    </div>
+    </div>
+</div>

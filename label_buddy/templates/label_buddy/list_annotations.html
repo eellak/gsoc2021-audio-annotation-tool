@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% load static %}
+
+{% block head_files%}
+    {{ block.super }}
+    <link href="{% static 'css/list_annotations.css' %}" rel="stylesheet" type="text/css">
+    <script src="{% static '/js/list_annotations.js'%}"></script>
+{% endblock %}
+
+{% block title %} &#9702; Task {{task.id}} annotations {% endblock %}
+
+{% block content %}
+    {{ block.super }}
+    <h2 class="headers-page">Choose annotation to Review
+        <sup><i style="cursor: pointer; color: #74deed;" data-toggle="modal" data-target="#reviewInfoModal" class="far fa-question-circle fa-xs"></i></sup>
+    </h2>
+    <div id="header-div">
+        <a style="color: black; float: left; margin-right: .5%;" data-toggle="tooltip" data-placement="top" title="Back to project page" href="{% url 'project_page' project.id %}" class="btn my-button"> 
+            <i style="margin-right: 10%;" class="fas fa-caret-left"></i> Back
+        </a>
+        {% include "list_annotations_filters.html" %}
+    </div>
+
+    <div class="table-div">
+        <!--Table-->
+        <table class="table table-bordered table-striped table-hover" id="index-table">
+            <!--Table head-->
+            <thead>
+                <tr>
+                
+                <th style="width: 100px;" title="Task ID"><i class="fas fa-hashtag my-table-header"></i> ID</th>
+                <th><i class="fa fa-tasks my-table-header" aria-hidden="true"></i> Task</th>
+                <th><i class="fa fa-user my-table-header" aria-hidden="true"></i> Annotator</th>
+                <th><i class="fa fa-calendar my-table-header" aria-hidden="true"></i> Date of Creation</th>
+                <th><i class="fa fa-calendar my-table-header" aria-hidden="true"></i> Last update</th>
+                <th><i class="fas fa-file-alt my-table-header"></i> Result JSON format</th>
+                <th><i class="fas fa-check-circle my-table-header"></i> Review status</th>
+                <th><i class="fas fa-comment-dots my-table-header"></i> Reviewed by you</th>
+                </tr>
+            </thead>
+
+            <!--Table body-->
+            <tbody>
+                {% for annotation in page_obj %}
+                    <tr class="clickable-row" href="{% url 'review_page' project.id task.id annotation.id %}">
+                        
+                        <td>{% get_table_id page_obj.number annotations_per_page forloop.counter %}</td>
+                        {% if task.file %}
+                            <td data-toggle="tooltip" data-placement="top" title="{{ task.original_file_name }}" class="table-title">{{ task.original_file_name }}</td>
+                        {% else %}
+                            <td><b>-</b></td>
+                        {% endif %}
+
+                        <td>
+                            {% if annotation.user == user %}
+                                <img style="margin-right: 4%; border: 2px solid #74deed;" data-toggle="tooltip" data-placement="top" src="{{ annotation.user.avatar.url }}" width="27" height="27" title="{{ annotation.user.email }}" class="rounded-circle">
+                            {% else %}
+                                <img style="margin-right: 4%;" data-toggle="tooltip" data-placement="top" src="{{ annotation.user.avatar.url }}" width="25" height="25" title="{{ annotation.user.email }}" class="rounded-circle">
+                            {% endif %}
+                            
+                            {{ annotation.user.name }}
+                        </td>
+
+                        <td>{{ annotation.created_at|date:"d-m-y" }}</td>
+                        
+                        <td>
+                            {% if annotation.updated_at %}
+                                {{ annotation.updated_at|date:"d-m-y" }}
+                            {% else %} 
+                                <b>-</b>
+                            {% endif %}
+                        </td>
+
+                        <td data-toggle="tooltip" data-placement="top" title="{{ annotation.result }}" class="table-title">
+                            {{ annotation.result }}
+                        </td>
+
+                        <td>
+                            {% if annotation.review_status == approved %}
+                                <i data-toggle="tooltip" data-placement="top" data-title="Annotation approved" style="color:green" class="fas fa-check-circle tooltip-icons" aria-hidden="true"></i>
+                            {% elif annotation.review_status == rejected%}
+                                <i data-toggle="tooltip" data-placement="top" data-title="Annotation rejected" style="color:red" class="fas fa-exclamation-circle tooltip-icons" aria-hidden="true"></i>
+                            {% else %}
+                                <i data-toggle="tooltip" data-placement="top" data-title="Annotation not reviewed" style="color:black" class="fas fa-comment-slash tooltip-icons" aria-hidden="true"></i>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            {% if annotations_reviewed_by_user|get_item:annotation.id %}
+                                <i data-toggle="tooltip" data-placement="top" data-title="Reviewed by you" style="color:green" class="fas fa-check-circle tooltip-icons" aria-hidden="true"></i>
+                            {% else %}
+                                <i data-toggle="tooltip" data-placement="top" data-title="Not reviewed by you" style="color:red" class="fas fa-exclamation-circle tooltip-icons" aria-hidden="true"></i>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% include "review_info_modal.html" %}
+    {% if annotations_count > annotations_per_page %}
+        {% include "pagination.html" %}
+    {% endif %}
+{% endblock %}

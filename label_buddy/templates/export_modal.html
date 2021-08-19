@@ -33,6 +33,13 @@
                     </div>
                 </div>
             </div>
+            <hr/>
+            <div id="export_approved_div" class="form-check" onclick="selectApprovedOrNot(this);">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="exportApproved" onClick="this.checked=!this.checked;">
+                    Export <b>only</b> approved annotations
+                </div>
+            </div>
         </div>
         <div class="modal-footer">
             <button id="export-btn" class="btn my-button" onclick="exportDataRequest();">Export</button>

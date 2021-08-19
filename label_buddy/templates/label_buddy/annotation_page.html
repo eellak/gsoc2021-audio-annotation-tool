@@ -13,7 +13,6 @@
     <!-- plugins -->
     <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.timeline.js"></script>
     <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.regions.js"></script>
-    <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.minimap.js"></script>
     <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.cursor.js"></script>
 
 
@@ -22,7 +21,7 @@
         var task_id = "{{ task.id }}";
         var project_id = "{{ project.id }}";
         var django_csrf_token = "{{ csrf_token }}";
-        var annotation = JSON.parse("{{annotation|escapejs}}");
+        var annotation = JSON.parse("{{annotation_result|escapejs}}");
         var host = "{{ host }}";
     </script>
     <script src="{% static '/js/annotation_page.js'%}" defer></script>
@@ -35,24 +34,60 @@
 
 {% block content %}
     {{ block.super }}
-    <div class="top-div">
-        <img style="border: 2px solid #74deed; float: left;" src="{{ project.logo.url }}" width="30" height="30" data-toggle="modal" data-target="#informationModal" href="" title="{{ project.title }} information" class="rounded-circle">
-        <i style="margin-top: .4%;" class="fas fa-angle-right top-icons"></i>
-        <a title="Project instructions" class="my-link top-icons" data-toggle="modal" data-target="#instructionsModal" href=""><i class="fas fa-info"></i></a>
-        <span style="float: right; margin-top: .2%;">
-            {% if updated_at %}
-                <b>Last update: </b>{{ updated_at|date:"d-m-y" }}
-            {% elif created_at %}
-                <b>Annotation created at: </b>{{ created_at|date:"d-m-y" }}
+    {% comment %}
+        <!-- <div class="top-div">
+            <img style="border: 2px solid #74deed; float: left;" src="{{ project.logo.url }}" width="30" height="30" data-toggle="modal" data-target="#informationModal" href="" title="{{ project.title }} information" class="rounded-circle">
+            <i style="margin-top: .5%;" class="fas fa-angle-right fa-xs top-icons"></i>
+            <a data-toggle="tooltip" data-target="top" title="Project instructions" class="my-link top-icons"><i style="cursor: pointer;" data-toggle="modal" data-target="#instructionsModal" class="fas fa-info"></i></a>
+            <span style="float: right; margin-top: .2%;">
+                {% if updated_at %}
+                    <b>Last update: </b>{{ updated_at|date:"d-m-y" }}
+                {% elif created_at %}
+                    <b>Annotation created at: </b>{{ created_at|date:"d-m-y" }}
+                {% endif %}
+            </span>
+        </div> -->
+    {% endcomment %}
+
+    <div style="text-align: center; margin-left: 1%; margin-right: 1%; margin-top: .5%;">
+        {% if created_at %}
+            {% if annotation_status == status_approved %}
+                <span style="cursor: default;" data-toggle="tooltip" data-placement="top" title="Annotation review status" class="badge badge-pill badge-success">Approved</span>
+            {% elif annotation_status == status_rejected %}
+                <span style="cursor: default;" data-toggle="tooltip" data-placement="top" title="Annotation review status" class="badge badge-pill badge-danger">Rejected</span>
             {% else %}
-                <b>You have not annotated this task!</b>
+                <span style="border: 1px solid black; cursor: default;" data-toggle="tooltip" data-placement="top" title="Annotation review status" class="badge badge-pill badge-light">Unreviewed</span>
             {% endif %}
-        </span>
+        {% endif %}
+        {% if created_at %}
+            <span style="cursor: default;" data-toggle="tooltip" data-placement="top" title="Task status" class="badge badge-pill badge-success">Annotated</span>
+        {% else %}
+            <span style="cursor: default;" data-toggle="tooltip" data-placement="top" title="Task status" class="badge badge-pill badge-danger">Not annotated</span>
+        {% endif %}
+        
+        <h2 style="cursor: default; display: inline;" class="headers-page">
+            <span data-toggle="tooltip" data-placement="top" title="{{ task.original_file_name }}">
+                Task: {{ task.original_file_name }}
+            </span>
+            <sup>
+                <i style="cursor: pointer; color: #74deed;" data-toggle="modal" data-target="#annotationPageModal" class="far fa-question-circle tooltip-icons fa-xs"></i>
+            </sup>
+        </h2>
     </div>
-    <h2 title="{{ task.original_file_name }}" class="headers-page">Audio: {{ task.original_file_name }}</h2>
+    
 
     <div id="header-div">
-        <a style="color: black;" title="Back to project page" href="{% url 'project_page' project.id %}" class="btn my-button"><i style="margin-right: 10%;" class="fas fa-caret-left"></i> Project</a>
+        <a style="color: black; margin-right: 1%;" data-toggle="tooltip" data-placement="top" title="Back to project page" href="{% url 'project_page' project.id %}" class="btn my-button"><i style="margin-right: 10%;" class="fas fa-caret-left"></i> Back</a>
+        {% if updated_at %}
+            <span data-toggle="tooltip" data-placement="top" title="{{ updated_at|date:'d M y, H:i:s' }}" style="cursor: default; float: right;">
+                <b>Last update: </b>{{ updated_at|date:"D d M Y" }}
+            </span>
+        {% elif created_at %}
+            <span data-toggle="tooltip" data-placement="top" title="{{ created_at|date:'d M y, H:i:s' }}" style="cursor: default; float: right;">
+                <b>Annotation created at: </b>{{ created_at|date:"D d M Y" }}
+            </span>
+        {% endif %}
+        
     </div>
 
     <div style="margin-top: .5%;"  class="container-fluid">
@@ -83,7 +118,7 @@
                 {% if labels_count %}
                     <div id="labels-div">
                         {% for label in labels.all %}
-                            <button style="background-color: {{ label.color }}; opacity: 0.3" class="badge my-badge badge-pill" value="{{ label.name }}" onclick="selectedLabel(this)">{{ label.name }}</button>
+                            <button style="background-color: {{ label.color }}; opacity: 0.2" class="badge my-badge badge-pill" value="{{ label.name }}" onclick="selectedLabel(this)">{{ label.name }}</button>
                         {% endfor %}
                     </div>
                 {% endif %}
@@ -107,24 +142,51 @@
                           <option value=1.5>Speed 1.5</option>
                           <option value=2>Speed 2.0</option>
                     </select>
-                    <a title="Delete selected region" style="display: none; margin-left: 2%; color: #d9534f;" id="delete-region-btn" href=""><i class="fas fa-trash"></i></a>
-                    <a title="Paly selected region" style="display: none; margin-left: 1%; color: #5cb85c;" id="play-region-btn" href=""><i class="fas fa-play"></i></a>
+                    <a data-toggle="tooltip" data-placement="bottom" title="Delete selected region" style="display: none; margin-left: 2%; color: #d9534f; cursor: pointer;" id="delete-region-btn" href=""><i class="fas fa-trash"></i></a>
+                    <a data-toggle="tooltip" data-placement="bottom" title="Paly selected region" style="display: none; margin-left: 1%; color: #5cb85c; cursor: pointer;" id="play-region-btn" href=""><i class="fas fa-play"></i></a>
                 </div>
             </div>
         </div>
     </div>
-
-    <div id="annotation-btn-div" class="col">
-        <button title="Save annotation" class="btn btn-success my-button annotation-buttons" onclick="submitAnnotation();"><i style="margin-right: 10%;" class="fas fa-save"></i> Save</button>
-        <a href="{% url 'delete_annotation' project.id task.id %}">
-            <button title="Delete annotation" class="btn btn-danger my-button annotation-buttons" id="delete-annotation-btn"><i class="fas fa-trash-alt"></i></button>
-        </a>
+    
+    <div id="annotation-btn-div">
+        <button title="Save annotation" class="btn btn-success annotation-buttons" onclick="submitAnnotation();"><i style="margin-right: 10%;" class="fas fa-save"></i> Save</button>
+        {% if reviewer and review_created_at %}
+            <button class="btn btn-light annotation-buttons" type="button" data-toggle="collapse" data-target="#commentDiv" aria-expanded="false" aria-controls="collapseExample">
+                <i style="margin-right: 10%;" class="fas fa-eye"></i>Review
+            </button>
+        {% endif %}
+        {% if created_at %}
+            <a href="{% url 'delete_annotation' project.id task.id %}">
+                <button title="Delete annotation" class="btn btn-light annotation-buttons" id="delete-annotation-btn"><i class="fas fa-trash-alt"></i></button>
+            </a>
+        {% endif %}
         {% if next_unlabeled_task_id == -1 %}
             <a title="Next unlabeled task" href="{% url 'annotation_page' project.id task.id %}"><button class="btn my-button annotation-buttons">Next <i style="margin-left: 10%;" class="fas fa-caret-right"></i></button></a>
         {% else %}
             <a title="Next unlabeled task" href="{% url 'annotation_page' project.id next_unlabeled_task_id %}"><button class="btn my-button annotation-buttons">Next <i style="margin-left: 10%;" class="fas fa-caret-right"></i></button></a>
         {% endif %}
     </div>
+    {% if reviewer and review_created_at %}
+        <div class="collapse" id="commentDiv">
+            <div class="card card-body">
+                <div style="margin-bottom: .5%;">
+                    <span style="cursor: default;" data-toggle="tooltip" data-target="top" title="{{ reviewer.email }}"><b>Reviewer:</b> {{ reviewer }}</span>
+                    {% if review_updated_at %}
+                        <span style="cursor: default; float: right;" data-toggle="tooltip" data-target="top" title="{{ reviewer.email }}"><b>Updated at:</b> {{ review_updated_at|date:"d-m-y" }}</span>
+                    {% else %}
+                        <span style="cursor: default; float: right;" data-toggle="tooltip" data-target="top" title="{{ reviewer.email }}"><b>Created at:</b> {{ review_created_at|date:"d-m-y" }}</span>
+                    {% endif %}
+                </div>
+                {% if comment %}
+                    <textarea style="resize: none;" disabled id="commentArea" class="form-control">{{ comment }}</textarea>
+                {% else %}
+                    <textarea style="resize: none;" disabled id="commentArea" class="form-control" placeholder="No comment for annotation.."></textarea>
+                {% endif %}
+            </div>
+        </div>
+    {% endif %}
     {% include "project_modals.html" %}
     {% include "project_information_modal.html" %}
+    {% include "annotation_page_modal.html" %}
 {% endblock %}

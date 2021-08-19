@@ -18,31 +18,31 @@
     margin-right: 1%;
 }
 
-#annotation-btn-div {
-    text-align: center;
+#review-date-div {
+    /* border: 2px solid rgb(51, 58, 51); */
+    margin-top: 2%; 
+    margin-left: 1%; 
     margin-right: 1%; 
-    margin-left: 1%;
-    margin-top: 2%;
+    text-align: right;
 }
 
 #commentDiv {
     /* border: 2px solid green; */
-    margin-top: 2%;
+    /* margin-top: 2%; */
     margin-left: 1%;
     margin-right: 1%;
 }
 
-#commentArea {
-    height: 80%;
-    /* background-color: rgb(245,245,245); */
-}
-
 #review-btn-div {
     text-align: center;
-    margin-top: 3%;
+    margin-top: 2%;
     margin-left: .5%;
     margin-right: 1%;
     /* border: 2px solid palevioletred; */
+}
+
+#commentArea {
+    height: 100%;
 }
 
 #play-pause-btn-div {
@@ -83,9 +83,6 @@
     display: none;
 }
 
-
-
-
 /* classes */
 
 .my-badge {
@@ -100,11 +97,11 @@
     box-shadow: none;
 }
 
-.annotation-buttons:focus {
+.review-buttons:focus {
     outline: none;
     box-shadow: none;
 }
-.annotation-buttons {
+.review-buttons {
     width: 100px;
     height: 100px;
 }
@@ -154,11 +151,9 @@ h1,h2,h3 {
     
 }
 
+
 textarea:focus {
-    border-color: rgba(116, 222, 237) !important;
-    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(116, 222, 237, .6) !important;
-    outline: 0 none !important;
+  border-color: rgba(116, 222, 237) !important;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(116, 222, 237, .6) !important;
+  outline: 0 none !important;
 }
-
-
-

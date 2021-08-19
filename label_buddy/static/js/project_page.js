@@ -1,5 +1,4 @@
 var selected_export_format = null;
-
 // fix filters after page reload
 function fixFilters() {
     var parameters = window.location.href.split('?')[1];
@@ -86,7 +85,7 @@ function filter_tasks() {
 //     }
 // }
 
-// dix for export click
+// fix for export click
 function selectExportFormat(div) {
 
     // execute only if div not already selected
@@ -124,6 +123,18 @@ function selectExportFormat(div) {
     }
 }
 
+function selectApprovedOrNot(div) {
+    let exportApproved = $('#exportApproved').is(':checked');
+
+    if(exportApproved) {
+        div.style.backgroundColor = 'white';
+        $('#exportApproved').prop('checked', false);
+    } else {
+        div.style.backgroundColor = 'rgba(115, 223, 237, 0.3)';
+        $('#exportApproved').prop('checked', true);
+    }
+}
+
 // download exported file
 function downloadExportedFile(result, status) {
 
@@ -132,9 +143,11 @@ function downloadExportedFile(result, status) {
     let exported_name = result['exported_name'];
     if(format == "JSON") {
         downloadJSON(JSON.stringify(exported_json), exported_name, 'text/plain');
+        NProgress.done();
         showAlert(result['message'], status);
     } else if(format == "CSV") {
         downloadCSV(exported_json, exported_name);
+        NProgress.done();
         showAlert(result['message'], status);
     } else {
         // something is wrong
@@ -176,14 +189,13 @@ function downloadJSON(content, fileName, contentType) {
 
 function downloadCSV(content, fileName) {
     let rows = [
-        ["audio", "audio_length", "id", "regions", "completed_at", "annotator_email", "annotator_username", "annotation_id", "project_id"]
+        ["audio", "audio_length", "id", "regions", "completed_at", "annotator_email", "annotator_username",
+            "reviewer_email", "reviewer_username", "review_status", "review_created_at", "review_updated_at", "annotation_id", "project_id"]
     ];
-    
     for(task of content) {
         for(annotation of task['annotations']) {
             let regions = []
             for(region of annotation['result']) regions.push(region['value'])
-
             var arr = [
                 task['data']['audio'],
                 annotation['result'][0]['audio_length'],
@@ -192,11 +204,16 @@ function downloadCSV(content, fileName) {
                 JSON.stringify(annotation['created_at']),
                 annotation['completed_by']['email'],
                 annotation['completed_by']['username'],
+                annotation['reviewed_by']['email'],
+                annotation['reviewed_by']['username'],
+                annotation['reviewed_by']['review_status'],
+                annotation['reviewed_by']['review_created_at'],
+                annotation['reviewed_by']['review_updated_at'],
                 annotation['id'],
                 task['project']
             ];
+            rows.push(arr);
         }
-        rows.push(arr);
     }
 
     let csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
@@ -211,11 +228,11 @@ function downloadCSV(content, fileName) {
 // export annotations for project request
 function exportDataRequest() {
     // xmlhttp request for exporting data
-    let xhttp = new XMLHttpRequest();
+    const xhttp = new XMLHttpRequest();
     xhttp.onreadystatechange = function() {
         if (this.readyState == 4 && this.status == 200) {
-           // Typical action to be performed when the document is ready:
-           downloadExportedFile(JSON.parse(this.responseText), this.status);
+            // Typical action to be performed when the document is ready:
+            downloadExportedFile(JSON.parse(this.responseText), this.status);
         } else if(this.readyState == 4 && (this.status == 400 || this.status == 401)) {
             showAlert(JSON.parse(this.responseText)['message'], this.status);
         }
@@ -224,10 +241,57 @@ function exportDataRequest() {
     xhttp.open("POST", url, true);
     xhttp.setRequestHeader("X-CSRFToken", django_csrf_token);
     xhttp.setRequestHeader("Content-Type", "application/json");
-    xhttp.send(JSON.stringify($("input[name=exampleRadios]:checked").val()));
+    NProgress.start();
+    xhttp.send(JSON.stringify( {
+        "format": $("input[name=exampleRadios]:checked").val(),
+        "exportApproved": $('#exportApproved').is(':checked')
+    }));
 }
 
 document.addEventListener('DOMContentLoaded', function() {
     fixFilters();
     selected_export_format = document.getElementById('export_div_json');
+
+    // progress bar
+    const import_form = document.getElementById('import-form');
+    const input = document.getElementById('import-file');
+    const progressBar = document.getElementById('myProgressBar');
+    const progressBarFill = document.querySelector('#myProgressBar > .progress-bar-fill');
+    const progressBarText = progressBarFill.querySelector('.progress-bar-text');
+
+    const csrf = document.getElementsByName('csrfmiddlewaretoken');
+
+    import_form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const audio_data = input.files[0];
+        
+        const fd = new FormData();
+        fd.append('file', audio_data);
+
+        const xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                // Typical action to be performed when the document is ready:
+                NProgress.done();
+                data = JSON.parse(this.responseText);
+                window.location = data.url;
+            } else if(this.readyState == 4 && (this.status == 400 || this.status == 401)) {
+                NProgress.done();
+                data = JSON.parse(this.responseText);
+                window.location = data.url;
+            }
+        };
+        xhr.open("POST", import_form.action, true);
+        xhr.upload.addEventListener('progress', e => {
+            const percent = e.lengthComputable ? (e.loaded / e.total) * 100 : 0;
+
+            progressBarFill.style.width = percent.toFixed(2) + "%";
+            progressBarText.textContent = percent.toFixed(2) + "%";
+        });
+        xhr.setRequestHeader("X-CSRFToken", csrf[0].value);
+        // xhr.setRequestHeader("Content-Type", "multipart/form-data");
+        NProgress.start();
+        document.getElementById('progress_outer').style.display = "block";
+        xhr.send(fd);
+    });
 });
