@@ -44,7 +44,7 @@ We will try to develop a web application (audio annotation tool) which will prov
 * Submit tasks as annotated
 * Skip annotation process (for a specific task)
 
-#Steps to run
+# Steps to run
 
 Clone repository and cd to the folder
 ~~~
