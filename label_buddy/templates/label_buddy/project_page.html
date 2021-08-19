@@ -17,6 +17,19 @@
 
 {% block title %} &#9702; {{project.title}} {% endblock %}
 
+{% block breadcrumbs %}
+    <ol style="margin-top: 1%;"  class="breadcrumb bg-light py-0">
+        <li class="breadcrumb-item"><a class="my-link" href="{% url 'index_page' %}"><i class="fas fa-home"></i></a></li>
+        <li class="breadcrumb-item active" aria-current="page">
+            {% if project.title %}
+                {{ project.title}}
+            {% else %}
+                Project #{{project.id}}
+            {% endif %}
+        </li>
+    </ol>
+{% endblock %}
+
 {% block navbar_buttons %}
 {% endblock %}
 
@@ -69,7 +82,9 @@
                     <i style="margin-right: 10%;" class="fas fa-cloud-upload-alt"></i> Import
                 </button>
             {% endif %}
-            <a style="color: black; margin-right: .5%; float: left;" data-toggle="tooltip" data-placement="top" title="Back to projects page" href="{% url 'index_page' %}" class="btn my-button"><i style="margin-right: 10%;" class="fas fa-caret-left"></i> Back</a>
+            {% comment %}
+                <!-- <a style="color: black; margin-right: .5%; float: left;" data-toggle="tooltip" data-placement="top" title="Back to projects page" href="{% url 'index_page' %}" class="btn my-button"><i style="margin-right: 10%;" class="fas fa-caret-left"></i> Back</a> -->
+            {% endcomment %}
             {% include "project_page_filters.html" %}
         </div>
         <div class="table-div">

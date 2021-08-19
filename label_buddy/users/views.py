@@ -36,12 +36,15 @@ def edit_profile(request, username):
     if request.method == "POST":
         form = UserForm(request.POST, request.FILES, instance=user)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.save()
+            new_user = form.save(commit=False)
+            # cannot change email
+            new_user.email = user.email
+            new_user.save()
             messages.add_message(request, messages.SUCCESS, "Successfully edited profile.")
             return HttpResponseRedirect("/")
     else:
         form = UserForm(instance=user)
+        form.fields['email'].widget.attrs['readonly'] = True
 
     context["form"] = form
     return render(request, "label_buddy/user_edit_profile.html", context)

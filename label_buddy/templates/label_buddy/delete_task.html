@@ -9,6 +9,23 @@
 
 {% block title %} &#9702; Delete task {% endblock %}
 
+{% block breadcrumbs %}
+    <ol style="margin-top: 1%;"  class="breadcrumb bg-light py-0">
+        <li class="breadcrumb-item"><a class="my-link" href="{% url 'index_page' %}"><i class="fas fa-home"></i></a></li>
+        <li class="breadcrumb-item" aria-current="page">
+            <a class="my-link" href="{% url 'project_page' project.id %}">
+                {% if project.title %}
+                    {{ project.title}}
+                {% else %}
+                    Project #{{project.id}}
+                {% endif %}
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Task #{{ task.id }}</li>
+        <li class="breadcrumb-item active" aria-current="page">Delete</li>
+    </ol>
+{% endblock %}
+
 {% block content %}
   {{ block.super }}
   <div class="container centered">
@@ -17,14 +34,14 @@
         <h2 data-toggle="tooltip" data-target="top" title="{{ task.original_file_name }}" class="delete-header">Delete task {{task.original_file_name}}</h2>
         <hr class="mt-0 mb-4">
         <p>Are you sure you want to delete this task?</p>
-        <form method="POST" action="{% url 'delete_task' project_id task.id %}">
+        <form method="POST" action="{% url 'delete_task' project.id task.id %}">
           {% csrf_token %}
           {% if redirect_field_value %}
             <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
           {% endif %}
           
           <button class="btn btn-danger my-button" type="submit">Yes</button>
-          <a style="color: white;" class="btn my-button" href="{% url 'project_page' project_id %}">No</a>
+          <a style="color: white;" class="btn my-button" href="{% url 'project_page' project.id %}">No</a>
         </form>
       </div>
     </div>

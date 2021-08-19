@@ -6,6 +6,14 @@
 
 {% block title %} &#9702; Edit profile{% endblock %}
 
+{% block breadcrumbs %}
+    <ol style="margin-top: 1%;"  class="breadcrumb bg-light py-0">
+        <li class="breadcrumb-item"><a class="my-link" href="{% url 'index_page' %}"><i class="fas fa-home"></i></a></li>
+        <li class="breadcrumb-item active" aria-current="page">Profile</li>
+        <li class="breadcrumb-item active" aria-current="page">Edit</li>
+    </ol>
+{% endblock %}
+
 {% block content %}
     {{ block.super }}
     <div class="container centered">

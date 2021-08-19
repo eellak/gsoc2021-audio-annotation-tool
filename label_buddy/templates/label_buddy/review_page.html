@@ -27,7 +27,25 @@
 
 {% block title %} &#9702; Review{% endblock %}
 
-{% block navbar_buttons %}
+{% block breadcrumbs %}
+    <ol style="margin-top: 1%;"  class="breadcrumb bg-light py-0">
+        <li class="breadcrumb-item"><a class="my-link" href="{% url 'index_page' %}"><i class="fas fa-home"></i></a></li>
+        <li class="breadcrumb-item" aria-current="page">
+            <a class="my-link" href="{% url 'project_page' project.id %}">
+                {% if project.title %}
+                    {{ project.title}}
+                {% else %}
+                    Project #{{project.id}}
+                {% endif %}
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">
+            <a class="my-link" href="{% url 'list_task_annotations' project.id task.id %}">
+                Annotations
+            </a>
+        </li>
+        <li class="breadcrumb-item active" aria-current="page">Review</li>
+    </ol>
 {% endblock %}
 
 {% block content %}
@@ -67,13 +85,15 @@
     </div>
 
     <div id="header-div">
-        <a style="color: black;" data-toggle="tooltip" data-placement="top" title="Back to annotations page" href="{% url 'list_task_annotations' project.id task.id %}" class="btn my-button"><i style="margin-right: 10%;" class="fas fa-caret-left"></i> Back</a>
+        {% comment %}
+            <!-- <a style="color: black;" data-toggle="tooltip" data-placement="top" title="Back to annotations page" href="{% url 'list_task_annotations' project.id task.id %}" class="btn my-button"><i style="margin-right: 10%;" class="fas fa-caret-left"></i> Back</a> -->
+        {% endcomment %}
         {% if annotation.updated_at %}
-            <span data-toggle="tooltip" data-placement="top" title="{{ annotation.updated_at|date:'d M y, H:i:s' }}" style="float: right; cursor: default;">
+            <span data-toggle="tooltip" data-placement="top" title="{{ annotation.updated_at|date:'d M y, H:i:s' }}" style="cursor: default;">
                 <b>Last annotation update: </b>{{ annotation.updated_at|date:"D d M Y" }}
             </span>
         {% else %}
-            <span data-toggle="tooltip" data-placement="top" title="{{ annotation.created_at|date:'d M y, H:i:s' }}" style="float: right;cursor: default;">
+            <span data-toggle="tooltip" data-placement="top" title="{{ annotation.created_at|date:'d M y, H:i:s' }}" style="cursor: default;">
                 <b>Annotation created at: </b>{{ annotation.created_at|date:"D d M Y" }}
             </span>
         {% endif %}

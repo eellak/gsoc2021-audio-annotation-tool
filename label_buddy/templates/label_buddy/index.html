@@ -10,6 +10,12 @@
 
 {% block title %} Label Buddy {% endblock %}
 
+{% block breadcrumbs %}
+	<ol style="margin-top: 1%;"  class="breadcrumb bg-light py-0">
+		<li class="breadcrumb-item active" aria-current="page"><i class="fas fa-home"></i></li>
+	</ol>
+{% endblock %}
+
 {% block content %}
 	{{ block.super }}
 	{% if user.is_authenticated %}

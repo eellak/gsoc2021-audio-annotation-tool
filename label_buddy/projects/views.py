@@ -248,8 +248,12 @@ def annotation_delete_view(request, pk, task_pk):
         messages.add_message(request, messages.ERROR, "Task does not belong to project %s." % project.title)
         return HttpResponseRedirect(get_project_url(project.id))
 
+    annotation = get_annotation(task, project, user)
+    if not annotation:
+        messages.add_message(request, messages.ERROR, "No annotation to delete.")
+        return HttpResponseRedirect(get_project_url(project.id) + "/" + str(task.id) + "/annotation")
+    
     if request.method == "POST":
-        annotation = get_annotation(task, project, user)
         if annotation:
             annotation.delete()
             messages.add_message(request, messages.SUCCESS, "Successfully deleted annotation.")
@@ -259,7 +263,7 @@ def annotation_delete_view(request, pk, task_pk):
 
     context = {
         "task": task,
-        "project_id": project.id,
+        "project": project,
     }
     return render(request, "label_buddy/delete_annotation.html", context)
 
@@ -308,7 +312,7 @@ def task_delete_view(request, pk, task_pk):
 
     context = {
         "task": task,
-        "project_id": project.id,
+        "project": project,
     }
     return render(request, "label_buddy/delete_task.html", context)
 

@@ -35,3 +35,7 @@ class UserForm(forms.ModelForm):
             return image
         else:
             raise forms.ValidationError("Please provide a logo")
+
+    def clean_email(self):
+        # when field is cleaned, we always return the existing model field.
+        return self.instance.email
