@@ -76,4 +76,4 @@ python manage.py createsuperuser
 python manage.py runserver
 ~~~
 
-Fianlly visit http://localhost:8000/admin and populate Database with data
+Fianlly visit http://localhost:8000/admin, navigate to users/your superuser ans set can_create_projects to true so you can start creating projects.
