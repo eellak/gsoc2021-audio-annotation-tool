@@ -237,7 +237,7 @@ function exportDataRequest() {
             showAlert(JSON.parse(this.responseText)['message'], this.status);
         }
     };
-    let url = host + "api/v1/projects/" + project_id + "/tasks/export";
+    let url = "/api/v1/projects/" + project_id + "/tasks/export";
     xhttp.open("POST", url, true);
     xhttp.setRequestHeader("X-CSRFToken", django_csrf_token);
     xhttp.setRequestHeader("Content-Type", "application/json");
