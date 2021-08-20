@@ -54,7 +54,7 @@ from .helpers import (
     filter_tasks,
     filter_list_annotations,
     fix_tasks_after_edit,
-    check_tasks_after_edit,
+    # check_tasks_after_edit,
     add_labels_to_project,
     next_unlabeled_task_id,
     add_tasks_from_compressed_file,
@@ -473,8 +473,7 @@ def annotate_task_view(request, pk, task_pk):
 
     # check if task is assigned to current user
     if not project.users_can_see_other_queues:
-        assert task.assigned_to.exists() == True
-        if user not in task.assigned_to.all():
+        if task.assigned_to.exists() and user not in task.assigned_to.all():
             messages.add_message(request, messages.ERROR, "Task %s is not assigned to you." % str(task.id))
             return HttpResponseRedirect(get_project_url(project.id))
     

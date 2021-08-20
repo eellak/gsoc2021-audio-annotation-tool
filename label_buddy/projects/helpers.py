@@ -283,30 +283,6 @@ def fix_tasks_after_edit(users_can_see_other_queues_old, users_can_see_other_que
         When an annotor is removed, his/her assigned tasks remain unasigned until the manager
         assigns them again to another annotator. Future work
         """
-        # if value is equal to old value and is set to true we dont have to check anything
-        # tasks are public so removed annotators wont make a difference
-
-        # if not users_can_see_other_queues_new:
-        #     # check for every task that it's assigned to a valid annotator (belongs to project)
-        #     # if not assign it to another random annotator and delete annotation from old annotator
-
-        #     project_annotators = project.annotators.all()
-        #     project_annotators_ids = project.annotators.values_list('id', flat=True)
-        #     for task in tasks:
-        #         # assert task is assigned to one annotator
-        #         assert task.assigned_to.count() <= 1 # 1 or 0
-        #         if not task.assigned_to.exists() or not task.assigned_to.filter(id__in=project_annotators_ids).exists():
-
-        #             # to be fixes
-        #             # if task.assigned_to.exists():
-        #             #     # delete annotation done by old annotator if exists
-        #             #     old_annotation = get_annotation(task, project, task.assigned_to.all()[0])
-        #             #     if old_annotation:
-        #             #         old_annotation.delete()
-                    
-        #             random_annotator = random.choice(list(project_annotators))
-        #             task.assigned_to.clear()
-        #             task.assigned_to.add(random_annotator)
     else:
         # if values different
         if users_can_see_other_queues_new:
@@ -339,23 +315,23 @@ def fix_tasks_after_edit(users_can_see_other_queues_old, users_can_see_other_que
                             users_already_assigned_id = []
                     else:
                         # just assign task to only one
-                        task.assigned_to.add(project.annotators.all())
+                        task.assigned_to.add(project.annotators.all()[0])
 
-def check_tasks_after_edit(project):
-    tasks = Task.objects.filter(project=project)
-    project_annotators = project.annotators.all()
-    if project.users_can_see_other_queues:
-        # all tasks should have an empty assigned_to
-        for task in tasks:
-            if task.assigned_to.exists():
-                return False
-    else:
-        # all tasks should have an assigned_to value and annotator of this field must belong to the project
-        for task in tasks:
-            assert task.assigned_to.count() == 1
-            if task.assigned_to.all()[0] not in project_annotators:
-                return False
-    return True
+# def check_tasks_after_edit(project):
+#     tasks = Task.objects.filter(project=project)
+#     project_annotators = project.annotators.all()
+#     if project.users_can_see_other_queues:
+#         # all tasks should have an empty assigned_to
+#         for task in tasks:
+#             if task.assigned_to.exists():
+#                 return False
+#     else:
+#         # all tasks should have an assigned_to value and annotator of this field must belong to the project
+#         for task in tasks:
+#             assert task.assigned_to.count() == 1
+#             if task.assigned_to.all()[0] not in project_annotators:
+#                 return False
+#     return True
 
 # return project's page url
 def get_project_url(pk):
@@ -431,7 +407,7 @@ def add_tasks_from_compressed_file(compressed_file, project, file_extension):
                         users_already_assigned_id = []
                 else:
                     # just assign task to only one
-                    new_task.assigned_to.add(project.annotators.all())
+                    new_task.assigned_to.add(project.annotators.all()[0])
         else:
             skipped_files += 1
     return skipped_files
