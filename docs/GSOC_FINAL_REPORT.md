@@ -8,6 +8,10 @@
 * GitHub README.md link: https://github.com/eellak/gsoc2021-audio-annotation-tool/blob/main/README.md
 * Label Buddy demo link: https://labelbuddy.io/
 
+### Important pull requests
+* Merge dev_branch with main: [#25](https://github.com/eellak/gsoc2021-audio-annotation-tool/pull/25)
+* Merge review_page with main: [#31](https://github.com/eellak/gsoc2021-audio-annotation-tool/pull/31)
+
 ### Tech Stack
 * Django, Django templates, Python
 * HTML, css, js
@@ -120,9 +124,12 @@
 
 
 # :white_check_mark: Task Left to Do
-* UX imporvements
-* Zip file upload
+* UX imporvements: https://www.figma.com/file/gUelQicOdfJkrqs2XJvHl5/Label-Buddy?node-id=214%3A2605
+* Rar file upload. Zip is already accepted
 * Swagger documentation
 * Use exported data for machine learning models
+
 # :blush: Acknowledgements
+
+First and foremost, thanks to my mentors, **Pantelis Vikatos** and **Markos Gogoulos** for guiding and giving me useful advice for the project. It was a pleasure working with them and I hope I get the opportunity to do it again soon. Moreover I would like to thank the Design team (names here) for the UX suggestions which can be found [here](https://www.figma.com/file/gUelQicOdfJkrqs2XJvHl5/Label-Buddy?node-id=214%3A2605).
 
