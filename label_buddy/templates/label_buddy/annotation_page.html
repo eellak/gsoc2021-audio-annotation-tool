@@ -22,7 +22,6 @@
         var project_id = "{{ project.id }}";
         var django_csrf_token = "{{ csrf_token }}";
         var annotation = JSON.parse("{{annotation_result|escapejs}}");
-        var host = "{{ host }}";
     </script>
     <script src="{% static '/js/annotation_page.js'%}" defer></script>
 {% endblock %}

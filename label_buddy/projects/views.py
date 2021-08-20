@@ -504,7 +504,7 @@ def annotate_task_view(request, pk, task_pk):
         "review_created_at": review_created_at,
         "review_updated_at": review_updated_at,
         "tasks_count_no_filter": get_project_tasks(project).count(),
-        "host": request.build_absolute_uri("/"),
+        # "host": request.build_absolute_uri("/"),
     }
 
     return render(request, "label_buddy/annotation_page.html", context)
