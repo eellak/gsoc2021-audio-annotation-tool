@@ -6,7 +6,9 @@
 ### Important links
 * GitHub repository: https://github.com/eellak/gsoc2021-audio-annotation-tool
 * GitHub README.md link: https://github.com/eellak/gsoc2021-audio-annotation-tool/blob/main/README.md
-* Label Buddy demo link: https://labelbuddy.io/
+* Label Buddy demo link: Go to https://labelbuddy.io/ and sign in with the following credentials in order to check out Label Buddy:
+  * **Username**: demo
+  * **Password**: demouser123
 
 ### Important pull requests
 * Merge dev_branch with main: [#25](https://github.com/eellak/gsoc2021-audio-annotation-tool/pull/25)
@@ -131,5 +133,4 @@
 
 # :blush: Acknowledgements
 
-First and foremost, thanks to my mentors, **Pantelis Vikatos** and **Markos Gogoulos** for guiding and giving me useful advice for the project. It was a pleasure working with them and I hope I get the opportunity to do it again soon. Moreover I would like to thank the Design team (names here) for the UX suggestions which can be found [here](https://www.figma.com/file/gUelQicOdfJkrqs2XJvHl5/Label-Buddy?node-id=214%3A2605).
-
+First and foremost, thanks to my mentors, **Pantelis Vikatos** and **Markos Gogoulos** for guiding and giving me useful advice for the project. It was a pleasure working with them and I hope I get the opportunity to do it again soon. Moreover I would like to thank **Jen Anastasopoulou** and **Lina Aggelopoulou** for the UX improvements which can be found [here](https://www.figma.com/file/gUelQicOdfJkrqs2XJvHl5/Label-Buddy?node-id=214%3A2605). These improvements will have been applied by the end of the month and will make Label Buddy more user friendly. Finally, I would like to express my appreciation to **[Orfium](https://www.orfium.com/)** for supporting the whole project from the start to the end of it. 
