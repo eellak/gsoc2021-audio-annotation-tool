@@ -50,10 +50,19 @@ git clone https://github.com/eellak/gsoc2021-audio-annotation-tool/
 cd gsoc2021-audio-annotation-tool
 ~~~
 
-Create and activate a virtual enviroment
+Create virtual enviroment
 ~~~
-virtualenv . -p python3
-source bin/activate
+python3 -m venv env
+~~~
+
+Activate it for **Linux**
+~~~
+source env/bin/activate
+~~~
+
+Activate it for **Windows**
+~~~
+env\Scripts\activate
 ~~~
 
 Install requirements and cd to label_buddy/
@@ -74,4 +83,11 @@ python manage.py createsuperuser
 python manage.py runserver
 ~~~
 
-Fianlly visit http://localhost:8000/admin, navigate to users/your superuser ans set can_create_projects to true so you can start creating projects.
+Visit http://localhost:8000/admin, navigate to users/[your user] and set can_create_projects to true so you can start creating projects.
+
+Visit https://labelbuddy.io/ and sign with the following credentials:
+
+  - **Username**: demo
+  - **Password**: labelbuddy123
+
+in order to create projects, upload files and annotate them.
