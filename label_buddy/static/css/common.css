@@ -19,7 +19,14 @@ table
 }
 
 .myAction {
-    margin-left: 55%;
+    /* border: 2px solid green; */
+    text-align: right;
+}
+
+.myAction:after {
+    content:'';
+    display:block; /* or whatever else than inline */
+    clear:both;
 }
 
 .user-form-wrap {

@@ -18,149 +18,141 @@
 
 {% block content %}
 	{{ block.super }}
-	{% if user.is_authenticated %}
-		{% if projects %}
-			<h2 class="headers-page">
-				Projects
-				<sup>
-					<i style="cursor: pointer; color: #74deed;" data-toggle="modal" data-target="#indexModal" class="far fa-question-circle tooltip-icons fa-xs"></i>
-				</sup>
-			</h2>
-			{% if user.can_create_projects %}
-				<div id="header-div">
-					<a style="color: black;" title="Create new project" href="{% url 'create_project'%}" class="btn my-button"> Create</a>
-				</div>
-			{% endif %}
-			
-			<div class="table-div">
-				<!--Table-->
-				<table class="table table-bordered table-striped table-hover" id="index-table">
-				<!--Table head-->
-				<thead>
-					<tr>
-					<th><i class="fa fa-caret-right my-table-header" aria-hidden="true"></i> Title</th>
-					<th><i class="fa fa-calendar my-table-header" aria-hidden="true"></i> Date of Creation</th>
-					<th>
-						<i style="cursor: pointer; color: #74deed;" data-toggle="modal" data-target="#publicQueues" class="fas fa-eye my-table-header" aria-hidden="true"></i> Task permissions
-					</th>
-					<th><i class="fa fa-tasks my-table-header" aria-hidden="true"></i> Number of tasks</th>
-					<th><i class="fa fa-paint-brush my-table-header" aria-hidden="true"></i> Annotations</th>
-					<th><i class="fas fa-tag my-table-header"></i> Number of labels</th>
-					<th><i class="fa fa-user my-table-header" aria-hidden="true"></i> Annotator</th>
-					<th><i class="fa fa-user my-table-header" aria-hidden="true"></i> Reviewer</th>
-					<th><i class="fa fa-users my-table-header" aria-hidden="true"></i> Managers</th>
-					<th data-toggle="tooltip" data-placement="left" title="Only for managers" style="width: 110px;"><i class="fas fa-list my-table-header"></i> Options</th>
+	{% if projects %}
+		<h2 class="headers-page">
+			Projects
+			<sup>
+				<i style="cursor: pointer; color: #74deed;" data-toggle="modal" data-target="#indexModal" class="far fa-question-circle tooltip-icons fa-xs"></i>
+			</sup>
+		</h2>
+		{% if user.can_create_projects %}
+			<div id="header-div">
+				<a style="color: black;" title="Create new project" href="{% url 'create_project'%}" class="btn my-button"> Create</a>
+			</div>
+		{% endif %}
+		
+		<div class="table-div">
+			<!--Table-->
+			<table class="table table-bordered table-striped table-hover" id="index-table">
+			<!--Table head-->
+			<thead>
+				<tr>
+				<th><i class="fa fa-caret-right my-table-header" aria-hidden="true"></i> Title</th>
+				<th><i class="fa fa-calendar my-table-header" aria-hidden="true"></i> Date of Creation</th>
+				<th>
+					<i style="cursor: pointer; color: #74deed;" data-toggle="modal" data-target="#publicQueues" class="fas fa-eye my-table-header" aria-hidden="true"></i> Task permissions
+				</th>
+				<th><i class="fa fa-tasks my-table-header" aria-hidden="true"></i> Number of tasks</th>
+				<th><i class="fa fa-paint-brush my-table-header" aria-hidden="true"></i> Annotations</th>
+				<th><i class="fas fa-tag my-table-header"></i> Number of labels</th>
+				<th><i class="fa fa-user my-table-header" aria-hidden="true"></i> Annotator</th>
+				<th><i class="fa fa-user my-table-header" aria-hidden="true"></i> Reviewer</th>
+				<th><i class="fa fa-users my-table-header" aria-hidden="true"></i> Managers</th>
+				<th data-toggle="tooltip" data-placement="left" title="Only for managers" style="width: 110px;"><i class="fas fa-list my-table-header"></i> Options</th>
+				</tr>
+			</thead>
+			<!--Table head-->
+
+			<!--Table body-->
+			<tbody>
+				{% for project in page_obj %}
+					<tr class="clickable-row" href="{% url 'project_page' project.id %}">
+						<td class="table-title">
+							<img data-toggle="tooltip" data-placement="top" style="margin-right: 4%;" src="{{ project.logo.url }}" width="27" height="27" title="{{ project.title }}" class="rounded-circle">
+							{{ project.title }}
+						</td>
+						<td>{{ project.created_at|date:"D d M Y" }}</td>
+						
+						{% if project.users_can_see_other_queues %}
+							<td><i data-toggle="tooltip" data-placement="top" data-title="Tasks assigned to all annotators" style="color:green" class="fas fa-check-circle tooltip-icons"></i></td>
+						{% else %}
+							<td><i data-toggle="tooltip" data-placement="top" data-title="Tasks assigned randmomly to annotators" style="color:red" class="fas fa-exclamation-circle tooltip-icons"></i></td>
+						{% endif %}
+						
+						<td><b>{{ tasks_count|get_item:project.id }}</b></td>
+						<td><b>{{ annotations_count|get_item:project.id }}</b></td>
+						
+						{% if project.labels.count > 0 %}
+							<td title="You can annotate tasks for this project"><b style="color: green;">{{ project.labels.count }}</b></td>
+						{% else %}
+							<td title="Add labels in order to annotate"><b style="color: red;">{{ project.labels.count }}</b></td>
+						{% endif %}
+						
+						{% if user in project.annotators.all %}
+							<td><i data-toggle="tooltip" data-placement="top" data-title="Annotator for this project" style="color:green;" class="fas fa-check-circle tooltip-icons"></i></td>
+						{% else %}
+							<td><i data-toggle="tooltip" data-placement="top" data-title="Not an annotator for this project" style="color:red" class="fas fa-exclamation-circle tooltip-icons"></i></td>
+						{% endif %}
+
+						{% if user in project.reviewers.all %}
+							<td><i data-toggle="tooltip" data-placement="top" data-title="Reviewer for this project" style="color:green" class="fas fa-check-circle tooltip-icons"></i></td>
+						{% else %}
+							<td><i data-toggle="tooltip" data-placement="top" data-title="Not a reviewer for this project" style="color:red" class="fas fa-exclamation-circle tooltip-icons"></i></td>
+						{% endif %}
+						<td>
+							{% for obj in project.managers.all %}
+								{% if obj == user %}
+									<img style="border: 2px solid #74deed;" data-toggle="tooltip" data-placement="top" src="{{ obj.avatar.url }}" width="27" height="27" title="You" class="rounded-circle">
+								{% else %}
+									<img src="{{ obj.avatar.url }}" width="25" data-toggle="tooltip" data-placement="top" height="25" title="{{ obj.username }}" class="rounded-circle">
+								{% endif %}
+							{% endfor %}
+						</td>
+
+						{% if user in project.managers.all %}
+							<td style="text-align: center;">
+								<a id="edit-link" href="{% url 'edit_project' project.id %}">
+									<i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Edit {{ project.title }}" class="fas fa-edit tooltip-icons"></i> </i>
+								</a>
+								<b>/</b>
+								<a id="delete-link" href="{% url 'delete_project' project.id %}">
+									<i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Delete {{ project.title }}" class="fas fa-trash-alt tooltip-icons"></i>
+								</a>
+							</td>
+						{% else %}
+							<td data-toggle="tooltip" data-placement="top" title="You cannot Edit/Delete this project"><b>-</b></td>
+						{% endif %}
 					</tr>
-				</thead>
-				<!--Table head-->
-
-				<!--Table body-->
-				<tbody>
-					{% for project in page_obj %}
-						<tr class="clickable-row" href="{% url 'project_page' project.id %}">
-							<td class="table-title">
-								<img data-toggle="tooltip" data-placement="top" style="margin-right: 4%;" src="{{ project.logo.url }}" width="27" height="27" title="{{ project.title }}" class="rounded-circle">
-								{{ project.title }}
-							</td>
-							<td>{{ project.created_at|date:"D d M Y" }}</td>
-							
-							{% if project.users_can_see_other_queues %}
-								<td><i data-toggle="tooltip" data-placement="top" data-title="Tasks assigned to all annotators" style="color:green" class="fas fa-check-circle tooltip-icons"></i></td>
-							{% else %}
-								<td><i data-toggle="tooltip" data-placement="top" data-title="Tasks assigned randmomly to annotators" style="color:red" class="fas fa-exclamation-circle tooltip-icons"></i></td>
-							{% endif %}
-							
-							<td><b>{{ tasks_count|get_item:project.id }}</b></td>
-							<td><b>{{ annotations_count|get_item:project.id }}</b></td>
-							
-							{% if project.labels.count > 0 %}
-								<td title="You can annotate tasks for this project"><b style="color: green;">{{ project.labels.count }}</b></td>
-							{% else %}
-								<td title="Add labels in order to annotate"><b style="color: red;">{{ project.labels.count }}</b></td>
-							{% endif %}
-							
-							{% if user in project.annotators.all %}
-								<td><i data-toggle="tooltip" data-placement="top" data-title="Annotator for this project" style="color:green;" class="fas fa-check-circle tooltip-icons"></i></td>
-							{% else %}
-								<td><i data-toggle="tooltip" data-placement="top" data-title="Not an annotator for this project" style="color:red" class="fas fa-exclamation-circle tooltip-icons"></i></td>
-							{% endif %}
-
-							{% if user in project.reviewers.all %}
-								<td><i data-toggle="tooltip" data-placement="top" data-title="Reviewer for this project" style="color:green" class="fas fa-check-circle tooltip-icons"></i></td>
-							{% else %}
-								<td><i data-toggle="tooltip" data-placement="top" data-title="Not a reviewer for this project" style="color:red" class="fas fa-exclamation-circle tooltip-icons"></i></td>
-							{% endif %}
-							<td>
-								{% for obj in project.managers.all %}
-									{% if obj == user %}
-										<img style="border: 2px solid #74deed;" data-toggle="tooltip" data-placement="top" src="{{ obj.avatar.url }}" width="27" height="27" title="You" class="rounded-circle">
-									{% else %}
-										<img src="{{ obj.avatar.url }}" width="25" data-toggle="tooltip" data-placement="top" height="25" title="{{ obj.username }}" class="rounded-circle">
-									{% endif %}
-								{% endfor %}
-							</td>
-
-							{% if user in project.managers.all %}
-								<td style="text-align: center;">
-									<a id="edit-link" href="{% url 'edit_project' project.id %}">
-										<i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Edit {{ project.title }}" class="fas fa-edit tooltip-icons"></i> </i>
-									</a>
-									<b>/</b>
-									<a id="delete-link" href="{% url 'delete_project' project.id %}">
-										<i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Delete {{ project.title }}" class="fas fa-trash-alt tooltip-icons"></i>
-									</a>
-								</td>
-							{% else %}
-								<td data-toggle="tooltip" data-placement="top" title="You cannot Edit/Delete this project"><b>-</b></td>
-							{% endif %}
-						</tr>
-					
-					{% endfor %}
-				</tbody>
-				<!--Table body-->
-			</table>
-			
-			<!-- Public queues Modal -->
-			<div class="modal fade" id="publicQueues" tabindex="-1" role="dialog" aria-labelledby="publicQueues" aria-hidden="true">
-				<div class="modal-dialog modal-dialog-centered" role="document">
-					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title" id="exampleModalLongTitle"><b>Users can see other queues</b></h5>
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button>
-						</div>
-        
-						<div class="modal-body">
-							<div>
-								<b>When this field is set to true</b>, all tasks are assigned (visible) to all annotators of the project
-								and can be annotated by them.<br><br>
-								<b>When this field is set to false</b>, tasks are assigned to a specific annotator randomly and <b>only</b> him/her
-								can annotate them.
-							</div>
+				
+				{% endfor %}
+			</tbody>
+			<!--Table body-->
+		</table>
+		
+		<!-- Public queues Modal -->
+		<div class="modal fade" id="publicQueues" tabindex="-1" role="dialog" aria-labelledby="publicQueues" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLongTitle"><b>Users can see other queues</b></h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+	
+					<div class="modal-body">
+						<div>
+							<b>When this field is set to true</b>, all tasks are assigned (visible) to all annotators of the project
+							and can be annotated by them.<br><br>
+							<b>When this field is set to false</b>, tasks are assigned to a specific annotator randomly and <b>only</b> him/her
+							can annotate them.
 						</div>
 					</div>
 				</div>
 			</div>
-			
-			{% else %}
-				<h1 class="headers-page">No projects for you yet</h1>
-				{% if user.can_create_projects %}
-				<div id="header-div">
-					<a style="color: black;" title="Create new project" href="{% url 'create_project'%}" class="btn my-button"> Create</a>
-				</div>
-			{% endif %}
-			{% endif %}
-
-			{% if projects_count > projects_per_page %}
-				{% include "pagination.html" %}
-			{% endif %}
-	{% else %}
-		<div class="center-screen">
-			<h1 class="form-headers">Welcome to Label Buddy</h1>
-			<p>Please <a class="my-link" href="/accounts/login">sign in</a> to continue
-			</p>
 		</div>
+		
+		{% else %}
+			<h1 class="headers-page">No projects for you yet</h1>
+			{% if user.can_create_projects %}
+			<div id="header-div">
+				<a style="color: black;" title="Create new project" href="{% url 'create_project'%}" class="btn my-button"> Create</a>
+			</div>
+		{% endif %}
+	{% endif %}
+
+	{% if projects_count > projects_per_page %}
+		{% include "pagination.html" %}
 	{% endif %}
 	{% include "index_modal.html" %}
 {% endblock %}

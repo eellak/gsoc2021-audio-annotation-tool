@@ -90,7 +90,10 @@ def index(request):
         "annotations_count": project_annotations_count(projects),
     }
 
-    return render(request, "label_buddy/index.html", context)
+    if request.user.is_authenticated:
+        return render(request, "label_buddy/index.html", context)
+    else:
+        return HttpResponseRedirect("/accounts/login/")
 
 @login_required
 def project_create_view(request):

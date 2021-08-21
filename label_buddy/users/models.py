@@ -26,15 +26,15 @@ class User(AbstractUser):
     #How to display projects in admin
     def __str__(self):
         return '%s' % (self.username)
-        # if not self.name and not self.email:
-        #     return '%s' % (self.username)
-        # else:
-        #     if self.name and self.email:
-        #         return '%s - %s' % (self.name, self.email)
-        #     elif self.name:
-        #         return '%s' % (self.name)
-        #     else:
-        #         return '%s' % (self.email)
+        if not self.name and not self.email:
+            return '%s' % (self.username)
+        else:
+            if self.name and self.email:
+                return '%s - %s' % (self.name, self.email)
+            elif self.name:
+                return '%s' % (self.name)
+            else:
+                return '%s' % (self.email)
 
 @receiver(pre_save, sender=User)
 def auto_delete_file_on_change(sender, instance, **kwargs):
