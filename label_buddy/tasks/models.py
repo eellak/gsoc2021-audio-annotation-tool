@@ -1,4 +1,5 @@
 import os
+import jsonfield
 
 from django.db import models
 from django.core.exceptions import ValidationError
@@ -54,7 +55,7 @@ class Task(models.Model):
     original_file_name = models.CharField(max_length=256, blank=True, null=True, default='', help_text='Task file original file name')
     url = URLOrRelativeURLField(blank=True, help_text='URL for a file')
 
-    extra = models.JSONField(blank=True, null=True, default=None, help_text='Extra info about the task')
+    extra = jsonfield.JSONField(blank=True, null=True, default=None, help_text='Extra info about the task')
     status = EnumChoiceField(Status, default=Status.unlabeled, help_text='If the task is annotated status must be labeled else unlabeled')
     review_status = EnumChoiceField(Review_status, default=Review_status.unreviewed, help_text='Status for reviews')
 
@@ -85,7 +86,7 @@ class Annotation(models.Model):
     created_at = models.DateTimeField(auto_now=True, help_text='Date and time of annotation creation')
     updated_at = models.DateTimeField(blank=True, null=True, help_text='Date and time of update')
 
-    result = models.JSONField(blank=True, null=True, help_text='The result of the annotation in JSON format')
+    result = jsonfield.JSONField(blank=True, null=True, help_text='The result of the annotation in JSON format')
 
     reviewed_at = models.DateTimeField(blank=True, null=True, help_text='Date and time of a review')
 
