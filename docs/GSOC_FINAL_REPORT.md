@@ -1,14 +1,16 @@
 # :information_source: Project info 
 
+![facebook_cover_photo_1](https://user-images.githubusercontent.com/49285637/130322348-a232336f-c4cf-4c1e-8c77-b7e5a27fa108.png)
+
 ### Brief explanation
-**Label Buddy** is powered by [GFOSS](https://gfoss.eu/) and [GSoC](https://summerofcode.withgoogle.com/). It is an audio labeling tool which features 3 types of users: Managers, annotators and reviewers. The distinction between the user roles is what makes Label Buddy unique. A Detailed explanation of Label Buddy can be found [here](https://github.com/eellak/gsoc2021-audio-annotation-tool/blob/main/README.md).
+**Label Buddy** is powered by [GFOSS](https://gfoss.eu/) and [GSoC](https://summerofcode.withgoogle.com/). It is an audio labeling tool which features 3 types of users: Managers, annotators and reviewers. The distinction between the user roles is what makes Label Buddy unique. A Detailed explanation of Label Buddy and steps for installation can be found [here](https://github.com/eellak/gsoc2021-audio-annotation-tool/blob/main/README.md).
 
 ### Important links
 * GitHub repository: https://github.com/eellak/gsoc2021-audio-annotation-tool
-* GitHub README.md link: https://github.com/eellak/gsoc2021-audio-annotation-tool/blob/main/README.md
+* GitHub README link: https://github.com/eellak/gsoc2021-audio-annotation-tool/blob/main/README.md
 * Label Buddy demo link: Go to https://labelbuddy.io/ and sign in with the following credentials in order to check out Label Buddy:
   * **Username**: demo
-  * **Password**: demouser123
+  * **Password**: labelbuddy123
 
 ### Important pull requests
 * Merge dev_branch with main: [#25](https://github.com/eellak/gsoc2021-audio-annotation-tool/pull/25)
@@ -33,7 +35,7 @@
 * **Task**: Created basic Login/Register system. For the backend of this task I used [django-allauth](https://django-allauth.readthedocs.io/en/latest/installation.html)
 
 #### Login
-![Login](https://user-images.githubusercontent.com/49285637/130133546-1adfb7cf-c2cd-47ff-8299-e14fb67746b7.png)
+ ![Login](https://user-images.githubusercontent.com/49285637/130133546-1adfb7cf-c2cd-47ff-8299-e14fb67746b7.png)
 
 #### Register
 ![Register](https://user-images.githubusercontent.com/49285637/130133616-8f9c6664-b8d5-4bc7-a171-c0b709718e1a.png)
@@ -107,6 +109,7 @@
 * Related issue: [#20](https://github.com/eellak/gsoc2021-audio-annotation-tool/issues/20)
 * Working branch: [dev_branch](https://github.com/eellak/gsoc2021-audio-annotation-tool/tree/dev_branch)
 * **Task**: Managers are able to export all annotations completed for a project in JSON or CSV format. They can export either Approved annotations or all of them
+* Examples of exported files can be found [here](https://drive.google.com/drive/folders/1aQqYuO4czitTEFcDNjBsqc99zewMeW2r?usp=sharing)
 
 #### Export data page
 ![Export_data_page](https://user-images.githubusercontent.com/49285637/130138221-b79f7cbf-19a2-4929-a687-b56ae7d86674.png)
@@ -133,4 +136,4 @@
 
 # :blush: Acknowledgements
 
-First and foremost, thanks to my mentors, **Pantelis Vikatos** and **Markos Gogoulos** for guiding and giving me useful advice for the project. It was a pleasure working with them and I hope I get the opportunity to do it again soon. We had a meeting twice a week and our means of communication was **[Mattermost](https://mattermost.com/)**. Moreover I would like to thank **Jen Anastasopoulou** and **Lina Aggelopoulou** for the UX improvements which can be found [here](https://www.figma.com/file/gUelQicOdfJkrqs2XJvHl5/Label-Buddy?node-id=214%3A2605). These improvements will have been applied by the end of the month and will make Label Buddy more user friendly. Finally, I would like to express my appreciation to **[Orfium](https://www.orfium.com/)** for supporting the whole project from the start to the end of it. 
+First and foremost, I want to thank my mentors **Pantelis Vikatos** and **Markos Gogoulos**, for guiding, giving me useful advice for the project and helping me whenever I faced an issue. It was a pleasure working with them and I hope I get the opportunity to do it again soon. We had a meeting twice a week and our means of communication was **[Mattermost](https://mattermost.com/)**. Moreover I would like to thank **Jen Anastasopoulou** and **Lina Aggelopoulou** for the UX improvements which can be found [here](https://www.figma.com/file/gUelQicOdfJkrqs2XJvHl5/Label-Buddy?node-id=214%3A2605). These improvements will have been applied by the end of the month and will make Label Buddy more user friendly. Finally, I would like to express my appreciation to **[Orfium](https://www.orfium.com/)** for supporting the whole project from the start to the end of it. 
