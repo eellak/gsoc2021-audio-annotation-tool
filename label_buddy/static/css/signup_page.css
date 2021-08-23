@@ -1,0 +1,13 @@
+body {
+    padding-bottom: 0%;
+}
+
+#outerDiv {
+    background: linear-gradient(65.45deg, #212631 16.77%, #2F1847 79%);
+}
+
+#innerDiv {
+    background-color: white;
+    padding: 32px;
+    border-radius: 4px;
+}

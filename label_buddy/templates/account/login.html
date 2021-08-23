@@ -6,13 +6,13 @@
 
 {% block title %} &#9702; Sign in {% endblock %}
 
-{% block navbar %} {% endblock %}
+{% block navbar %}{% endblock %}
 {% block content %}
   {{ block.super }}
   <div class="container centered">
     <div class="row justify-content-center">
       <div class="user-form-wrap col-6">
-        <img id="allauth-image" style="width: 15vw; margin-bottom: 4%; border:" src="{% static '/images/favicons/new_logo.svg' %}" alt="Logo">
+        <img id="allauth-image" style="width: 15vw; margin-bottom: 4%;" src="{% static '/images/favicons/new_logo.svg' %}" alt="Logo">
         <hr class="mt-0 mb-4">
         <p>If you do not have an account yet, then please <a class="my-link" href="{{ signup_url }}">sign up</a> first.</p>
         <form method="POST" action="{% url 'account_login' %}">

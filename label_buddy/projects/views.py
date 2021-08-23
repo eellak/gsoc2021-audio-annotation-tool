@@ -93,7 +93,7 @@ def index(request):
     if request.user.is_authenticated:
         return render(request, "label_buddy/index.html", context)
     else:
-        return HttpResponseRedirect("/accounts/login/")
+        return render(request, "label_buddy/welcome_page.html", context)
 
 @login_required
 def project_create_view(request):
