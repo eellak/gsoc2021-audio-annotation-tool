@@ -3,12 +3,22 @@ from django import forms
 from .models import User
 
 class ExtendedSignUpForm(SignupForm):
-    name = forms.CharField(max_length=256, label="Full name")
-
-    def signup(self, request, user):
-        user.name = self.cleaned_data["name"]
-        user.save()
-        return user
+    name = forms.CharField(max_length=256, label="First & Last Name", widget=forms.TextInput(attrs={
+        'class':'myInput',
+        'placeholder': "E.g. John Anderson"
+    }))
+    email = forms.CharField(max_length=256, label="Email Address", widget=forms.TextInput(attrs={
+        'class':'myInput',
+        'placeholder': "E.g. JohnAnderson@mars.co"
+    }))
+    username = forms.CharField(max_length=256, label="Username", widget=forms.TextInput(attrs={
+        'class':'myInput',
+        'placeholder': "E.g. johnanderson"
+    }))
+    password1 = forms.CharField(max_length=256, label="Password", widget=forms.PasswordInput(attrs={
+        'class':'myInput',
+        'placeholder': "Enter new password"
+    }))
 
 class UserForm(forms.ModelForm):
     class Meta:

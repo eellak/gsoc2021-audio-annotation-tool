@@ -10,4 +10,75 @@ body {
     background-color: white;
     padding: 32px;
     border-radius: 4px;
+    width: 20vw;
+}
+
+#signUpHeader {
+    /* border: 2px solid red; */
+    /* position: static; */
+    width: 100%;
+
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    align-items: center;
+    text-align: center;
+
+    /* Revised Colors/Dark Grey/650 */
+
+    color: #232337;
+}
+
+.my-form-group {
+    text-align: left;
+    padding: 3px;
+}
+
+.myInput {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 10px;
+
+    position: static;
+    height: 38px;
+    left: 0px;
+    top: 0px;
+
+    background: #FFFFFF;
+    border: 1px solid #CFD8DC;
+    box-sizing: border-box;
+    border-radius: 4px;
+
+    /* Inside Auto Layout */
+
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    margin: 4px 0px;
+}
+
+.forms-labels {
+    position: static;
+    height: 17px;
+
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 140%;
+    /* identical to box height, or 17px */
+
+
+    color: #5C666B;
+
+
+    /* Inside Auto Layout */
+
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    margin: 8px 0px;
 }

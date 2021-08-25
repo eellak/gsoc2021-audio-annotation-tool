@@ -2,8 +2,6 @@
 
 {% load static %}
 
-{% load crispy_forms_tags %}
-
 {% block head_files %}
     {{ block.super }}
     <link href="{% static 'css/signup_page.css' %}" rel="stylesheet" type="text/css">
@@ -16,31 +14,20 @@
 {% block content %}
   {{ block.super }}
   <div id="outerDiv" class="center-screen">
+    <img style="margin-bottom: 3%;" src="{% static '/images/favicons/new_logo.svg' %}" alt="Logo">
     <div id="innerDiv">
-      <h1>Sign up</h1>
+      <p id="signUpHeader">Sign up</p>
       <form method="POST" action="{% url 'account_signup' %}">
         {% csrf_token %}
-        {{ form | crispy }}
+        {% for field in form %}
+          <div class="my-form-group">
+            <label class="forms-labels" for="{{field.name}}">{{ field.label }}</label>
+            {{ field }}
+          </div>
+        {% endfor %}
         <button type="submit" class="btn my-button">Sign Up</button>
       </form>
     </div>
   </div>
-  {% comment %}
-  <!-- <div class="container centered">
-    <div class="row justify-content-center">
-      <div class="user-form-wrap col-6">
-        <h2 class="form-headers">Sign Up</h2>
-        <hr class="mt-0 mb-4">
-        <p>Already have an account? Then please <a class="my-link" href="{{ login_url }}">sign in</a>.</p>
-        <form method="POST" action="{% url 'account_signup' %}">
-          {% csrf_token %}
-          {{ form | crispy }}
-          <button type="submit" class="btn my-button">Sign Up</button>
-        </form>
-      </div>
-    </div>
-  </div> -->
-  {% endcomment %}
-
 {% endblock %}
 
