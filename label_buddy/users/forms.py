@@ -5,7 +5,8 @@ from .models import User
 class ExtendedSignUpForm(SignupForm):
     name = forms.CharField(max_length=256, label="Full name")
 
-    def signup(self, request, user):
+    def save(self, request):
+        user = super(ExtendedSignUpForm, self).save(request)
         user.name = self.cleaned_data["name"]
         user.save()
         return user
