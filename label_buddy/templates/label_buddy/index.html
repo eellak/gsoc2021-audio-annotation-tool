@@ -67,7 +67,7 @@
 							{% if project.users_can_see_other_queues %}
 								<td><i data-toggle="tooltip" data-placement="top" data-title="Tasks assigned to all annotators" style="color:green" class="fas fa-check-circle tooltip-icons"></i></td>
 							{% else %}
-								<td><i data-toggle="tooltip" data-placement="top" data-title="Tasks assigned randmomly to annotators" style="color:red" class="fas fa-exclamation-circle tooltip-icons"></i></td>
+								<td><i data-toggle="tooltip" data-placement="top" data-title="Tasks assigned randomly to annotators" style="color:red" class="fas fa-exclamation-circle tooltip-icons"></i></td>
 							{% endif %}
 							
 							<td><b>{{ tasks_count|get_item:project.id }}</b></td>

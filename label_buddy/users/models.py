@@ -14,8 +14,8 @@ class User(AbstractUser):
     """
 
     #remove unnecessary fields
-    groups = None
-    user_permissions = None
+    # groups = None
+    # user_permissions = None
 
     #additional fields
     name = models.CharField(max_length=256, default="", db_index=True, help_text='Users full name')
