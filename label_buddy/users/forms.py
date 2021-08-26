@@ -3,22 +3,43 @@ from django import forms
 from .models import User
 
 class ExtendedSignUpForm(SignupForm):
-    name = forms.CharField(max_length=256, label="First & Last Name", widget=forms.TextInput(attrs={
-        'class':'myInput',
-        'placeholder': "E.g. John Anderson"
-    }))
-    email = forms.CharField(max_length=256, label="Email Address", widget=forms.TextInput(attrs={
-        'class':'myInput',
-        'placeholder': "E.g. JohnAnderson@mars.co"
-    }))
-    username = forms.CharField(max_length=256, label="Username", widget=forms.TextInput(attrs={
-        'class':'myInput',
-        'placeholder': "E.g. johnanderson"
-    }))
-    password1 = forms.CharField(max_length=256, label="Password", widget=forms.PasswordInput(attrs={
-        'class':'myInput',
-        'placeholder': "Enter new password"
-    }))
+    name = forms.CharField(max_length=256)
+    ordered_field_names = ['name', 'email', 'username', 'password1']
+
+    def __init__(self, *args, **kwargs):
+        # Call the init of the parent class
+        super().__init__(*args, **kwargs)
+        self.fields["name"].widget.attrs = {'class':'myInput', 'placeholder': 'E.g. "John Anderson"', 'autocomplete': "name"}
+        self.fields["name"].label = "First & Last Name"
+
+        self.fields["email"].widget.attrs = {'class':'myInput', 'placeholder': "E.g. JohnAnderson@mars.co", 'autocomplete': "email"}
+        self.fields["email"].label = "Email Address*"
+
+        self.fields["username"].widget.attrs = {'class':'myInput', 'placeholder': "E.g. johnanderson", 'autocomplete': "username"}
+        self.fields["username"].label = "Username*"
+
+        self.fields["password1"].widget.attrs = {'class':'myInput', 'placeholder': "Enter new password", 'autocomplete': "new-password"}
+        self.fields["password1"].label = "Password*"
+        self.rearrange_field_order()
+
+    def save(self, request):
+        user = super(ExtendedSignUpForm, self).save(request)
+        user.name = self.cleaned_data["name"]
+        user.save()
+        return user
+
+
+    def rearrange_field_order(self):
+
+        original_fields = self.fields
+        new_fields = {}
+
+        for field_name in self.ordered_field_names:
+            field = original_fields.get(field_name)
+            if field:
+                new_fields[field_name] = field
+
+        self.fields = new_fields
 
 class UserForm(forms.ModelForm):
     class Meta:

@@ -3,14 +3,14 @@ body {
 }
 
 #outerDiv {
-    background: linear-gradient(65.45deg, #212631 16.77%, #2F1847 79%);
+    background: linear-gradient(180deg, #22203D 23.73%, #29215E 97.46%);
 }
 
 #innerDiv {
     background-color: white;
     padding: 32px;
     border-radius: 4px;
-    width: 20vw;
+    width: 25vw;
 }
 
 #signUpHeader {
@@ -30,6 +30,29 @@ body {
     color: #232337;
 }
 
+#signUpButton {
+    /* Auto Layout */
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0px;
+
+    position: static;
+    width: 100%;
+    height: 46px;
+
+    border-radius: 4px;
+
+    /* Inside Auto Layout */
+
+    flex: none;
+    order: 2;
+    flex-grow: 0;
+    margin: 32px 0px;
+}
+
 .my-form-group {
     text-align: left;
     padding: 3px;
@@ -44,8 +67,6 @@ body {
 
     position: static;
     height: 38px;
-    left: 0px;
-    top: 0px;
 
     background: #FFFFFF;
     border: 1px solid #CFD8DC;

@@ -15,7 +15,9 @@ table
 }
 
 .footer-div {
-    background-color: rgb(245,245,245);
+    border-top: 1px solid white;
+    background-color: #29215E;
+    color: #FF85A5;
 }
 
 .myAction {
