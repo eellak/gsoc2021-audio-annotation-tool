@@ -20,7 +20,6 @@ class ExtendedSignUpForm(SignupForm):
     def save(self, request):
         user = super(ExtendedSignUpForm, self).save(request)
         user.name = self.cleaned_data["name"]
-        user.user_permissions.set([])
         user.save()
         return user
 
