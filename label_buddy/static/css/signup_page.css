@@ -103,3 +103,35 @@ body {
     flex-grow: 0;
     margin: 8px 0px;
 }
+
+#underSignUp {
+    margin-top: 2%;
+    /* border: 2px solid red; */
+    width: 25vw;
+    text-align: center;
+}
+
+.links {
+    display: inline;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    text-decoration-line: underline;
+    
+    color: #FF85A5;
+}
+
+.texts {
+
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 13px;
+    display: inline;
+
+    color: #9595A6;
+
+
+    /* Inside Auto Layout */
+}

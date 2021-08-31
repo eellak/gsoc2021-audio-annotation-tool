@@ -14,19 +14,39 @@
 {% block content %}
   {{ block.super }}
   <div id="outerDiv" class="center-screen">
-    <img style="margin-bottom: 3%;" src="{% static '/images/favicons/new_logo.svg' %}" alt="Logo">
+    <a style="margin-bottom: 3%;" href="{% url 'account_login' %}" >
+      <img src="{% static '/images/favicons/new_logo.svg' %}" alt="Logo">
+    </a>
     <div id="innerDiv">
       <p id="signUpHeader">Sign up</p>
       <form method="POST" action="{% url 'account_signup' %}">
         {% csrf_token %}
         {% for field in form %}
           <div class="my-form-group">
-            <label class="forms-labels" for="{{field.name}}">{{ field.label }}</label>
+            <label class="forms-labels" for="{{ field.name }}">{{ field.label }}</label>
             {{ field }}
           </div>
         {% endfor %}
-        <button type="submit" class="btn btn-primary" id="signUpButton" disabled>Sign Up</button>
+        <button type="submit" class="btn btn-primary" id="signUpButton">Sign Up</button>
       </form>
+    </div>
+    <div id="underSignUp">
+      <a href="{% url 'account_reset_password' %}">
+        <p class="links">
+          Forgot your Password?
+        </p>
+      </a>
+      <p style="margin-left: 16px;" class="texts">
+        •
+      </p>
+      <p style="margin-left: 16px;" class="texts">
+        already have an account?
+      </p>
+      <a href="{% url 'account_login' %}">
+        <p class="links">
+          Sign In
+        </p>
+      </a>
     </div>
   </div>
 {% endblock %}

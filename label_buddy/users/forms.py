@@ -9,16 +9,16 @@ class ExtendedSignUpForm(SignupForm):
     def __init__(self, *args, **kwargs):
         # Call the init of the parent class
         super().__init__(*args, **kwargs)
-        self.fields["name"].widget.attrs = {'class':'myInput', 'placeholder': 'E.g. "John Anderson"', 'autocomplete': "name"}
+        self.fields["name"].widget.attrs = {'class':'myInput form-control', 'placeholder': 'E.g. "John Anderson"', 'autocomplete': "name"}
         self.fields["name"].label = "First & Last Name"
 
-        self.fields["email"].widget.attrs = {'class':'myInput', 'placeholder': "E.g. JohnAnderson@mars.co", 'autocomplete': "email"}
+        self.fields["email"].widget.attrs = {'class':'myInput form-control', 'placeholder': "E.g. JohnAnderson@mars.co", 'autocomplete': "email"}
         self.fields["email"].label = "Email Address*"
 
-        self.fields["username"].widget.attrs = {'class':'myInput', 'placeholder': "E.g. johnanderson", 'autocomplete': "username"}
+        self.fields["username"].widget.attrs = {'class':'myInput form-control', 'placeholder': "E.g. johnanderson", 'autocomplete': "username"}
         self.fields["username"].label = "Username*"
 
-        self.fields["password1"].widget.attrs = {'class':'myInput', 'placeholder': "Enter new password", 'autocomplete': "new-password"}
+        self.fields["password1"].widget.attrs = {'class':'myInput form-control', 'placeholder': "Enter new password", 'autocomplete': "new-password"}
         self.fields["password1"].label = "Password*"
         self.rearrange_field_order()
 
