@@ -39,7 +39,8 @@ ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_SIGNUP_PASSWORD_VERIFICATION = False # confirmation password isnt needed
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # on signup send messages to this email (print in terminal)
 ACCOUNT_FORMS = {
-    'signup': 'users.forms.ExtendedSignUpForm'
+    'login': 'users.forms.ExtendedLogInForm',
+    'signup': 'users.forms.ExtendedSignUpForm',
 }
 
 AUTH_PASSWORD_VALIDATORS = [

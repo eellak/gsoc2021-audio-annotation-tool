@@ -30,7 +30,7 @@ body {
     color: #232337;
 }
 
-#signUpButton {
+#signInButton {
     /* Auto Layout */
 
     display: flex;

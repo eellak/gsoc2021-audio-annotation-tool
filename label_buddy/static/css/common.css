@@ -163,3 +163,7 @@ a {
 .tooltip-icons {
     cursor: default;
 }
+
+.alert {
+    margin: 0;
+}

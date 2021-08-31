@@ -1,6 +1,13 @@
-from allauth.account.forms import SignupForm
+from allauth.account.forms import SignupForm, LoginForm
 from django import forms 
 from .models import User
+
+class ExtendedLogInForm(LoginForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["login"].widget.attrs = {'class':'myInput form-control', 'placeholder': "Email or Username"}
+        self.fields["password"].widget.attrs = {'class':'myInput form-control', 'placeholder': "Password"}
+
 
 class ExtendedSignUpForm(SignupForm):
     name = forms.CharField(max_length=256)
