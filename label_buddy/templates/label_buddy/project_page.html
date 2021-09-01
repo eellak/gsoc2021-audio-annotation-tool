@@ -20,11 +20,7 @@
     <ol style="margin-top: 1%;"  class="breadcrumb bg-light py-0">
         <li class="breadcrumb-item"><a class="my-link" href="{% url 'index_page' %}"><i class="fas fa-home"></i></a></li>
         <li class="breadcrumb-item active" aria-current="page">
-            {% if project.title %}
-                {{ project.title}}
-            {% else %}
-                Project #{{project.id}}
-            {% endif %}
+            {{ project.title }}
         </li>
     </ol>
 {% endblock %}
@@ -199,10 +195,12 @@
                                         <i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Review task" class="fas fa-comment-dots tooltip-icons"></i>
                                     </a>
                                 {% else %}
-                                    {% if user in project.annotators.all and user in task.assigned_to.all or not task.assigned_to.exists %}
-                                        <a style="margin-right: 0%;" id="annotate-link" href="{% url 'annotation_page' project.id task.id %}">
-                                            <i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Annotate task" class="fas fa-paint-brush tooltip-icons"></i> </i>
-                                        </a>
+                                    {% if user in project.annotators.all %}
+                                        {% if user in task.assigned_to.all or not task.assigned_to.exists%}
+                                            <a style="margin-right: 0%;" id="annotate-link" href="{% url 'annotation_page' project.id task.id %}">
+                                                <i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Annotate task" class="fas fa-paint-brush tooltip-icons"></i> </i>
+                                            </a>
+                                        {% endif %}
                                     {% elif user in project.reviewers.all %}
                                         <a style="margin-left: 0%;" id="review-link" href="{% url 'list_task_annotations' project.id task.id %}">
                                             <i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Review task" class="fas fa-comment-dots tooltip-icons"></i>

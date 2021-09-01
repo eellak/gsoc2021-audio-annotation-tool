@@ -3,7 +3,7 @@ import os
 from django.conf import settings
 from django.core.files import File
 from django.db import models
-from django.db.models.signals import pre_save, pre_delete
+from django.db.models.signals import pre_save, pre_delete, post_save
 from django.dispatch import receiver
 from colorfield.fields import ColorField
 from enumchoicefield import ChoiceEnum, EnumChoiceField
@@ -91,6 +91,21 @@ def auto_delete_logo_on_change(sender, instance, **kwargs):
         if not old_logo == new_logo:
             if os.path.isfile(old_logo.path):
                 os.remove(old_logo.path)
+
+# When a project's title is no set, set a default one
+@receiver(post_save, sender=Project)
+def set_project_title(sender, instance, created, **kwargs):
+
+
+    if created:
+        title = instance.title
+        if title:
+            if title.strip() == "":
+                instance.title = "Project #" + str(instance.id)
+        else:
+            instance.title = "Project #" + str(instance.id)
+        instance.save()
+
 
 
 @receiver(pre_delete, sender=Project)
