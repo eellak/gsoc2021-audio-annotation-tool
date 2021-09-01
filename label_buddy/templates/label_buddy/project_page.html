@@ -186,14 +186,22 @@
                                     {% endif %}
                                 {% endif %}
                             {% else %}
-                                {% if user in project.annotators.all and user in task.assigned_to.all and user in project.reviewers.all %}
-                                    <a id="annotate-link" href="{% url 'annotation_page' project.id task.id %}">
-                                        <i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Annotate task" class="fas fa-paint-brush tooltip-icons"></i> </i>
-                                    </a>
-                                    <b>/</b>
-                                    <a id="review-link" href="{% url 'list_task_annotations' project.id task.id %}">
-                                        <i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Review task" class="fas fa-comment-dots tooltip-icons"></i>
-                                    </a>
+                                {% if user in project.annotators.all and user in project.reviewers.all %}
+                                    {% if user in task.assigned_to.all or not task.assigned_to.exists%}
+                                        <a id="annotate-link" href="{% url 'annotation_page' project.id task.id %}">
+                                            <i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Annotate task" class="fas fa-paint-brush tooltip-icons"></i> </i>
+                                        </a>
+                                        <b>/</b>
+                                    {% endif %}
+                                    {% if user in task.assigned_to.all or not task.assigned_to.exists%}
+                                        <a id="review-link" href="{% url 'list_task_annotations' project.id task.id %}">
+                                            <i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Review task" class="fas fa-comment-dots tooltip-icons"></i>
+                                        </a>
+                                    {% else %}
+                                        <a style="margin-left: 0%;" id="review-link" href="{% url 'list_task_annotations' project.id task.id %}">
+                                            <i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Review task" class="fas fa-comment-dots tooltip-icons"></i>
+                                        </a>
+                                    {% endif %}
                                 {% else %}
                                     {% if user in project.annotators.all %}
                                         {% if user in task.assigned_to.all or not task.assigned_to.exists%}
