@@ -8,6 +8,7 @@
 ### Important links
 * GitHub repository: https://github.com/eellak/gsoc2021-audio-annotation-tool
 * GitHub README link: https://github.com/eellak/gsoc2021-audio-annotation-tool/blob/main/README.md
+* Label Buddy video demo: https://www.youtube.com/watch?v=ikPrWbs9MWw
 * Label Buddy demo link: Go to https://labelbuddy.io/ and sign in with the following credentials in order to check out Label Buddy:
   * **Username**: demo
   * **Password**: labelbuddy123
