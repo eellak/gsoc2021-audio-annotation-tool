@@ -10,12 +10,15 @@ class ExtendedLogInForm(LoginForm):
 
 
 class ExtendedSignUpForm(SignupForm):
+    # error_css_class = 'error'
+    # required_css_class = 'required'
     name = forms.CharField(max_length=256)
     ordered_field_names = ['name', 'email', 'username', 'password1']
 
     def __init__(self, *args, **kwargs):
         # Call the init of the parent class
         super().__init__(*args, **kwargs)
+        
         self.fields["name"].widget.attrs = {'class':'myInput form-control', 'placeholder': 'E.g. "John Anderson"', 'autocomplete': "name"}
         self.fields["name"].label = "First & Last Name"
 
@@ -28,6 +31,11 @@ class ExtendedSignUpForm(SignupForm):
         self.fields["password1"].widget.attrs = {'class':'myInput form-control', 'placeholder': "Enter new password", 'autocomplete': "new-password"}
         self.fields["password1"].label = "Password*"
         self.rearrange_field_order()
+
+        # push error class if an error has occured
+        for field in self:
+            if field.errors:
+                self.fields[field.name].widget.attrs["class"] += " error"
 
     def save(self, request):
         user = super(ExtendedSignUpForm, self).save(request)

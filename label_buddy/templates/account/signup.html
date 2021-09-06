@@ -19,12 +19,26 @@
     </a>
     <div id="innerDiv">
       <p id="signUpHeader">Sign up</p>
+      {% if form.errors %}
+        {% for error in form.non_field_errors %}
+          <div class="alert alert-danger">
+              <strong>{{ error|escape }}</strong>
+          </div>
+        {% endfor %}
+      {% endif %}
+      
       <form method="POST" action="{% url 'account_signup' %}">
         {% csrf_token %}
         {% for field in form %}
           <div class="my-form-group">
             <label class="forms-labels" for="{{ field.name }}">{{ field.label }}</label>
             {{ field }}
+            {% if field.errors.0 %}
+              <small class="form-text error-text">
+                <i class="fas fa-times-circle"></i>
+                {{ field.errors.0 }}
+              </small>
+            {% endif %}
           </div>
         {% endfor %}
         <button type="submit" class="btn btn-primary" id="signUpButton">Sign Up</button>

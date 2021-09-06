@@ -17,9 +17,24 @@
     <img style="margin-bottom: 3%;" src="{% static '/images/favicons/new_logo.svg' %}" alt="Logo">
     <div id="innerDiv">
       <p id="signUpHeader">Sign in</p>
+      {% if form.errors %}
+        {% for field in form %}
+          {% for error in field.errors %}
+              <div class="alert alert-danger">
+                  <strong>{{ error|escape }}</strong>
+              </div>
+          {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+          <div class="alert alert-danger">
+              <strong>{{ error|escape }}</strong>
+          </div>
+        {% endfor %}
+      {% endif %}
       <form method="POST" action="{% url 'account_login' %}">
         {% csrf_token %}
         {% for field in form %}
+          
           {% if field.name == 'remember'%}
             <div style="text-align: right;" class="my-form-group">
           {% else %}

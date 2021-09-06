@@ -53,6 +53,16 @@ body {
     margin: 32px 0px;
 }
 
+.error {
+    border: 3px solid #FF1744 !important;
+}
+
+.error-text {
+    padding-top: 2px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #FF1744;
+}
 .my-form-group {
     text-align: left;
     padding: 3px;
