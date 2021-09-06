@@ -33,11 +33,13 @@
           <div class="my-form-group">
             <label class="forms-labels" for="{{ field.name }}">{{ field.label }}</label>
             {{ field }}
-            {% if field.errors.0 %}
-              <small class="form-text error-text">
-                <i class="fas fa-times-circle"></i>
-                {{ field.errors.0 }}
-              </small>
+            {% if field.errors %}
+              {% for error in field.errors %}
+                <small class="form-text error-text">
+                  <i class="fas fa-times-circle"></i>
+                  {{ error }}
+                </small>
+              {% endfor %}
             {% endif %}
           </div>
         {% endfor %}
