@@ -5,6 +5,7 @@
 {% block head_files %}
     {{ block.super }}
     <link href="{% static 'css/signup_page.css' %}" rel="stylesheet" type="text/css">
+    <script src="{% static '/js/signup_page.js'%}" defer></script>
 {% endblock %}
 
 {% block title %} &#9702; Sign Up {% endblock %}
@@ -32,7 +33,20 @@
         {% for field in form %}
           <div class="my-form-group">
             <label class="forms-labels" for="{{ field.name }}">{{ field.label }}</label>
-            {{ field }}
+              {% if field.name == "password1" %}
+                <div class="input-group mb-2">
+                  {{ field }}
+                  <div class="input-group-prepend">
+                    <div style="cursor: pointer;" id="eyeDiv" class="myInput">
+                      <span>
+                        <i style="cursor: pointer; color: #9B9B9B;" class="far fa-eye" id="togglePassword"></i>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              {% else %}
+                {{ field }}
+              {% endif %}
             {% if field.errors %}
               {% for error in field.errors %}
                 <small class="form-text error-text">

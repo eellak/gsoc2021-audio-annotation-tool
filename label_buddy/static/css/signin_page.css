@@ -53,6 +53,17 @@ body {
     margin: 32px 0px;
 }
 
+#id_password {
+    border-right: 0px;
+}
+
+#eyeDiv {
+    /* height: 42px; */
+    border-top-left-radius: 0px; 
+    border-bottom-left-radius: 0px; 
+    border-left: 0px;
+}
+
 .my-form-group {
     text-align: left;
     padding: 3px;
@@ -134,4 +145,12 @@ body {
 
 
     /* Inside Auto Layout */
+}
+
+div {
+    user-select: none; /* standard syntax */
+    -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+    -moz-user-select: none; /* mozilla browsers */
+    -khtml-user-select: none; /* webkit (konqueror) browsers */
+    -ms-user-select: none; /* IE10+ */
 }

@@ -5,8 +5,8 @@ from .models import User
 class ExtendedLogInForm(LoginForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields["login"].widget.attrs = {'class':'myInput form-control', 'placeholder': "Email or Username"}
-        self.fields["password"].widget.attrs = {'class':'myInput form-control', 'placeholder': "Password"}
+        self.fields["login"].widget.attrs = {'class':'myInput form-control', 'placeholder': "Email or Username", 'autocomplete': "email"}
+        self.fields["password"].widget.attrs = {'class':'myInput form-control', 'placeholder': "Password", 'autocomplete': "current-password"}
 
 
 class ExtendedSignUpForm(SignupForm):

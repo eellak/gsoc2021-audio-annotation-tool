@@ -5,6 +5,7 @@
 {% block head_files %}
     {{ block.super }}
     <link href="{% static 'css/signin_page.css' %}" rel="stylesheet" type="text/css">
+    <script src="{% static '/js/signin_page.js'%}" defer></script>
 {% endblock %}
 
 {% block title %} &#9702; Sign in {% endblock %}
@@ -41,7 +42,20 @@
             <div class="my-form-group">
           {% endif %}
             <label class="forms-labels" for="{{ field.name }}">{{ field.label }}</label>
-            {{ field }}
+            {% if field.name == "password" %}
+                <div class="input-group mb-2">
+                  {{ field }}
+                  <div class="input-group-prepend">
+                    <div style="cursor: pointer;" id="eyeDiv" class="myInput">
+                      <span>
+                        <i style="cursor: pointer; color: #9B9B9B;" class="far fa-eye" id="togglePassword"></i>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              {% else %}
+                {{ field }}
+              {% endif %}
           </div>
         {% endfor %}
         <button type="submit" class="btn btn-primary" id="signInButton">Sign in</button>
