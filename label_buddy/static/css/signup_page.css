@@ -68,7 +68,15 @@ body {
     border: 3px solid #FF1744 !important;
 }
 
+.password-validation {
+    font-family: Roboto;
+    padding-top: 2px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #676767
+}
 .error-text {
+    font-family: Roboto;
     padding-top: 2px;
     font-size: 12px;
     font-weight: 500;
@@ -163,4 +171,9 @@ div {
     -moz-user-select: none; /* mozilla browsers */
     -khtml-user-select: none; /* webkit (konqueror) browsers */
     -ms-user-select: none; /* IE10+ */
+}
+
+span {
+    display: inline-block;
+    width: 20px;
 }

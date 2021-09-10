@@ -154,3 +154,8 @@ div {
     -khtml-user-select: none; /* webkit (konqueror) browsers */
     -ms-user-select: none; /* IE10+ */
 }
+
+span {
+    display: inline-block;
+    width: 20px;
+}

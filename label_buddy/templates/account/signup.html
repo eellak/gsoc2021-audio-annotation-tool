@@ -54,6 +54,13 @@
                   {{ error }}
                 </small>
               {% endfor %}
+            {% else %}
+              {% if field.name == "password1" %}
+                <small class="form-text password-validation">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Min 8 characters, at least one Capital letter, at least one number, at least one symbol (@, #, $, etc.)
+                </small>
+              {% endif %}
             {% endif %}
           </div>
         {% endfor %}
