@@ -54,8 +54,8 @@ table
 
 .headers-page {
     text-align: center;
-    font-family: 'Georama';
-    text-shadow: 2px 2px 2px #aaa;
+    font-family: 'Roboto';
+    /* text-shadow: 2px 2px 2px #aaa; */
 
     /* border: 2px solid blue; */
     margin-left: 1%;
@@ -99,7 +99,34 @@ table
 }
 
 .my-table-header {
-    margin-right: 4%;
+
+    position: static;
+    
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 15px;
+    line-height: 16px;
+    
+    color: #5C666B;
+    
+    
+    /* Inside Auto Layout */
+    
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    margin: 0px 0px;
+}
+
+.my-table-text {
+
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+
+    color: #1F282D;
 }
 
 .my-small-btn {

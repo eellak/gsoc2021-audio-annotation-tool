@@ -37,18 +37,16 @@
 			<!--Table head-->
 			<thead>
 				<tr>
-				<th><i class="fa fa-caret-right my-table-header" aria-hidden="true"></i> Title</th>
-				<th><i class="fa fa-calendar my-table-header" aria-hidden="true"></i> Date of Creation</th>
-				<th>
-					<i style="cursor: pointer; color: #74deed;" data-toggle="modal" data-target="#publicQueues" class="fas fa-eye my-table-header" aria-hidden="true"></i> Task permissions
-				</th>
-				<th><i class="fa fa-tasks my-table-header" aria-hidden="true"></i> Number of tasks</th>
-				<th><i class="fa fa-paint-brush my-table-header" aria-hidden="true"></i> Annotations</th>
-				<th><i class="fas fa-tag my-table-header"></i> Number of labels</th>
-				<th><i class="fa fa-user my-table-header" aria-hidden="true"></i> Annotator</th>
-				<th><i class="fa fa-user my-table-header" aria-hidden="true"></i> Reviewer</th>
-				<th><i class="fa fa-users my-table-header" aria-hidden="true"></i> Managers</th>
-				<th data-toggle="tooltip" data-placement="left" title="Only for managers" style="width: 110px;"><i class="fas fa-list my-table-header"></i> Options</th>
+				<th class="my-table-header" style="width: 300px;">Project Title <i style="margin-left: 5%;" class="fas fa-arrow-down"></i></th>
+				<th class="my-table-header">Date of Creation</th>
+				<th data-toggle="modal" data-target="#publicQueues" class="my-table-header" style="text-decoration-line: underline; color: #2962FF; cursor: pointer;">Task permissions</th>
+				<th class="my-table-header">Number of tasks</th>
+				<th class="my-table-header">Annotations</th>
+				<th class="my-table-header">Number of labels</th>
+				<th class="my-table-header">Annotator</th>
+				<th class="my-table-header">Reviewer</th>
+				<th class="my-table-header">Managers</th>
+				<th data-toggle="tooltip" data-placement="left" title="Only for managers" style="width: 110px;" class="my-table-header">Options</th>
 				</tr>
 			</thead>
 			<!--Table head-->
@@ -57,37 +55,49 @@
 			<tbody>
 				{% for project in page_obj %}
 					<tr class="clickable-row" href="{% url 'project_page' project.id %}">
-						<td class="table-title">
+						<td class="table-title my-table-text">
 							<img data-toggle="tooltip" data-placement="top" style="margin-right: 4%;" src="{{ project.logo.url }}" width="27" height="27" title="{{ project.title }}" class="rounded-circle">
 							{{ project.title }}
 						</td>
-						<td>{{ project.created_at|date:"D d M Y" }}</td>
+						<td class="my-table-text">{{ project.created_at|date:"D d M Y" }}</td>
 						
 						{% if project.users_can_see_other_queues %}
-							<td><i data-toggle="tooltip" data-placement="top" data-title="Tasks assigned to all annotators" style="color:green" class="fas fa-check-circle tooltip-icons"></i></td>
+							<td class="my-table-text"><i data-toggle="tooltip" data-placement="top" data-title="Tasks assigned to all annotators" style="color:green; margin-right: 3%;" class="fas fa-check-circle tooltip-icons"></i>
+								Tasks assigned
+							</td>
 						{% else %}
-							<td><i data-toggle="tooltip" data-placement="top" data-title="Tasks assigned randmomly to annotators" style="color:red" class="fas fa-exclamation-circle tooltip-icons"></i></td>
+							<td class="my-table-text"><i data-toggle="tooltip" data-placement="top" data-title="Tasks assigned randmomly to annotators" style="color:red; margin-right: 3%;" class="fas fa-exclamation-circle tooltip-icons"></i>
+								Tasks unassigned
+							</td>
 						{% endif %}
 						
-						<td><b>{{ tasks_count|get_item:project.id }}</b></td>
-						<td><b>{{ annotations_count|get_item:project.id }}</b></td>
+						<td class="my-table-text" style="text-align: right;">{{ tasks_count|get_item:project.id }}</td>
+						<td class="my-table-text" style="text-align: right;">{{ annotations_count|get_item:project.id }}</td>
 						
 						{% if project.labels.count > 0 %}
-							<td title="You can annotate tasks for this project"><b style="color: green;">{{ project.labels.count }}</b></td>
+							<td class="my-table-text" style="color: green; text-align: right;" title="You can annotate tasks for this project">{{ project.labels.count }}</td>
 						{% else %}
-							<td title="Add labels in order to annotate"><b style="color: red;">{{ project.labels.count }}</b></td>
+							<td class="my-table-text" style="text-align: right; color: red;" title="Add labels in order to annotate">{{ project.labels.count }}</td>
 						{% endif %}
 						
 						{% if user in project.annotators.all %}
-							<td><i data-toggle="tooltip" data-placement="top" data-title="Annotator for this project" style="color:green;" class="fas fa-check-circle tooltip-icons"></i></td>
+							<td class="my-table-text" data-toggle="tooltip" data-placement="top" data-title="Annotator for this project"><i style="color:green; margin-right: 3%;" class="fas fa-check-circle tooltip-icons"></i>
+								Can annotate
+							</td>
 						{% else %}
-							<td><i data-toggle="tooltip" data-placement="top" data-title="Not an annotator for this project" style="color:red" class="fas fa-exclamation-circle tooltip-icons"></i></td>
+							<td class="my-table-text" data-toggle="tooltip" data-placement="top" data-title="Not an annotator for this project" ><i style="color:red; margin-right: 3%;" class="fas fa-exclamation-circle tooltip-icons"></i>
+								Cannot annotate
+							</td>
 						{% endif %}
 
 						{% if user in project.reviewers.all %}
-							<td><i data-toggle="tooltip" data-placement="top" data-title="Reviewer for this project" style="color:green" class="fas fa-check-circle tooltip-icons"></i></td>
+							<td data-toggle="tooltip" data-placement="top" data-title="Reviewer for this project" class="my-table-text"><i style="color:green; margin-right: 3%;" class="fas fa-check-circle tooltip-icons"></i>
+								Can review
+							</td>
 						{% else %}
-							<td><i data-toggle="tooltip" data-placement="top" data-title="Not a reviewer for this project" style="color:red" class="fas fa-exclamation-circle tooltip-icons"></i></td>
+							<td data-toggle="tooltip" data-placement="top" data-title="Not a reviewer for this project" class="my-table-text"><i style="color:red; margin-right: 3%;" class="fas fa-exclamation-circle tooltip-icons"></i>
+								Cannot review
+							</td>
 						{% endif %}
 						<td>
 							{% for obj in project.managers.all %}
