@@ -59,6 +59,7 @@ from .helpers import (
     next_unlabeled_task_id,
     add_tasks_from_compressed_file,
     delete_old_labels,
+    users_to_string
 )
 
 # global variables
@@ -78,6 +79,11 @@ def index(request):
 
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
+
+    # return managers email as html printed manager_email <br>.. for each project
+    project_managers_strings = {}
+    for project in projects:
+        project_managers_strings[project.id] = users_to_string(project.managers.all()) if project.managers.count() > 1 else ""
 
     context = {
         "page_obj": page_obj,

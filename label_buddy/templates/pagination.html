@@ -1,22 +1,21 @@
 <nav aria-label="Page navigation example">
-    <ul class="pagination justify-content-center">
+    <div style="text-align: center; margin-top: 1.5%;">
         {% if page_obj.has_previous %}
-            <li title="First page" class="page-item"><a class="page-link" href="?page=1">&laquo;</a></li>
-            <li title="Previous page" class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+        <a style="color: #1F282D;" title="First page" href="?page=1"><i class="fas fa-angle-double-left"></i></a>
+        <a style="color: #1F282D; margin-left: 1%;" title="Previous page" href="?page={{ page_obj.previous_page_number }}"><i class="fas fa-angle-left"></i></a>
+        {% else %}
+            <i style="color: #CFD8DC;" class="fas fa-angle-double-left"></i>
+            <i style="color: #CFD8DC; margin-left: 1%;" class="fas fa-angle-left"></i>
         {% endif %}
 
-        {% for i in list_num_of_pages %}
-
-            {% if page_obj.number == i %}
-                <li title="Page {{ i }}"class="page-item active"><a class="bg-warning page-link" href="?page={{ i }}">{{ i }}</a></li>
-            {% else %}
-                <li title="Page {{ i }}"class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
-            {% endif %}
-        {% endfor %}
+        <span style="margin-left: 1%; font-family: Roboto; font-weight: normal; font-size: 14px;">page <b>{{ page_obj.number }}</b> of <b>{{ page_obj.paginator.num_pages }}</b></span>
 
         {% if page_obj.has_next %}
-            <li title="Next page" class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
-            <li title="Last page" class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">&raquo;</a></li>
+            <a style="color: #1F282D; margin-left: 1%;" title="Next page" href="?page={{ page_obj.next_page_number }}"><i class="fas fa-angle-right"></i></a>
+            <a style="color: #1F282D; margin-left: 1%;" title="Last page" href="?page={{ page_obj.paginator.num_pages }}"><i class="fas fa-angle-double-right"></i></a>
+        {% else %}
+            <i style="color: #CFD8DC; margin-left: 1%;" class="fas fa-angle-right"></i>
+            <i style="color: #CFD8DC; margin-left: 1%;" class="fas fa-angle-double-right"></i>
         {% endif %}
-    </ul>
+    </div>
 </nav>

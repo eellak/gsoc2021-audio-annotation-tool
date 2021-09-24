@@ -163,6 +163,12 @@ def delete_old_labels(project):
     for label in project.labels.all():
         project.labels.remove(label)
 
+# return users emails with <br> element for tooltip title
+def users_to_string(users):
+    to_return_string = ""
+    for user in users:
+        to_return_string += user.email + "<br>"
+    print(to_return_string[:-4])
 
 
 # functions for project page

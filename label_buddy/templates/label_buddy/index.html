@@ -22,12 +22,12 @@
 		<h2 class="headers-page">
 			Projects
 			<sup>
-				<i style="cursor: pointer; color: #74deed;" data-toggle="modal" data-target="#indexModal" class="far fa-question-circle tooltip-icons fa-xs"></i>
+				<i style="color: #007bff; cursor: pointer;" data-toggle="modal" data-target="#indexModal" class="far fa-question-circle tooltip-icons fa-xs"></i>
 			</sup>
 		</h2>
 		{% if user.can_create_projects %}
 			<div id="header-div">
-				<a style="color: black;" title="Create new project" href="{% url 'create_project'%}" class="btn my-button"> Create</a>
+				<a title="Create new project" href="{% url 'create_project'%}" class="btn btn-primary"> <i style="margin-right: 10%;" class="fas fa-plus-circle"></i> Create</a>
 			</div>
 		{% endif %}
 		
@@ -39,14 +39,14 @@
 				<tr>
 				<th class="my-table-header" style="width: 300px;">Project Title <i style="margin-left: 5%;" class="fas fa-arrow-down"></i></th>
 				<th class="my-table-header">Date of Creation</th>
-				<th data-toggle="modal" data-target="#publicQueues" class="my-table-header" style="text-decoration-line: underline; color: #2962FF; cursor: pointer;">Task permissions</th>
+				<th data-toggle="modal" data-target="#publicQueues" class="my-table-header" style="text-decoration-line: underline; color: #007bff; cursor: pointer;">Task permissions</th>
 				<th class="my-table-header">Number of tasks</th>
 				<th class="my-table-header">Annotations</th>
 				<th class="my-table-header">Number of labels</th>
 				<th class="my-table-header">Annotator</th>
 				<th class="my-table-header">Reviewer</th>
 				<th class="my-table-header">Managers</th>
-				<th data-toggle="tooltip" data-placement="left" title="Only for managers" style="width: 110px;" class="my-table-header">Options</th>
+				<th data-toggle="tooltip" data-placement="left" title="Only for managers" style="width: 110px; cursor: default;" class="my-table-header">Options</th>
 				</tr>
 			</thead>
 			<!--Table head-->
@@ -57,7 +57,7 @@
 					<tr class="clickable-row" href="{% url 'project_page' project.id %}">
 						<td class="table-title my-table-text">
 							<img data-toggle="tooltip" data-placement="top" style="margin-right: 4%;" src="{{ project.logo.url }}" width="27" height="27" title="{{ project.title }}" class="rounded-circle">
-							{{ project.title }}
+							<span style="text-decoration-line: underline; color: #007bff;">{{ project.title }}</span>
 						</td>
 						<td class="my-table-text">{{ project.created_at|date:"D d M Y" }}</td>
 						
@@ -81,32 +81,30 @@
 						{% endif %}
 						
 						{% if user in project.annotators.all %}
-							<td class="my-table-text" data-toggle="tooltip" data-placement="top" data-title="Annotator for this project"><i style="color:green; margin-right: 3%;" class="fas fa-check-circle tooltip-icons"></i>
-								Can annotate
+							<td class="my-table-text">
+								<span data-toggle="tooltip" data-placement="top" data-title="Annotator for this project"><i style="color:green; margin-right: 3%;" class="fas fa-check-circle tooltip-icons"></i>Can annotate</span>
 							</td>
 						{% else %}
-							<td class="my-table-text" data-toggle="tooltip" data-placement="top" data-title="Not an annotator for this project" ><i style="color:red; margin-right: 3%;" class="fas fa-exclamation-circle tooltip-icons"></i>
-								Cannot annotate
+							<td class="my-table-text">
+								<span data-toggle="tooltip" data-placement="top" data-title="Not an annotator for this project"><i style="color:red; margin-right: 3%;" class="fas fa-exclamation-circle tooltip-icons"></i>Cannot annotate</span>
 							</td>
 						{% endif %}
 
 						{% if user in project.reviewers.all %}
-							<td data-toggle="tooltip" data-placement="top" data-title="Reviewer for this project" class="my-table-text"><i style="color:green; margin-right: 3%;" class="fas fa-check-circle tooltip-icons"></i>
-								Can review
+							<td class="my-table-text">
+								<span data-toggle="tooltip" data-placement="top" data-title="Reviewer for this project" ><i style="color:green; margin-right: 3%;" class="fas fa-check-circle tooltip-icons"></i>Can review</span>
 							</td>
 						{% else %}
-							<td data-toggle="tooltip" data-placement="top" data-title="Not a reviewer for this project" class="my-table-text"><i style="color:red; margin-right: 3%;" class="fas fa-exclamation-circle tooltip-icons"></i>
-								Cannot review
+							<td class="my-table-text">
+								<span data-toggle="tooltip" data-placement="top" data-title="Not a reviewer for this project"><i style="color:red; margin-right: 3%;" class="fas fa-exclamation-circle tooltip-icons"></i>Cannot review</span>
 							</td>
 						{% endif %}
-						<td>
-							{% for obj in project.managers.all %}
-								{% if obj == user %}
-									<img style="border: 2px solid #74deed;" data-toggle="tooltip" data-placement="top" src="{{ obj.avatar.url }}" width="27" height="27" title="You" class="rounded-circle">
-								{% else %}
-									<img src="{{ obj.avatar.url }}" width="25" data-toggle="tooltip" data-placement="top" height="25" title="{{ obj.username }}" class="rounded-circle">
-								{% endif %}
-							{% endfor %}
+						<td class="table-title my-table-text">
+							{% if project.managers.count == 1%}
+								<span data-toggle="tooltip" data-placement="top" data-title="{{project.managers.all.0.email}}">{{ project.managers.all.0.email }}</span>
+							{% else %}
+								<span style="text-decoration-line: underline; color: #007bff;">{{ project.managers.count }} Managers</span>
+							{% endif %}
 						</td>
 
 						{% if user in project.managers.all %}

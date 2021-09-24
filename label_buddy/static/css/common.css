@@ -139,7 +139,7 @@ table
 }
 
 .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
-    background-color: var(--basic_color);
+    background-color: #E2EBF0 !important;
     cursor: pointer;
 
 }
@@ -170,8 +170,8 @@ table
 }
 
 .form-headers {
-    font-family: 'Georama';
-    text-shadow: 2px 2px 2px #aaa;
+    font-family: 'Roboto';
+    /* text-shadow: 2px 2px 2px #aaa; */
 
     white-space:nowrap;
     overflow:hidden;
@@ -194,3 +194,9 @@ a {
 .alert {
     margin: 0;
 }
+
+.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+    background-color: #F3F6F8;
+ }
+
+
