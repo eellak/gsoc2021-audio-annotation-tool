@@ -167,8 +167,8 @@ def delete_old_labels(project):
 def users_to_string(users):
     to_return_string = ""
     for user in users:
-        to_return_string += user.email + "<br>"
-    print(to_return_string[:-4])
+        to_return_string += user.email + "<br/>"
+    return to_return_string[:-5]
 
 
 # functions for project page

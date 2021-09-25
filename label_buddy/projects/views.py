@@ -87,6 +87,7 @@ def index(request):
 
     context = {
         "page_obj": page_obj,
+        "project_managers_strings": project_managers_strings,
         "projects_count": projects_count,
         "projects_per_page": projects_per_page,
         "list_num_of_pages": range(1, paginator.num_pages+1),

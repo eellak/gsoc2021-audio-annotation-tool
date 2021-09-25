@@ -103,7 +103,7 @@
 							{% if project.managers.count == 1%}
 								<span data-toggle="tooltip" data-placement="top" data-title="{{project.managers.all.0.email}}">{{ project.managers.all.0.email }}</span>
 							{% else %}
-								<span style="text-decoration-line: underline; color: #007bff;">{{ project.managers.count }} Managers</span>
+								<span data-html="true" data-toggle="tooltip" data-placement="top" data-title="{{ project_managers_strings|get_item:project.id }}" style="text-decoration-line: underline; color: #007bff;">{{ project.managers.count }} Managers</span>
 							{% endif %}
 						</td>
 
