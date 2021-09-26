@@ -27,7 +27,7 @@
 		</h2>
 		{% if user.can_create_projects %}
 			<div id="header-div">
-				<a title="Create new project" href="{% url 'create_project'%}" class="btn btn-primary"> <i style="margin-right: 10%;" class="fas fa-plus-circle"></i> Create</a>
+				<a title="Create new project" href="{% url 'create_project'%}" class="btn btn-primary"> <i style="margin-right: 3%;" class="fas fa-plus-circle"></i> Create</a>
 			</div>
 		{% endif %}
 		
@@ -62,12 +62,17 @@
 						<td class="my-table-text">{{ project.created_at|date:"D d M Y" }}</td>
 						
 						{% if project.users_can_see_other_queues %}
-							<td class="my-table-text"><i data-toggle="tooltip" data-placement="top" data-title="Tasks assigned to all annotators" style="color:green; margin-right: 3%;" class="fas fa-check-circle tooltip-icons"></i>
-								Tasks assigned
+							<td class="my-table-text">
+								<span data-toggle="tooltip" data-placement="top" title="Tasks annotated by all annotators">
+									<i style="color:green; margin-right: 3%;" class="fas fa-check-circle tooltip-icons"></i>Tasks unassigned
+								</span>
 							</td>
 						{% else %}
-							<td class="my-table-text"><i data-toggle="tooltip" data-placement="top" data-title="Tasks assigned randmomly to annotators" style="color:red; margin-right: 3%;" class="fas fa-exclamation-circle tooltip-icons"></i>
-								Tasks unassigned
+							<td class="my-table-text">
+								<span data-toggle="tooltip" data-placement="top" title="Tasks assigned randmomly to annotators">
+									<i style="color:red; margin-right: 3%;" class="fas fa-exclamation-circle tooltip-icons"></i>
+									Tasks assigned
+								</span>
 							</td>
 						{% endif %}
 						

@@ -350,16 +350,26 @@ def task_annotations_count(tasks):
         context[task.id] = Annotation.objects.filter(task=task).count()
     return context
 
-# return dictionary dict[task.id] = [user1, userxx, ...] with all users annotated this task
+# return two dictionaries dict[task.id] = [user1, userxx, ...] with all users annotated this task and counts
 def users_annotated_task(tasks):
-    context = {}
+    task_annotators = {}
+    task_annotations_count = {}
     for task in tasks:
         query = Annotation.objects.filter(task=task)
-        annotators = []
-        for annotation in query:
-            annotators.append(annotation.user)
-        context[task.id] = annotators
-    return context
+        query_list = query.all()
+        annotations_count = query.count()
+
+        if annotations_count == 0:
+            task_annotators[task.id] = ""
+        elif annotations_count == 1:
+            annotation = query_list[0]
+            task_annotators[task.id] = annotation.user.email
+        else:
+            #create annotators for tooltop title
+            annotators = [ annotation.user for annotation in query_list]
+            task_annotators[task.id] = users_to_string(annotators)
+        task_annotations_count[task.id] = annotations_count
+    return task_annotators, task_annotations_count
 
 
 # unzip file and add tasks

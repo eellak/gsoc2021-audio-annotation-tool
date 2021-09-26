@@ -65,16 +65,16 @@
         <h2 class="headers-page">
             {{ project.title }}
             <sup>
-                <i style="cursor: pointer; color: #74deed;" data-toggle="modal" data-target="#projectModal" class="far fa-question-circle tooltip-icons fa-xs"></i>
+                <i style="color: #007bff; cursor: pointer;" data-toggle="modal" data-target="#projectModal" class="far fa-question-circle tooltip-icons fa-xs"></i>
             </sup>
         </h2>
         <div id="header-div">
             {% if user in project.managers.all %}
-                <button style="color: black; float: right;" data-toggle="modal" data-target="#exportModal" class="btn my-button">
-                    <i style="margin-right: 10%;" class="fas fa-file-export"></i> Export
+                <button style="float: right;" data-toggle="modal" data-target="#exportModal" class="btn btn-primary">
+                    <i style="margin-right: 3%;" class="fas fa-file-export"></i> Export
                 </button>
-                <button style="color: black; float: right; margin-right: .5%;" data-toggle="modal" data-target="#importModal" class="btn my-button">
-                    <i style="margin-right: 10%;" class="fas fa-cloud-upload-alt"></i> Import
+                <button style="float: right; margin-right: .5%;" data-toggle="modal" data-target="#importModal" class="btn btn-primary">
+                    <i style="margin-right: 3%;" class="fas fa-cloud-upload-alt"></i> Import...
                 </button>
             {% endif %}
             {% comment %}
@@ -88,17 +88,17 @@
             <!--Table head-->
             <thead>
                 <tr>
-                    <th style="width: 100px;" title="Task ID"><i class="fas fa-hashtag my-table-header"></i> ID</th>
-                    <th><i class="fa fa-caret-right my-table-header" aria-hidden="true"></i> Title</th>
-                    <th><i class="fa fa-paint-brush my-table-header" aria-hidden="true"></i> Annotations done</th>
-                    <th><i class="fas fa-users my-table-header"></i> Annotated by</th>
-                    <th><i class="fas fa-file-audio my-table-header"></i> Audio file</th>
-                    <th style="width: 170px;"><i class="fas fa-check-circle my-table-header"></i> Status</th>
-                    <th style="width: 170px;"><i class="fas fa-check-circle my-table-header"></i> Review status</th>
+                    <th style="width: 60px;" class="my-table-header"><i class="fas fa-hashtag my-table-header"></i> ID</th>
+                    <th class="my-table-header">Task Title <i style="margin-left: 5%;" class="fas fa-arrow-down"></i></th>
+                    <th style="width: 200px;" class="my-table-header">Annotations completed</th>
+                    <th class="my-table-header">Annotated by</th>
+                    <th class="my-table-header">Audio file</th>
+                    <th style="width: 170px;" class="my-table-header">Status</th>
+                    <th style="width: 170px;" class="my-table-header">Review status</th>
                     {% if user in project.annotators.all %}
-                        <th><i class="fas fa-paint-brush my-table-header"></i> Annotated by you</th>
+                        <th class="my-table-header">Annotated by you</th>
                     {% endif %}
-                    <th data-toggle="tooltip" data-placement="left" title="Annotate/Review task" style="width: 110px;"><i class="fas fa-list my-table-header"></i> Options</th>
+                    <th class="my-table-header" data-toggle="tooltip" data-placement="left" title="Annotate/Review task" style="width: 110px; cursor: default;">Options</th>
                     {% if user in project.managers.all %}
                         <th data-toggle="tooltip" data-placement="left" title="Delete task" style="width: 50px; text-align: center;">
                             <i style="cursor: default;" class="fas fa-trash-alt tooltip-icons"></i>
@@ -111,24 +111,24 @@
                 <!--Table body-->
                 <tbody>
                     <tr>
-                        <td>{% get_table_id page_obj.number tasks_per_page forloop.counter %}</td>
+                        <td style="text-align: right;" class="my-table-text">{% get_table_id page_obj.number tasks_per_page forloop.counter %}</td>
                         {% if task.file %}
-                            <td data-toggle="tooltip" data-placement="top" title="{{ task.original_file_name }}" class="table-title">{{ task.original_file_name }}</td>
+                            <td class="table-title my-table-text">
+                                <span data-toggle="tooltip" data-placement="top" title="{{ task.original_file_name }}" style="text-decoration-line: underline; color: #007bff; cursor: default;">{{ task.original_file_name }}</span>
+                            </td>
                         {% else %}
-                            <td><b>-</b></td>
+                            <td class="my-table-text"><b>-</b></td>
                         {% endif %}
-                        <td><b>{{ count_annotations_for_task|get_item:task.id }}</b></td>
-                        <td>
-                            {% if users_annotated|get_item:task.id %}
-                                {% for obj in users_annotated|get_item:task.id %}
-                                    {% if obj == user %}
-                                        <img data-toggle="tooltip" data-placement="top" style="border: 2px solid #74deed;" src="{{ obj.avatar.url }}" width="27" height="27" title="You" class="rounded-circle">
-                                    {% else %}
-                                        <img data-toggle="tooltip" data-placement="top" src="{{ obj.avatar.url }}" width="25" height="25" title="{{ obj.username }}" class="rounded-circle">
-                                    {% endif %}
-                                {% endfor %}
+                        <td style="text-align: right;" class="my-table-text"><b>{{ count_annotations_for_task|get_item:task.id }}</b></td>
+                        <td class="table-title my-table-text">
+                            {% if annotations_count|get_item:task.id > 0 %}
+                                {% if annotations_count|get_item:task.id == 1 %}
+                                    <span style="cursor: default;" data-toggle="tooltip" data-placement="top" data-title="{{string_annotators|get_item:task.id}}">{{string_annotators|get_item:task.id}}</span>
+                                {% else %}
+                                    <span data-html="true" data-toggle="tooltip" data-placement="top" data-title="{{string_annotators|get_item:task.id}}" style="text-decoration-line: underline; color: #007bff; cursor: pointer;">{{ annotations_count|get_item:task.id }} Annotators</span>
+                                {% endif %}
                             {% else %}
-                                <b>-</b>
+                                <b class="my-table-text">-</b>
                             {% endif %}
                         </td>
                         <td>
@@ -143,26 +143,56 @@
                             {% endif %}
                         </td>
                         {% if task.status == labeled %}
-                            <td><i data-toggle="tooltip" data-placement="top" data-title="Labeled" style="color: #5cb85c" class="fas fa-check-circle tooltip-icons" aria-hidden="true"></i></td>
+                            <td class="my-table-text">
+                                <span data-toggle="tooltip" data-placement="top" title="Task annotated" style="cursor: default;">
+                                    <i style="color: #5cb85c; margin-right: 3%;" class="fas fa-check-circle tooltip-icons" aria-hidden="true"></i>
+                                    Annotated
+                                </span>
+                            </td>
                         {% else %}
-                            <td><i data-toggle="tooltip" data-placement="top" data-title="Unlabeled" style="color: #d9534f" class="fas fa-exclamation-circle tooltip-icons" aria-hidden="true"></i></td>
+                            <td class="my-table-text">
+                                <span data-toggle="tooltip" data-placement="top" title="Task not annotated" style="cursor: default;">
+                                    <i style="color: #d9534f; margin-right: 3%;" class="fas fa-exclamation-circle tooltip-icons" aria-hidden="true"></i>
+                                    Not annotated
+                                </span>
+                            </td>
                         {% endif %}
                         
                         {% if task.review_status == reviewed %}
-                            <td><i data-toggle="tooltip" data-placement="top" data-title="All annotations reviewed" style="color: #5cb85c" class="fas fa-check-circle tooltip-icons" aria-hidden="true"></i></td>
+                            <td class="my-table-text">
+                                <span data-toggle="tooltip" data-placement="top" title="All annotations reviewed" style="cursor: default;">
+                                    <i style="color: #5cb85c; margin-right: 3%;" class="fas fa-check-circle tooltip-icons" aria-hidden="true"></i>
+                                    Reviewed
+                                </span>
+                            </td>
                         {% else %}
-                            <td><i data-toggle="tooltip" data-placement="top" data-title="Some annotations are unreviewed" style="color: #d9534f" class="fas fa-exclamation-circle tooltip-icons" aria-hidden="true"></i></td>
+                            <td class="my-table-text">
+                                <span data-toggle="tooltip" data-placement="top" title="Some annotations are unreviewed" style="cursor: default;">
+                                    <i style="color: #d9534f; margin-right: 3%;" class="fas fa-exclamation-circle tooltip-icons" aria-hidden="true"></i>
+                                    Unreviewed
+                                </span>
+                            </td>
                         {% endif %}
 
                         {% if user in project.annotators.all %}
                             {% if annotated_tasks|get_item:task.id %}
-                                <td><i data-toggle="tooltip" data-placement="top" data-title="Task annotated by you" style="color: #5cb85c" class="fas fa-check-circle tooltip-icons" aria-hidden="true"></i></td>
+                                <td class="my-table-text">
+                                    <span data-toggle="tooltip" data-placement="top" title="Task annotated by you" style="cursor: default;">
+                                        <i style="color: #5cb85c; margin-right: 3%;" class="fas fa-check-circle tooltip-icons" aria-hidden="true"></i>
+                                        Annotated by you
+                                    </span>
+                                </td>
                             {% else %}
-                                <td><i data-toggle="tooltip" data-placement="top" data-title="Task not annotated by you" style="color: #d9534f" class="fas fa-exclamation-circle tooltip-icons" aria-hidden="true"></i></td>
+                                <td class="my-table-text">
+                                    <span data-toggle="tooltip" data-placement="top" title="Task not annotated by you" style="cursor: default;">
+                                        <i style="color: #d9534f; margin-right: 3%;" class="fas fa-exclamation-circle tooltip-icons" aria-hidden="true"></i>
+                                        Not annotated by you
+                                    </span>
+                                </td>
                             {% endif %}
                         {% endif %}
 
-                        <td style="text-align: center;">
+                        <td style="text-align: center;" class="my-table-text">
                             {% if project.users_can_see_other_queues %}
                                 {% if user in project.annotators.all and user in project.reviewers.all %}
                                     <a id="annotate-link" href="{% url 'annotation_page' project.id task.id %}">
@@ -220,7 +250,7 @@
                             {% endif %}
                         </td>
                         {% if user in project.managers.all %}
-                            <td style="text-align: center;">
+                            <td class="my-table-text" style="text-align: center;">
                                 <a style="color:  #d9534f;" href="{% url 'delete_task' project.id task.id %}">
                                     <i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Delete {{ task.original_file_name }}" class="fas fa-times-circle tooltip-icons"></i>
                                 </a>

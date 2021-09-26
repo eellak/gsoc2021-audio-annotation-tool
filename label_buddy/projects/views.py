@@ -413,6 +413,8 @@ def project_page_view(request, pk):
         user_annotation = get_annotation(task, project, user)
         annotated_tasks[task.id] = user_annotation
         annotated_tasks_status[task.id] = user_annotation.review_status.name if user_annotation else None
+
+    task_annotators, annotations_count = users_annotated_task(tasks)
     context = {
         "page_obj": page_obj,
         "list_num_of_pages": range(1, paginator.num_pages+1),
@@ -424,7 +426,8 @@ def project_page_view(request, pk):
         "tasks": tasks,
         "annotations_count": Annotation.objects.filter(project=project).count(),
         "count_annotations_for_task": task_annotations_count(tasks),
-        "users_annotated": users_annotated_task(tasks),
+        "string_annotators": task_annotators,
+        "annotations_count": annotations_count,
         "task_form": task_form,
         "labeled": Status.labeled,
         "reviewed": Review_status.reviewed,
