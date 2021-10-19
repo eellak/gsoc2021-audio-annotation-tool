@@ -19,7 +19,7 @@
       <img src="{% static '/images/favicons/new_logo.svg' %}" alt="Logo">
     </a>
     <div id="innerDiv">
-      <p id="signUpHeader">Sign up</p>
+      <p class="accountHeaders">Sign up</p>
       {% if form.errors %}
         {% for error in form.non_field_errors %}
           <div class="alert alert-danger">
@@ -64,12 +64,12 @@
             {% endif %}
           </div>
         {% endfor %}
-        <button type="submit" class="btn btn-primary" id="signUpButton">Sign Up</button>
+        <button type="submit" class="btn btn-primary account-buttons">Sign Up</button>
       </form>
     </div>
     <div id="underSignUp">
       <a href="{% url 'account_reset_password' %}">
-        <p class="links">
+        <p class="account-links">
           Forgot your Password?
         </p>
       </a>
@@ -80,7 +80,7 @@
         already have an account?
       </p>
       <a href="{% url 'account_login' %}">
-        <p class="links">
+        <p class="account-links">
           Sign In
         </p>
       </a>

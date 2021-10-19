@@ -41,6 +41,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # on signup sen
 ACCOUNT_FORMS = {
     'login': 'users.forms.ExtendedLogInForm',
     'signup': 'users.forms.ExtendedSignUpForm',
+    'reset_password': 'users.forms.ExtendedResetPasswordForm',
 }
 
 # Password validation

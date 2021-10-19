@@ -1,4 +1,4 @@
-from allauth.account.forms import SignupForm, LoginForm
+from allauth.account.forms import SignupForm, LoginForm, ResetPasswordForm
 from django import forms 
 from .models import User
 
@@ -7,7 +7,6 @@ class ExtendedLogInForm(LoginForm):
         super().__init__(*args, **kwargs)
         self.fields["login"].widget.attrs = {'class':'myInput form-control', 'placeholder': "Email or Username", 'autocomplete': "email"}
         self.fields["password"].widget.attrs = {'class':'myInput form-control', 'placeholder': "Password", 'autocomplete': "current-password"}
-
 
 class ExtendedSignUpForm(SignupForm):
     # error_css_class = 'error'
@@ -55,6 +54,12 @@ class ExtendedSignUpForm(SignupForm):
                 new_fields[field_name] = field
 
         self.fields = new_fields
+
+class ExtendedResetPasswordForm(ResetPasswordForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["email"].widget.attrs = {'class':'myInput form-control', 'placeholder': "JohnAnderson@mars.co", 'autocomplete': "email"}
+        self.fields["email"].label = "Email*"
 
 class UserForm(forms.ModelForm):
     class Meta:

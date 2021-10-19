@@ -13,46 +13,6 @@ body {
     width: 25vw;
 }
 
-#signUpHeader {
-    /* border: 2px solid red; */
-    /* position: static; */
-    width: 100%;
-
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 20px;
-    align-items: center;
-    text-align: center;
-
-    /* Revised Colors/Dark Grey/650 */
-
-    color: #232337;
-}
-
-#signUpButton {
-    /* Auto Layout */
-
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    padding: 0px;
-
-    position: static;
-    width: 100%;
-    height: 46px;
-
-    border-radius: 4px;
-
-    /* Inside Auto Layout */
-
-    flex: none;
-    order: 2;
-    flex-grow: 0;
-    margin: 32px 0px;
-}
-
 #id_password1 {
     border-right: 0px;
 }
@@ -82,72 +42,12 @@ body {
     font-weight: 500;
     color: #FF1744;
 }
-.my-form-group {
-    text-align: left;
-}
-
-.myInput {
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    padding: 10px;
-
-    position: static;
-    height: 42px;
-
-    background: #FFFFFF;
-    border: 1px solid #CFD8DC;
-    box-sizing: border-box;
-    border-radius: 4px;
-
-    /* Inside Auto Layout */
-
-    flex: none;
-    order: 0;
-    flex-grow: 0;
-    margin: 4px 0px;
-}
-
-.forms-labels {
-    position: static;
-    height: 17px;
-
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: 500;
-    font-size: 13px;
-    line-height: 140%;
-    /* identical to box height, or 17px */
-
-
-    color: #5C666B;
-
-
-    /* Inside Auto Layout */
-
-    flex: none;
-    order: 0;
-    flex-grow: 0;
-    margin: 8px 0px;
-}
 
 #underSignUp {
     margin-top: 2%;
     /* border: 2px solid red; */
     width: 25vw;
     text-align: center;
-}
-
-.links {
-    display: inline;
-    font-family: Roboto;
-    font-style: normal;
-    font-weight: 500;
-    font-size: 13px;
-    text-decoration-line: underline;
-    
-    color: #FF85A5;
 }
 
 .texts {

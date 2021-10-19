@@ -17,7 +17,7 @@
   <div id="outerDiv" class="center-screen">
     <img style="margin-bottom: 3%;" src="{% static '/images/favicons/new_logo.svg' %}" alt="Logo">
     <div id="innerDiv">
-      <p id="signUpHeader">Sign in</p>
+      <p class="accountHeaders">Sign in</p>
       {% if form.errors %}
         {% for field in form %}
           {% for error in field.errors %}
@@ -58,12 +58,12 @@
               {% endif %}
           </div>
         {% endfor %}
-        <button type="submit" class="btn btn-primary" id="signInButton">Sign in</button>
+        <button type="submit" class="btn btn-primary account-buttons">Sign in</button>
       </form>
     </div>
     <div id="underSignUp">
       <a href="{% url 'account_reset_password' %}">
-        <p class="links">
+        <p class="account-links">
           Forgot Password?
         </p>
       </a>
@@ -74,7 +74,7 @@
         don’t have an account yet?
       </p>
       <a href="{% url 'account_signup' %}">
-        <p class="links">
+        <p class="account-links">
           Sign Up
         </p>
       </a>
