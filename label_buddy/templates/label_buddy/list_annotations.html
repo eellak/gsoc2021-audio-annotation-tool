@@ -29,7 +29,7 @@
 {% block content %}
     {{ block.super }}
     <h2 class="headers-page">Choose annotation to Review
-        <sup><i style="cursor: pointer; color: #74deed;" data-toggle="modal" data-target="#reviewInfoModal" class="far fa-question-circle fa-xs"></i></sup>
+        <sup><i style="cursor: pointer; color: #007bff;" data-toggle="modal" data-target="#reviewInfoModal" class="far fa-question-circle fa-xs"></i></sup>
     </h2>
     <div id="header-div">
         {% comment %}
@@ -72,7 +72,7 @@
 
                         <td>
                             {% if annotation.user == user %}
-                                <img style="margin-right: 4%; border: 2px solid #74deed;" data-toggle="tooltip" data-placement="top" src="{{ annotation.user.avatar.url }}" width="27" height="27" title="{{ annotation.user.email }}" class="rounded-circle">
+                                <img style="margin-right: 4%; border: 2px solid #007bff;" data-toggle="tooltip" data-placement="top" src="{{ annotation.user.avatar.url }}" width="27" height="27" title="{{ annotation.user.email }}" class="rounded-circle">
                             {% else %}
                                 <img style="margin-right: 4%;" data-toggle="tooltip" data-placement="top" src="{{ annotation.user.avatar.url }}" width="25" height="25" title="{{ annotation.user.email }}" class="rounded-circle">
                             {% endif %}
