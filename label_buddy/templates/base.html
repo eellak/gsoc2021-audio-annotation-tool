@@ -115,18 +115,20 @@
   {% endblock %}
 
   {% block footer %}
-    {% comment %}
-      <!-- Footer -->
-      <footer class="page-footer font-small fixed-bottom">
-        <!-- Copyright -->
-        <div class="footer-copyright text-center py-2 footer-div">
-          &copy;Powered by Google Summer of Code with <a class="my-link" href="https://gfoss.eu/" target="_blank">GFOSS</a>
-          <a class="my-link" href="https://github.com/eellak/gsoc2021-audio-annotation-tool" target="_blank"><i class="fab fa-github fa-lg"></i></a>
-        </div>
-        <!-- Copyright -->
-      </footer>
-      <!-- Footer -->
-    {% endcomment %}
+    <!-- Footer -->
+    <footer class="page-footer font-small fixed-bottom">
+      <!-- Copyright -->
+      {% if user.is_authenticated %}
+        <div class="footer-copyright bg-light text-center py-1 footer-div">
+      {% else %}
+        <div style="background-color: #29215E;" class="footer-copyright text-center py-1 footer-div">
+      {% endif %}
+        &copy;Powered by Google Summer of Code with <a style="color: #FF85A5;" href="https://gfoss.eu/" target="_blank">GFOSS</a>
+        <a style="color: #FF85A5;" href="https://github.com/eellak/gsoc2021-audio-annotation-tool" target="_blank"><i class="fab fa-github fa-lg"></i></a>
+      </div>
+      <!-- Copyright -->
+    </footer>
+    <!-- Footer -->
   {% endblock %}
  
 </body>
