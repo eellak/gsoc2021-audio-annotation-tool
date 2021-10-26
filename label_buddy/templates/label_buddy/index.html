@@ -39,7 +39,11 @@
 				<tr>
 				<th class="my-table-header" style="width: 300px;">Project Title <i style="margin-left: 5%;" class="fas fa-arrow-down"></i></th>
 				<th class="my-table-header">Date of Creation</th>
-				<th data-toggle="modal" data-target="#publicQueues" class="my-table-header" style="text-decoration-line: underline; color: #007bff; cursor: pointer;">Task permissions</th>
+				<th class="my-table-header"">Task permissions
+					<sup>
+						<i style="color: #007bff; cursor: pointer;" data-toggle="modal" data-target="#publicQueues" class="far fa-question-circle tooltip-icons"></i>
+					</sup>
+				</th>
 				<th class="my-table-header">Number of tasks</th>
 				<th class="my-table-header">Annotations</th>
 				<th class="my-table-header">Number of labels</th>
@@ -113,7 +117,7 @@
 						</td>
 
 						{% if user in project.managers.all %}
-							<td style="text-align: center;">
+							<td style="text-align: center;" class="my-table-text">
 								<a id="edit-link" href="{% url 'edit_project' project.id %}">
 									<i style="cursor: pointer;" data-toggle="tooltip" data-placement="top" data-title="Edit {{ project.title }}" class="fas fa-edit tooltip-icons"></i> </i>
 								</a>
@@ -123,7 +127,7 @@
 								</a>
 							</td>
 						{% else %}
-							<td data-toggle="tooltip" data-placement="top" title="You cannot Edit/Delete this project"><b>-</b></td>
+							<td data-toggle="tooltip" data-placement="top" title="You cannot Edit/Delete this project" class="my-table-text"><b>-</b></td>
 						{% endif %}
 					</tr>
 				
