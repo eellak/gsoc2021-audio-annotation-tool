@@ -443,6 +443,14 @@ def next_unlabeled_task_id(current_task_id, project):
             return task_id
     return -1
 
+def project_statistics(project, user):
+    # if public tasks
+    if project.users_can_see_other_queues:
+        all_tasks = Task.objects.filter(project=project)
+        all_tasks_count = all_tasks.count()
+        annotated_tasks = all_tasks.filter(status=Status.labeled).count()
+        not_annotated_tasks = all_tasks_count - annotated_tasks
+        return all_tasks_count, annotated_tasks, not_annotated_tasks
 # in order to access dictionary in templates as dict[key]
 @register.filter
 def get_item(dictionary, key):
