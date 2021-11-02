@@ -28,7 +28,7 @@ ACCEPTED_FORMATS = ['.wav', '.mp3', '.mp4',]
 
 # get projects where user is manager, annotator or reviewer
 def get_projects_of_user(user):
-    return Project.objects.filter(Q(reviewers__in=[user]) | Q(annotators__in=[user]) | Q(managers__in=[user])).distinct()
+    return Project.objects.prefetch_related('labels').prefetch_related('annotators').prefetch_related('reviewers').prefetch_related('managers').filter(Q(reviewers__in=[user]) | Q(annotators__in=[user]) | Q(managers__in=[user])).distinct()
 
 # get user by username
 def get_user(username):
@@ -41,7 +41,7 @@ def get_user(username):
 # get projects by id
 def get_project(pk):
     try:
-        project = Project.objects.get(pk=pk)
+        project = Project.objects.prefetch_related('annotators').prefetch_related('reviewers').prefetch_related('managers').get(pk=pk)
         return project
     except Project.DoesNotExist:
         return None

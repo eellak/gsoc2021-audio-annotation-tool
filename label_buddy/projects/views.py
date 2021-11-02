@@ -83,6 +83,7 @@ def index(request):
 
     # return managers email as html printed manager_email <br>.. for each project
     project_managers_strings = {}
+    
     for project in projects:
         project_managers_strings[project.id] = users_to_string(project.managers.all()) if project.managers.count() > 1 else ""
 
