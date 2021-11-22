@@ -500,7 +500,7 @@ def annotate_task_view(request, pk, task_pk):
     annotation_status = annotation.review_status if annotation else None
 
     # show statistics at annotation page based on project task permissions status
-    all_tasks_count, annotated_tasks, not_annotated_tasks = project_statistics(project, user)
+    # all_tasks_count, annotated_tasks, not_annotated_tasks = project_statistics(project, user)
 
     reviewer, comment, review_created_at , review_updated_at = if_annotation_reviewed(annotation)
     context = {
@@ -521,9 +521,9 @@ def annotate_task_view(request, pk, task_pk):
         "review_created_at": review_created_at,
         "review_updated_at": review_updated_at,
         "tasks_count_no_filter": get_project_tasks(project).count(),
-        "all_tasks_count": all_tasks_count,
-        "annotated_tasks": annotated_tasks,
-        "not_annotated_tasks": not_annotated_tasks,
+        # "all_tasks_count": all_tasks_count,
+        # "annotated_tasks": annotated_tasks,
+        # "not_annotated_tasks": not_annotated_tasks,
     }
 
     return render(request, "label_buddy/annotation_page.html", context)

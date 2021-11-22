@@ -164,30 +164,31 @@
 
     <div style="margin-top: .5%;"  class="container-fluid">
         <div class="row">
-
-            <div class="col p-0" id="left-main-div" >
-                <div style="margin-left: 5%; margin-top: 4%;">
-                    {% if project.users_can_see_other_queues %}
-                        <span>All tasks: <b>{{ all_tasks_count }}</b></span><br>
-                        <span>Annotated: <b>{{ annotated_tasks }}</b></span><br>
-                        <span>Not annotated: <b>{{ not_annotated_tasks }}</b></span><br>
-                        <span>
-                            Task permissions
-                            <sup>
-                                <i style="color: #007bff; cursor: pointer;" data-toggle="modal" data-target="#publicQueues" class="far fa-question-circle tooltip-icons"></i>
-                            </sup>
-                            :
-                            <i style="color:green; margin-right: 5%;" class="fas fa-check-circle fa-xs"></i>
-                        <span>
-                    {% else %}
-                        <span>Assigned tasks</span><br>
-                        <span>Annotated tasks</span><br>
-                        <span>Not annotated tasks</span>
-                    {% endif %}
-                    <br>
-                    
+            {% comment %}
+                <div class="col p-0" id="left-main-div" >
+                    <div style="margin-left: 5%; margin-top: 4%;">
+                        {% if project.users_can_see_other_queues %}
+                            <span>All tasks: <b>{{ all_tasks_count }}</b></span><br>
+                            <span>Annotated: <b>{{ annotated_tasks }}</b></span><br>
+                            <span>Not annotated: <b>{{ not_annotated_tasks }}</b></span><br>
+                            <span>
+                                Task permissions
+                                <sup>
+                                    <i style="color: #007bff; cursor: pointer;" data-toggle="modal" data-target="#publicQueues" class="far fa-question-circle tooltip-icons"></i>
+                                </sup>
+                                :
+                                <i style="color:green; margin-right: 5%;" class="fas fa-check-circle fa-xs"></i>
+                            <span>
+                        {% else %}
+                            <span>Assigned tasks</span><br>
+                            <span>Annotated tasks</span><br>
+                            <span>Not annotated tasks</span>
+                        {% endif %}
+                        <br>
+                        
+                    </div>
                 </div>
-            </div>
+            {% endcomment %}
             
 
             <div id="annotation-btn-div" class="col-sm-10 p-0">
