@@ -23,8 +23,10 @@ class User(AbstractUser):
     phone_number = models.CharField(max_length=256, blank=True, help_text="User's phone number")
     avatar = models.ImageField(upload_to='images', blank=True, help_text="User's avatar (image)")
 
-    #How to display projects in admin
     def __str__(self):
+        """
+        Display users by username
+        """
         return '%s' % (self.username)
         if not self.name and not self.email:
             return '%s' % (self.username)
@@ -35,6 +37,14 @@ class User(AbstractUser):
                 return '%s' % (self.name)
             else:
                 return '%s' % (self.email)
+    
+    def save(self, *args, **kwargs):
+        """
+        Superusers will be able to create projects by default
+        """
+        if self.is_staff:
+            self.can_create_projects = True
+        super(User, self).save(*args, **kwargs)
 
 @receiver(pre_save, sender=User)
 def auto_delete_file_on_change(sender, instance, **kwargs):
