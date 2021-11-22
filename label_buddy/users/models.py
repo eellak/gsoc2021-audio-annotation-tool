@@ -42,7 +42,7 @@ class User(AbstractUser):
         """
         Superusers will be able to create projects by default
         """
-        if self.is_staff:
+        if self.is_superuser:
             self.can_create_projects = True
         super(User, self).save(*args, **kwargs)
 
