@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Build paths inside the project like this: BASE_DIR / 'subdir'
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -32,16 +32,16 @@ INTERNAL_IPS = [
     '127.0.0.1',
 ]
 
-#django-allauth settings
+# Django-allauth settings
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 2
-ACCOUNT_EMAIL_REQUIRED = True # email adress must be verified in ordet to register
-ACCOUNT_EMAIL_VERIFICATION = "optional" # email should be verified in roder to log in
-ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 10 # login attempts in order to prevent brute force attacks
+ACCOUNT_EMAIL_REQUIRED = True  # Email adress must be verified in ordet to register
+ACCOUNT_EMAIL_VERIFICATION = "optional"  # Email should be verified in roder to log in
+ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 10  # Login attempts in order to prevent brute force attacks
 ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 5
 ACCOUNT_USERNAME_MIN_LENGTH = "4"
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
-ACCOUNT_SIGNUP_PASSWORD_VERIFICATION = False # confirmation password isnt needed
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # on signup send messages to this email (print in terminal)
+ACCOUNT_SIGNUP_PASSWORD_VERIFICATION = False  # Confirmation password isnt needed
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # On signup send messages to this email (print in terminal)
 ACCOUNT_FORMS = {
     'login': 'users.forms.ExtendedLogInForm',
     'signup': 'users.forms.ExtendedSignUpForm',
@@ -67,13 +67,13 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
     {
-        'NAME': 'users.password_validators.UppercaseValidator', 
+        'NAME': 'users.password_validators.UppercaseValidator',
     },
     {
-        'NAME': 'users.password_validators.NumberValidator', 
+        'NAME': 'users.password_validators.NumberValidator',
     },
     {
-        'NAME': 'users.password_validators.SymbolValidator', 
+        'NAME': 'users.password_validators.SymbolValidator',
     },
 ]
 
@@ -104,12 +104,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'debug_toolbar',
     'rest_framework',
-    #third party
+    # Third party
     'colorfield',
     'url_or_relative_url_field',
     'crispy_forms',
 
-    #own
+    # Own
     'users',
     'projects',
     'tasks',
@@ -117,7 +117,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    # 'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -148,7 +148,7 @@ ROOT_URLCONF = 'label_buddy.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, "templates"),],
+        'DIRS': [os.path.join(BASE_DIR, "templates"), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -175,12 +175,8 @@ DATABASES = {
     }
 }
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
-
-
-
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Europe/Athens'
 
@@ -212,9 +208,8 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
 
 try:
-    # keep a local_settings.py file for local overrides
+    # Keep a local_settings.py file for local overrides
     from .local_settings import *
 except ImportError:
-    # local_settings not in use
+    # Local_settings not in use
     pass
-

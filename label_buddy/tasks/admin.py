@@ -1,24 +1,26 @@
 from django.contrib import admin
 
-#relative import
+# Relative import
 from .models import (
-    Task, 
-    Comment, 
+    Task,
+    Comment,
     Annotation
 )
 
-#Admin now has filters and search
 
+# Admin now has filters and search
 class TaskAdmin(admin.ModelAdmin):
     search_fields = ["project"]
     list_display = ["id", "project", "file", "status", "review_status"]
     ordering = ("id",)
     list_filter = ["status", "review_status"]
 
+
 class CommentAdmin(admin.ModelAdmin):
     search_fields = ["reviewed_by"]
     list_display = ["id", "reviewed_by", "annotation", "created_at"]
     ordering = ("id",)
+
 
 class AnnotationAdmin(admin.ModelAdmin):
     search_fields = ["user", "project"]

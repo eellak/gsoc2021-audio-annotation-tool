@@ -2,8 +2,9 @@ from django.contrib import admin
 from django.contrib.auth.models import Group
 from django.contrib.auth.admin import UserAdmin
 
-#relative import
+# Relative import
 from .models import User
+
 
 class UserAdmin(admin.ModelAdmin):
     search_fields = ["email", "username"]
@@ -30,9 +31,9 @@ class UserAdmin(admin.ModelAdmin):
         "avatar",
         "date_joined",
     ]
-    list_filter = ["can_create_projects",]
+    list_filter = ["can_create_projects", ]
     ordering = ("id",)
 
 
 admin.site.register(User, UserAdmin)
-admin.site.unregister(Group) #remove groups from admin
+admin.site.unregister(Group)  # Remove groups from admin
