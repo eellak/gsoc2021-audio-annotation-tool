@@ -6,6 +6,12 @@ from .models import User
 
 
 class UsersAdmin(admin.ModelAdmin):
+
+    """
+    User class for the admin site. list_display shows the fields
+    displayed in the admin site.
+    """
+
     search_fields = ["email", "username"]
     exclude = (
         "user_permissions",

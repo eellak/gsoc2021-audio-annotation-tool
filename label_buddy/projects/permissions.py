@@ -20,7 +20,10 @@ class UserCanCreateProject(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
 
-        # If user is part of the specific project then return true, else false
+        """
+        If user is part of the specific project then return true, else false.
+        """
+
         user = request.user
         if (user in obj.reviewers.all()) or (user in obj.annotators.all()) or (user in obj.managers.all()):
             return True

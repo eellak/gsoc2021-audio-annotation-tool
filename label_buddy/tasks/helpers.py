@@ -8,8 +8,12 @@ from .models import (
 )
 
 
-# Get user by username
 def get_user(username):
+
+    """
+    Get user by username.
+    """
+
     try:
         user = User.objects.get(username=username)
         return user
@@ -17,8 +21,12 @@ def get_user(username):
         return None
 
 
-# Get annotation by task, project and user
 def get_annotation(task, project, user):
+
+    """
+    Get annotation by task, project and user.
+    """
+
     try:
         annotation = Annotation.objects.get(task=task, project=project, user=user)
         return annotation
@@ -27,6 +35,11 @@ def get_annotation(task, project, user):
 
 
 def get_review(annotation):
+
+    """
+    Get annotation's review (if exists).
+    """
+
     try:
         review = Comment.objects.get(annotation=annotation)
         return review
@@ -34,7 +47,6 @@ def get_review(annotation):
         return None
 
 
-# Export data for project
 def export_data(project, export_only_approved):
 
     """

@@ -26,13 +26,21 @@ ACCEPTED_FORMATS = ['.wav', '.mp3', '.mp4', ]
 
 # Functions
 
-# Get projects where user is manager, annotator or reviewer
 def get_projects_of_user(user):
+
+    """
+    Get projects in which user is manager, annotator or reviewer.
+    """
+
     return Project.objects.prefetch_related('labels').prefetch_related('annotators').prefetch_related('reviewers').prefetch_related('managers').filter(Q(reviewers__in=[user]) | Q(annotators__in=[user]) | Q(managers__in=[user])).distinct()
 
 
-# Get user by username
 def get_user(username):
+
+    """
+    Get user by username.
+    """
+
     try:
         user = User.objects.get(username=username)
         return user
@@ -40,8 +48,12 @@ def get_user(username):
         return None
 
 
-# Get projects by id
 def get_project(pk):
+
+    """
+    Get projects by id.
+    """
+
     try:
         project = Project.objects.prefetch_related('annotators').prefetch_related('reviewers').prefetch_related('managers').get(pk=pk)
         return project
@@ -49,8 +61,12 @@ def get_project(pk):
         return None
 
 
-# Get task by id
 def get_task(pk):
+
+    """
+    Get task by id.
+    """
+
     try:
         task = Task.objects.get(pk=pk)
         return task
@@ -58,8 +74,12 @@ def get_task(pk):
         return None
 
 
-# Get annotation by task, project, user
 def get_annotation(task, project, user):
+
+    """
+    Get annotation by task, project and user.
+    """
+
     try:
         annotation = Annotation.objects.get(task=task, project=project, user=user)
         return annotation
@@ -67,8 +87,12 @@ def get_annotation(task, project, user):
         return None
 
 
-# Get annotation by pk
 def get_annotation_by_id(pk):
+
+    """
+    Get annotation by id (pk).
+    """
+
     try:
         annotation = Annotation.objects.get(pk=pk)
         return annotation
@@ -76,8 +100,12 @@ def get_annotation_by_id(pk):
         return None
 
 
-# Get annotation updated_at and result by task, project and user
 def get_annotation_result(task, project, user):
+
+    """
+    Get annotation updated_at and result by task, project and user.
+    """
+
     try:
         annotation = Annotation.objects.get(task=task, project=project, user=user)
         return dumps(annotation.result)
@@ -85,8 +113,12 @@ def get_annotation_result(task, project, user):
         return dumps([])
 
 
-# Get review of an annotation
 def get_annotation_review(user, annotation):
+
+    """
+    Get review of an annotation.
+    """
+
     try:
         review = Comment.objects.get(reviewed_by=user, annotation=annotation)
         return review
@@ -94,12 +126,21 @@ def get_annotation_review(user, annotation):
         return None
 
 
-# Check if user involved at project
 def is_user_involved(user, project):
+
+    """
+    Check if user involved at a project as a manager, annotator or reviewer.
+    """
+
     return (user in project.annotators.all()) or (user in project.reviewers.all()) or (user in project.managers.all())
 
 
 def if_annotation_reviewed(annotation):
+
+    """
+    Get information for an annotation's review.
+    """
+
     try:
         review = Comment.objects.get(annotation=annotation)
         return review.reviewed_by, review.comment, review.created_at, review.updated_at
@@ -107,8 +148,12 @@ def if_annotation_reviewed(annotation):
         return None, None, None, None
 
 
-# Get label by name
 def get_label(name):
+
+    """
+    Get label by name.
+    """
+
     try:
         label = Label.objects.get(pk=name)
         return label
@@ -117,6 +162,11 @@ def get_label(name):
 
 
 def get_label_by_color(color):
+
+    """
+    Get label by color.
+    """
+
     try:
         label = Label.objects.get(color=color)
         return label
@@ -124,16 +174,26 @@ def get_label_by_color(color):
         return None
 
 
-# Get random color
 def random_color():
+
+    """
+    Get random color.
+    """
+
     random_number = random.randint(0, 16777215)
     hex_number = str(hex(random_number))
     return '#' + hex_number[2:]
+
+
 # Functions for index page
 
 
-# Return a dictionary id: number of tasks for every project
 def get_num_of_tasks(projects):
+
+    """
+    Return a dictionary id: number of tasks for each project.
+    """
+
     context = {}
 
     for project in projects:
@@ -141,22 +201,33 @@ def get_num_of_tasks(projects):
     return context
 
 
-# Return a dictionary id: number of annotations for every project
 def project_annotations_count(projects):
-    context = {}
 
+    """
+    Return a dictionary id: number of annotations for each project.
+    """
+
+    context = {}
     for project in projects:
         context[project.id] = Annotation.objects.filter(project=project).count()
     return context
 
 
-# Get all tasks of a project and return them
 def get_project_tasks(project):
+
+    """
+    Get all tasks of a project and return them.
+    """
+
     return Task.objects.filter(project=project)
 
 
-# Create labels that dont exist and add all of them to the project
 def add_labels_to_project(project, labels):
+
+    """
+    Create labels that don't exist and add all of them to the project labels.
+    """
+
     new_labels = labels.split(',')
     labels_of_project = project.labels.all()
     for new in new_labels:
@@ -173,14 +244,23 @@ def add_labels_to_project(project, labels):
             project.labels.add(label)
 
 
-# Used for edit project
 def delete_old_labels(project):
+
+    """
+    Delete all labels of a project.
+    """
+
     for label in project.labels.all():
         project.labels.remove(label)
 
 
-# Return users emails with <br> element for tooltip title
 def users_to_string(users):
+
+    """
+    Return users emails with <br> element for using them in tooltip's title.
+    User will hover over the text and see all emails.
+    """
+
     to_return_string = ""
     for user in users:
         to_return_string += user.email + "<br/>"
@@ -189,8 +269,13 @@ def users_to_string(users):
 
 # Functions for project page
 
-# Return boolean of string. If it returns noe then the string is not boolean (true or false)
+
 def str_to_bool(string):
+
+    """
+    Return boolean of string. If it returns None then the string is not boolean (true or false).
+    """
+
     string = string.lower()
     if string == "true":
         return True
@@ -199,8 +284,11 @@ def str_to_bool(string):
     return None
 
 
-# Return filtered tasks
 def filter_tasks(user, project, labeled, reviewed):
+
+    """
+    Return filtered tasks (labeled or unlabeled, reviewed or unreviewed).
+    """
 
     bool_labeled = str_to_bool(labeled)
     bool_reviewed = str_to_bool(reviewed)
@@ -257,8 +345,12 @@ def filter_tasks(user, project, labeled, reviewed):
     return tasks, 0
 
 
-# Filter annotations for list annotations page
 def filter_list_annotations(annotations, approved_filter, rejected_filter, unreviewed_filter):
+
+    """
+    Filter annotations for list annotations page.
+    """
+
     bool_approved_filter = str_to_bool(approved_filter)
     bool_rejected_filter = str_to_bool(rejected_filter)
     bool_unreviewed_filter = str_to_bool(unreviewed_filter)
@@ -297,10 +389,13 @@ def filter_list_annotations(annotations, approved_filter, rejected_filter, unrev
     return annotations
 
 
-# Fix taksks after edit project
 def fix_tasks_after_edit(users_can_see_other_queues_old, users_can_see_other_queues_new, project, user):
-    tasks = Task.objects.filter(project=project)
 
+    """
+    Fix taksks after modyfing a project.
+    """
+
+    tasks = Task.objects.filter(project=project)
     if users_can_see_other_queues_new == users_can_see_other_queues_old:
         pass
 
@@ -344,21 +439,33 @@ def fix_tasks_after_edit(users_can_see_other_queues_old, users_can_see_other_que
                         task.assigned_to.add(project.annotators.all()[0])
 
 
-# Return project's page url
 def get_project_url(pk):
+
+    """
+    Return project's page url.
+    """
+
     return "/projects/" + str(pk) + "/tasks"
 
 
-# Return dictionary dict[id] = number of annotations for task, for all tasks
 def task_annotations_count(tasks):
+
+    """
+    Return dictionary dict[id] = number of annotations for task, for all tasks.
+    """
+
     context = {}
     for task in tasks:
         context[task.id] = Annotation.objects.filter(task=task).count()
     return context
 
 
-# Return two dictionaries dict[task.id] = [user1, userxx, ...] with all users annotated this task and counts
 def users_annotated_task(tasks):
+
+    """
+    Return two dictionaries dict[task.id] = [user1, userxx, ...] with all users annotated this task and counts.
+    """
+
     task_annotators = {}
     task_annotations_count = {}
     for task in tasks:
@@ -379,8 +486,11 @@ def users_annotated_task(tasks):
     return task_annotators, task_annotations_count
 
 
-# Unzip file and add tasks
 def add_tasks_from_compressed_file(compressed_file, project, file_extension):
+
+    """
+    Unzip uploaded file and add contained files to the project.
+    """
 
     if file_extension == ".zip":
         archive = ZipFile(compressed_file, 'r')
@@ -438,8 +548,14 @@ def add_tasks_from_compressed_file(compressed_file, project, file_extension):
 
 
 # Functions for annotation page
-# Return next unlabeled task
+
+
 def next_unlabeled_task_id(current_task_id, project):
+
+    """
+    Return next unlabeled task for the annotator to annotate.
+    """
+
     ordered_tasks = Task.objects.filter(project=project).order_by("-id")
     min_id = ordered_tasks.reverse()[0].id
     max_id = ordered_tasks[0].id
@@ -452,6 +568,11 @@ def next_unlabeled_task_id(current_task_id, project):
 
 
 def project_statistics(project, user):
+
+    """
+    Project statistics for the annotator to see. Future work.
+    """
+
     # If public tasks
     if project.users_can_see_other_queues:
         all_tasks = Task.objects.filter(project=project)
@@ -461,13 +582,21 @@ def project_statistics(project, user):
         return all_tasks_count, annotated_tasks, not_annotated_tasks
 
 
-# In order to access dictionary in templates as dict[key]
 @register.filter
 def get_item(dictionary, key):
+
+    """
+    Custom filter to access dictionary in templates in the following manner: dict[key]
+    """
+
     return dictionary.get(key)
 
 
-# Calculate correct id for table in project page
 @register.simple_tag
 def get_table_id(current_page, objects_per_page, loop_counter):
+
+    """
+    Calculate correct id for table in project page. This function is used only for pagination purposes.
+    """
+
     return ((current_page - 1) * objects_per_page) + loop_counter

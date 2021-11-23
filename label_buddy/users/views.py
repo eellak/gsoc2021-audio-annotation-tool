@@ -19,6 +19,11 @@ from .forms import UserForm
 
 
 def get_user(username):
+
+    """
+    Get user by username.
+    """
+
     try:
         user = User.objects.get(username=username)
         return user
@@ -28,6 +33,11 @@ def get_user(username):
 
 @login_required
 def edit_profile(request, username):
+
+    """
+    View for user edit profile. The user can update his/her information.
+    """
+
     context = {}
     user = get_user(username)
     if not user or (user != request.user):

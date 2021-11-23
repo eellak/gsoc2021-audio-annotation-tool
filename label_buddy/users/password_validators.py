@@ -5,6 +5,12 @@ from django.utils.translation import ugettext as _
 
 
 class NumberValidator(object):
+
+    """
+    Custom password validator which ensures that the password will contain
+    at least 1 digit.
+    """
+
     def validate(self, password, user=None):
         if not re.findall('\\d', password):
             raise ValidationError(
@@ -19,6 +25,12 @@ class NumberValidator(object):
 
 
 class UppercaseValidator(object):
+
+    """
+    Custom password validator which ensures that the password will contain
+    at least 1 uppercase letter, A-Z.
+    """
+
     def validate(self, password, user=None):
         if not re.findall('[A-Z]', password):
             raise ValidationError(
@@ -33,6 +45,12 @@ class UppercaseValidator(object):
 
 
 class SymbolValidator(object):
+
+    """
+    Custom password validator which ensures that the password will contain
+    at least 1 symbol.
+    """
+
     def validate(self, password, user=None):
         if not re.findall('[()[\\]{}|\\`~!@#$%^&*_\\-+=;:\'",<>./?]', password):
             raise ValidationError(

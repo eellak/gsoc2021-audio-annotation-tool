@@ -3,6 +3,11 @@ from .models import Task
 
 
 class TaskSerializer(serializers.ModelSerializer):
+
+    """
+    Serializer for task API endpoint data.
+    """
+
     class Meta:
         model = Task
         fields = [

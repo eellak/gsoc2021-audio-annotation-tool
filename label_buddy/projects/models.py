@@ -92,9 +92,13 @@ def auto_delete_logo_on_change(sender, instance, **kwargs):
                 os.remove(old_logo.path)
 
 
-# When a project's title is no set, set a default one
 @receiver(post_save, sender=Project)
 def set_project_title(sender, instance, created, **kwargs):
+
+    """
+    When a project's title is no set, set a default one
+    """
+
     if created:
         title = instance.title
         if title:

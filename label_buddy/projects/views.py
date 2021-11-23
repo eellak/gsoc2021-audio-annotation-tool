@@ -69,7 +69,7 @@ ACCEPTED_UPLOADED_EXTENSIONS = ['.wav', '.mp3', '.mp4', '.zip']
 def index(request):
 
     """
-    Index view.
+    Index page view.
     """
 
     projects_count = 0
@@ -111,6 +111,12 @@ def index(request):
 
 @login_required
 def project_create_view(request):
+
+    """
+    Project create view for creating projects. Only user who have can_create_projects = True can access
+    this page.
+    """
+
     form = ProjectForm()
     user = get_user(request.user.username)
 
@@ -143,6 +149,10 @@ def project_create_view(request):
 
 @login_required
 def project_edit_view(request, pk):
+
+    """
+    Project edit page view for editing a project. Only managers of the project can access this page.
+    """
 
     form = ProjectForm()
     project = get_project(pk)
@@ -201,6 +211,11 @@ def project_edit_view(request, pk):
 
 @login_required
 def project_delete_view(request, pk):
+
+    """
+    Project delete page view. The manager can delete a project.
+    """
+
     project = get_project(pk)
     user = get_user(request.user.username)
 
@@ -231,6 +246,11 @@ def project_delete_view(request, pk):
 
 @login_required
 def annotation_delete_view(request, pk, task_pk):
+
+    """
+    Annotation delete page view for deleting annotations.
+    """
+
     task = get_task(task_pk)
     project = get_project(pk)
     user = get_user(request.user.username)
@@ -288,6 +308,11 @@ def annotation_delete_view(request, pk, task_pk):
 
 @login_required
 def task_delete_view(request, pk, task_pk):
+
+    """
+    Task delete page view. Managers can delete uploaded tasks (audio files).
+    """
+
     task = get_task(task_pk)
     project = get_project(pk)
     user = get_user(request.user.username)
@@ -337,6 +362,12 @@ def task_delete_view(request, pk, task_pk):
 
 @login_required
 def project_page_view(request, pk):
+
+    """
+    Project page view. A page where users can see tasks and information about them. Only tasks for
+    the specific project are shown.
+    """
+
     # Read filter parameters
     labeled = request.GET.get('labeled', '')
     reviewed = request.GET.get('reviewed', '')
@@ -450,6 +481,12 @@ def project_page_view(request, pk):
 
 @login_required
 def annotate_task_view(request, pk, task_pk):
+
+    """
+    Annotate tasks page view. Only annotators of a project can access this page. They can annotate
+    tasks, update annotations and delete them.
+    """
+
     user = get_user(request.user.username)
     project = get_project(pk)
     task = get_task(task_pk)
@@ -532,6 +569,12 @@ def annotate_task_view(request, pk, task_pk):
 
 @login_required
 def list_annotations_for_task_view(request, pk, task_pk):
+
+    """
+    List annotations for a task page view. In this page, reviewers can see all annotations done
+    for a specific task and review any them, approving or rejecting them.
+    """
+
     user = get_user(request.user.username)
     project = get_project(pk)
     task = get_task(task_pk)
@@ -619,6 +662,11 @@ def list_annotations_for_task_view(request, pk, task_pk):
 
 @login_required
 def review_annotation_view(request, pk, task_pk, annotation_pk):
+
+    """
+    Review annotation page. Reviewers can review annotations by writing a comment and approving or rejecting them.
+    """
+
     user = get_user(request.user.username)
     project = get_project(pk)
     task = get_task(task_pk)
@@ -849,6 +897,11 @@ class ProjectTasks(APIView):
 # Root of out API. shows all objects
 @api_view(['GET'])
 def api_root(request, format=None):
+
+    """
+    API root view. All api endpoints are listed and can be accessed.
+    """
+
     return Response({
         'projects': reverse('project-list', request=request, format=format),
         'users': reverse('user-list', request=request, format=format),

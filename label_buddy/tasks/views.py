@@ -28,7 +28,7 @@ class TaskList(APIView):
     serializer_class = TaskSerializer
 
     """
-    List all tasks or create a new one
+    List all tasks or create a new one.
     """
 
     # Get request
@@ -53,7 +53,7 @@ class TaskList(APIView):
 class AnnotationSave(APIView):
 
     """
-    Only post is implemented here
+    Only post is implemented here.
     """
 
     def get_project(self, pk):

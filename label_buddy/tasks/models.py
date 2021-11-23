@@ -13,6 +13,11 @@ from projects.models import Project
 
 
 def get_review(annotation):
+
+    """
+    Get a review done for an annotation (if exists).
+    """
+
     try:
         review = Comment.objects.get(annotation=annotation)
         return review
@@ -112,7 +117,6 @@ class Annotation(models.Model):
         return 'Annotation %d - project: %s' % (self.id, self.project)
 
 
-# Classes for Annotation and Comments by reviewers
 class Comment(models.Model):
 
     """
@@ -135,9 +139,12 @@ class Comment(models.Model):
 
 
 # SIGNALS
-# When an annotation is created, the task to which it belongs must be set a labeled (Task.status = labeled)
 @receiver(post_save, sender=Annotation)
 def make_task_labeled(sender, instance, created, **kwargs):
+
+    """
+    When an annotation is saved, mark the corresponding task as labeled (if it's the first annotation for the task).
+    """
 
     task = instance.task
     if created and task.status == Status.unlabeled:
@@ -181,9 +188,12 @@ def make_annotation_unreviewed_pre_save(sender, instance, **kwargs):
         instance.review_status = Annotation_status.no_review
 
 
-# When a comment is deleted, set annotations status to no_review
 @receiver(pre_delete, sender=Comment)
 def make_annotation_unreviewed_pre_delete(sender, instance, **kwargs):
+
+    """
+    When a comment is deleted, set annotations status to no_review.
+    """
 
     try:
         annotation = instance.annotation
@@ -197,14 +207,14 @@ def make_annotation_unreviewed_pre_delete(sender, instance, **kwargs):
 @receiver(post_delete, sender=Comment)
 def make_annotation_unreviewed_post_delete(sender, instance, **kwargs):
 
+    """
+    If task's annotations are not reviewed make it unreviewed.
+    """
+
     try:
         annotation = instance.annotation
     except Annotation.DoesNotExist:
         return False
-
-    """
-    If task's annotations are not reviewed make it unreviewed.
-    """
 
     task = instance.annotation.task
     all_annotations = Annotation.objects.filter(task=task, project=task.project)
@@ -218,9 +228,12 @@ def make_annotation_unreviewed_post_delete(sender, instance, **kwargs):
         task.save()
 
 
-# after deleting an annotation check task and if has no other annotation mark it as unlabeled
 @receiver(pre_delete, sender=Annotation)
 def mark_task_unlabeled(sender, instance, **kwargs):
+
+    """
+    After deleting an annotation check task and if it has no other annotations, mark it as unlabeled.
+    """
 
     try:
         task_annotation = instance.task

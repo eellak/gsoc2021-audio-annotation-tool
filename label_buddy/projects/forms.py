@@ -5,6 +5,10 @@ from .models import Project
 
 class ProjectForm(forms.ModelForm):
 
+    """
+    Project form for creating a project.
+    """
+
     title = forms.CharField(label='Tile', required=False, widget=forms.TextInput(attrs={"placeholder": "Title"}))
     description = forms.CharField(required=False, widget=forms.Textarea(
         attrs={

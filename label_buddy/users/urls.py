@@ -5,7 +5,6 @@ from . import views
 
 # The API URLs are now determined automatically by the router
 urlpatterns = [
-
     url(r"^user/(?P<username>[\w@.]*)/edit$", views.edit_profile, name="edit_user"),
     # API VIEWS
     path('api/v1/users/', views.UserList.as_view(), name="user-list"),
