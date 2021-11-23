@@ -205,11 +205,3 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
-
-try:
-    # Keep a local_settings.py file for local overrides
-    from .local_settings import *
-except ImportError:
-    # Local_settings not in use
-    pass
