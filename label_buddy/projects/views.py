@@ -795,6 +795,8 @@ def review_annotation_view(request, pk, task_pk, annotation_pk):
 
 
 # API VIEWS
+
+
 class ProjectList(APIView):
     # User will be able to Post only if authenticated
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, UserCanCreateProject,)
@@ -895,6 +897,8 @@ class ProjectTasks(APIView):
 
 
 # Root of out API. shows all objects
+
+
 @api_view(['GET'])
 def api_root(request, format=None):
 
