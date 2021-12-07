@@ -13,41 +13,55 @@ from projects.models import Project
 
 
 def get_review(annotation):
+
+    """
+    Get a review done for an annotation (if exists).
+    """
+
     try:
         review = Comment.objects.get(annotation=annotation)
         return review
     except Comment.DoesNotExist:
         return None
-# Create your models here.
 
+
+# Create your models here
 class Status(ChoiceEnum):
+
     """
-    Enum class for task status
+    Enum class for task status.
     """
 
     labeled = "Labeled"
     unlabeled = "Unlabeled"
 
+
 class Review_status(ChoiceEnum):
+
     """
-    Enum class for task review_status
+    Enum class for task review_status.
     """
 
     unreviewed = "Unreviewed"
     reviewed = "Reviewed"
 
+
 class Annotation_status(ChoiceEnum):
+
     """
-    review status for each annotation
+    Review status for each annotation.
     """
+
     approved = "Approved"
     rejected = "Rejected"
     no_review = "Unreviewed"
 
+
 class Task(models.Model):
+
     """
     Task class to store audio (image or video) files for each project.
-    Tasks will be completed (annotated) by annotatos
+    Tasks will be completed (annotated) by annotatos.
     """
 
     project = models.ForeignKey(Project, on_delete=models.CASCADE, help_text='Project to which the task belongs')
@@ -64,7 +78,7 @@ class Task(models.Model):
     class Meta:
         ordering = ['-id']
 
-    #We ensure that even one of file or url should have a value
+    # We ensure that even one of file or url should have a value
     def clean(self):
         if not self.file and not self.url:  # This will check for None or Empty
             raise ValidationError({'file': 'Even one of file or url should have a value.'})
@@ -74,9 +88,10 @@ class Task(models.Model):
 
 
 class Annotation(models.Model):
+
     """
-    Annotation class for annotations done by annotators
-    Annotation format will be in JSON format
+    Annotation class for annotations done by annotators.
+    Annotation format will be in JSON format.
     """
 
     task = models.ForeignKey(Task, on_delete=models.CASCADE, blank=False, help_text='Task to which the annotation belongs')
@@ -101,48 +116,53 @@ class Annotation(models.Model):
     def __str__(self):
         return 'Annotation %d - project: %s' % (self.id, self.project)
 
-#Classes for Annotation and Comments by reviewers
 
 class Comment(models.Model):
+
     """
-    Comment class for comments done by reviewers
-    Annotators will be able to see the comments on their annotations
+    Comment class for comments done by reviewers.
+    Annotators will be able to see the comments on their annotations.
     """
+
     reviewed_by = models.ForeignKey(User, on_delete=models.CASCADE, blank=False, related_name='annotation_reviewer', help_text='Reviewer who made the review')
     annotation = models.ForeignKey(Annotation, on_delete=models.CASCADE, blank=False, related_name='annotation_reviewed', help_text='Annotation reviewed')
 
     comment = models.TextField(blank=False, help_text='Comment for an annotation')
     created_at = models.DateTimeField(auto_now=True, help_text='Date and time of comment creation')
     updated_at = models.DateTimeField(blank=True, null=True, help_text='Date and time of update')
-    
+
     class Meta:
         unique_together = ('reviewed_by', 'annotation',)
 
     def __str__(self):
         return 'Comment from %s' % (self.reviewed_by)
 
-# SIGNALS
 
-# When an annotation is created, the task to which it belongs must be set a labeled (Task.status = labeled)
+# SIGNALS
 @receiver(post_save, sender=Annotation)
 def make_task_labeled(sender, instance, created, **kwargs):
+
+    """
+    When an annotation is saved, mark the corresponding task as labeled (if it's the first annotation for the task).
+    """
 
     task = instance.task
     if created and task.status == Status.unlabeled:
         task = instance.task
         task.status = Status.labeled
         task.save()
-    
+
+
 @receiver(post_save, sender=Comment)
 def check_if_task_reviewed(sender, instance, created, **kwargs):
-    print("Hello")
+
     """
-    If all annotationbs which belong to the task are reviewed,
-    then make task reviewed
+    If all annotations which belong to the task are reviewed, then make task reviewed.
     """
+
     task = instance.annotation.task
     all_annotations = Annotation.objects.filter(task=task, project=task.project)
-    task_reviewed = True # if passes all validations it will be reviewed
+    task_reviewed = True  # If passes all validations it will be reviewed
     for annotation in all_annotations:
         if not get_review(annotation):
             task_reviewed = False
@@ -151,24 +171,29 @@ def check_if_task_reviewed(sender, instance, created, **kwargs):
         task.review_status = Review_status.reviewed
         task.save()
 
+
 @receiver(pre_save, sender=Annotation)
-def make_annotation_unreviewed(sender, instance, **kwargs):
+def make_annotation_unreviewed_pre_save(sender, instance, **kwargs):
+
     """
-    if annotation result updated, make status unreviewed so reviewer can
-    review the new annotaion.
+    If annotation result updated, make status unreviewed so reviewer can review the new annotaion.
     """
+
     try:
         annotation = Annotation.objects.get(pk=instance.pk)
     except Annotation.DoesNotExist:
         return False
-    
+
     if not (instance.result == annotation.result):
         instance.review_status = Annotation_status.no_review
-    # print(annotation.result)
 
-# when a comment is deleted, set annotations status to no_review
+
 @receiver(pre_delete, sender=Comment)
-def make_annotation_unreviewed(sender, instance, **kwargs):
+def make_annotation_unreviewed_pre_delete(sender, instance, **kwargs):
+
+    """
+    When a comment is deleted, set annotations status to no_review.
+    """
 
     try:
         annotation = instance.annotation
@@ -178,20 +203,22 @@ def make_annotation_unreviewed(sender, instance, **kwargs):
     annotation.review_status = Annotation_status.no_review
     annotation.save()
 
+
 @receiver(post_delete, sender=Comment)
-def make_annotation_unreviewed(sender, instance, **kwargs):
+def make_annotation_unreviewed_post_delete(sender, instance, **kwargs):
+
+    """
+    If task's annotations are not reviewed make it unreviewed.
+    """
 
     try:
         annotation = instance.annotation
     except Annotation.DoesNotExist:
         return False
-    
-    """
-    if task's annotations are not reviewed make it unreviewed
-    """
+
     task = instance.annotation.task
     all_annotations = Annotation.objects.filter(task=task, project=task.project)
-    task_reviewed = True # if passes all validations it will be reviewed
+    task_reviewed = True  # If passes all validations it will be reviewed
     for annotation in all_annotations:
         if not get_review(annotation):
             task_reviewed = False
@@ -201,9 +228,12 @@ def make_annotation_unreviewed(sender, instance, **kwargs):
         task.save()
 
 
-# after deleting an annotation check task and if has no other annotation mark it as unlabeled
 @receiver(pre_delete, sender=Annotation)
 def mark_task_unlabeled(sender, instance, **kwargs):
+
+    """
+    After deleting an annotation check task and if it has no other annotations, mark it as unlabeled.
+    """
 
     try:
         task_annotation = instance.task
@@ -218,8 +248,9 @@ def mark_task_unlabeled(sender, instance, **kwargs):
 
 @receiver(pre_delete, sender=Task)
 def auto_delete_files(sender, instance, **kwargs):
+
     """
-    Delete task's file from system after delete
+    Delete task's file from system after delete.
     """
 
     try:

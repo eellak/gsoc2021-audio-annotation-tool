@@ -17,7 +17,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
     <!-- Goole fonts API-->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Georama">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Georama|Lato|Roboto">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
     <!-- My JavaScript -->
@@ -36,56 +36,64 @@
 </head>
 
 <body>
-  <nav class="navbar navbar-expand-md navbar bg-light sticky-top py-0">
-    <a class="navbar-brand py-0" href="/">
-      <img src="{% static '/images/favicons/logo_transparent_165x25.png' %}" title="Label Buddy">
-    </a>
-    {% if user.is_authenticated %}
-      <div style="border-left: 2px solid white;" class="collapse navbar-collapse py-0" id="navbarNavAltMarkup">
-    {% else %}
-      <div class="collapse navbar-collapse py-0" id="navbarNavAltMarkup">
-    {% endif %}
+  {% block navbar %}
+    <nav class="navbar navbar-expand-md navbar bg-light sticky-top py-0">
+      <a class="navbar-brand py-0" href="/">
+        <img src="{% static '/images/favicons/new_logo.svg' %}" title="Label Buddy">
+      </a>
       {% if user.is_authenticated %}
-        {% block breadcrumbs %}{% endblock %}
+        <div style="border-left: 2px solid white;" class="collapse navbar-collapse py-0" id="navbarNavAltMarkup">
+      {% else %}
+        <div class="collapse navbar-collapse py-0" id="navbarNavAltMarkup">
       {% endif %}
-      <div class="navbar-nav  ml-auto">
         {% if user.is_authenticated %}
-          <div class="btn-group dropleft py-0">
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-list-4" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbar-list-4">
-              <ul class="navbar-nav">
-                <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img style="border: 1px solid #74deee;" src="{{ user.avatar.url }}" width="39" height="39" class="rounded-circle">
-                  </a>
-                  <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                    <h6 class="dropdown-header user-round-icon">
-                      <img style="margin-right: 8%;" src="{{ user.avatar.url }}" width="40" height="40" class="rounded-circle">
-                      <b> Hi, {{ user.username }}</b>
-                    </h6>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="{% url 'edit_user' user.username %}"> <i class="fas fa-user-edit drop-down"></i> Edit profile</a>
-                    <a class="dropdown-item" href="/accounts/password/change"> <i class="fa fa-lock drop-down" aria-hidden="true"></i> Change password</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="/accounts/logout"> <i class="fas fa-sign-out-alt drop-down"></i> Sign out</a>
-                  </div>
-                </li>
-              </ul>
-          </div>
-        {% else %}
-          <a class="nav-item nav-link my-link" href="{% url 'account_login' %}">SIGN IN</a>
-          <a class="nav-item nav-link my-link" href="{% url 'account_signup' %}">REGISTER</a>
+          {% block breadcrumbs %}{% endblock %}
         {% endif %}
+        <div class="navbar-nav  ml-auto">
+          {% if user.is_authenticated %}
+            <div class="btn-group dropleft py-0">
+              <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar-list-4" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbar-list-4">
+                <ul class="navbar-nav">
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      <img style="border: 1px solid #007bff;" src="{{ user.avatar.url }}" width="39" height="39" class="rounded-circle">
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                      <h6 class="dropdown-header user-round-icon">
+                        <img style="margin-right: 8%;" src="{{ user.avatar.url }}" width="40" height="40" class="rounded-circle">
+                        <b> Hi, {{ user.username }}</b>
+                      </h6>
+                      <div class="dropdown-divider"></div>
+                      <a class="dropdown-item" href="{% url 'edit_user' user.username %}"> <i class="fas fa-user-edit drop-down"></i> Edit profile</a>
+                      <a class="dropdown-item" href="/accounts/password/change"> <i class="fa fa-lock drop-down" aria-hidden="true"></i> Change password</a>
+                      <div class="dropdown-divider"></div>
+                      <form method="post" action="{% url 'account_logout' %}">
+                        {% csrf_token %}
+                        {% if redirect_field_value %}
+                          <input type="hidden" name="{{ redirect_field_name }}" value="{{ redirect_field_value }}"/>
+                        {% endif %}
+                        <button class="dropdown-item" style="outline: none; cursor: pointer;" type="submit"> <i class="fas fa-sign-out-alt drop-down"></i> Sign out</button>
+                      </form>
+                    </div>
+                  </li>
+                </ul>
+            </div>
+          {% else %}
+            <a class="nav-item nav-link my-link" href="{% url 'account_login' %}">SIGN IN</a>
+            <a class="nav-item nav-link my-link" href="{% url 'account_signup' %}">REGISTER</a>
+          {% endif %}
+        </div>
       </div>
-    </div>
-  </nav>
+    </nav>
+  {% endblock %}
   
   {% block content %}
     {% for message in messages %}
         {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-          <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <div style="margin: 0;" class="alert alert-success alert-dismissible fade show" role="alert">
             <i style="margin-right: .5%;" class="fas fa-check-circle"></i><strong>{{ message }}</strong>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
@@ -93,7 +101,7 @@
           </div>
         {% endif %}
         {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+          <div style="margin: 0;" class="alert alert-danger alert-dismissible fade show" role="alert">
             <i style="margin-right: .5%;" class="fas fa-times-circle"></i><strong>{{ message }}</strong>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
@@ -101,7 +109,7 @@
           </div>
         {% endif %}
         {% if message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
-          <div class="alert alert-warning alert-dismissible fade show" role="alert">
+          <div style="margin: 0;" class="alert alert-warning alert-dismissible fade show" role="alert">
             <i style="margin-right: .5%;" class="fas fa-exclamation-triangle"></i><strong>{{ message }}</strong>
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
@@ -112,21 +120,22 @@
 
   {% endblock %}
 
-  {% block content_extra %}
+  {% block footer %}
+    <!-- Footer -->
+    <footer class="page-footer font-small fixed-bottom">
+      <!-- Copyright -->
+      {% if user.is_authenticated %}
+        <div class="footer-copyright bg-light text-center py-1 footer-div">
+      {% else %}
+        <div style="background-color: #29215E;" class="footer-copyright text-center py-1 footer-div">
+      {% endif %}
+        &copy;Powered by Google Summer of Code with <a style="color: #FF85A5;" href="https://gfoss.eu/" target="_blank">GFOSS</a>
+        <a style="color: #FF85A5;" href="https://github.com/eellak/gsoc2021-audio-annotation-tool" target="_blank"><i class="fab fa-github fa-lg"></i></a>
+      </div>
+      <!-- Copyright -->
+    </footer>
+    <!-- Footer -->
   {% endblock %}
-  
-  <!-- Footer -->
-  <footer class="page-footer font-small fixed-bottom">
-
-    <!-- Copyright -->
-    <div class="footer-copyright text-center py-2 footer-div">
-      &copy;Powered by Google Summer of Code with <a class="my-link" href="https://gfoss.eu/" target="_blank">GFOSS</a>
-      <a class="my-link" href="https://github.com/eellak/gsoc2021-audio-annotation-tool" target="_blank"><i class="fab fa-github fa-lg"></i></a>
-    </div>
-    <!-- Copyright -->
-
-  </footer>
-  <!-- Footer -->
  
 </body>
 </html>

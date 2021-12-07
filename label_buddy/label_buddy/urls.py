@@ -1,4 +1,5 @@
-"""label_buddy URL Configuration
+"""
+label_buddy URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/3.2/topics/http/urls/
@@ -13,11 +14,13 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path
 from django.conf.urls import url, include
 from django.conf.urls.static import static
 from . import settings
+import debug_toolbar
 
 urlpatterns = [
     path('', include('projects.urls')),
@@ -25,5 +28,6 @@ urlpatterns = [
     path('', include('users.urls')),
     path('admin/', admin.site.urls),
     path('api-auth/', include('rest_framework.urls')),
+    path('__debug__/', include(debug_toolbar.urls)),
     url(r'^accounts/', include('allauth.urls')),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

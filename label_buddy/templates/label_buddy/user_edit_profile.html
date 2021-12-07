@@ -24,8 +24,8 @@
                 <form enctype="multipart/form-data" action="" method="POST">
                 {% csrf_token %}
                 {{ form | crispy}}
-                <button class="btn my-button" type="submit">Save</button>
-                <a title="Back to projects page" class="btn btn-danger my-button annotation-buttons" href="{% url 'index_page' %}">Cancel</a>
+                <button class="btn btn-primary" type="submit">Save</button>
+                <a title="Back to projects page" class="btn btn-danger annotation-buttons" href="{% url 'index_page' %}">Cancel</a>
                 </form>
             </div>
         </div>

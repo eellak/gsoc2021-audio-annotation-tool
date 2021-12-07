@@ -99,7 +99,7 @@ function selectExportFormat(div) {
 
             // select json div
             selected_export_format = export_div_json;
-            export_div_json.style.backgroundColor = 'rgba(115, 223, 237, 0.3)';
+            export_div_json.style.backgroundColor = 'rgba(0, 123, 255, 0.3)';
             export_div_json.style.cursor = 'default';
             json_radio.checked = true;
 
@@ -111,7 +111,7 @@ function selectExportFormat(div) {
 
             // select csv div
             selected_export_format = export_div_csv;
-            export_div_csv.style.backgroundColor = 'rgba(115, 223, 237, 0.3)';
+            export_div_csv.style.backgroundColor = 'rgba(0, 123, 255, 0.3)';
             export_div_csv.style.cursor = 'default';
             csv_radio.checked = true;
 
@@ -130,7 +130,7 @@ function selectApprovedOrNot(div) {
         div.style.backgroundColor = 'white';
         $('#exportApproved').prop('checked', false);
     } else {
-        div.style.backgroundColor = 'rgba(115, 223, 237, 0.3)';
+        div.style.backgroundColor = 'rgba(0, 123, 255, 0.3)';
         $('#exportApproved').prop('checked', true);
     }
 }

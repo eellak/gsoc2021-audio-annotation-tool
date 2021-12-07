@@ -1,0 +1,72 @@
+body {
+    padding-bottom: 0%;
+}
+
+#outerDiv {
+    background: linear-gradient(180deg, #22203D 23.73%, #29215E 97.46%);
+}
+
+#innerDiv {
+    background-color: white;
+    padding: 32px;
+    border-radius: 4px;
+    width: 25vw;
+}
+
+
+
+#id_password {
+    border-right: 0px;
+}
+
+#eyeDiv {
+    /* height: 42px; */
+    border-top-left-radius: 0px; 
+    border-bottom-left-radius: 0px; 
+    border-left: 0px;
+}
+
+#underSignUp {
+    margin-top: 2%;
+    /* border: 2px solid red; */
+    width: 25vw;
+    text-align: center;
+}
+
+.links {
+    display: inline;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    text-decoration-line: underline;
+    
+    color: #FF85A5;
+}
+
+.texts {
+
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 13px;
+    display: inline;
+
+    color: #9595A6;
+
+
+    /* Inside Auto Layout */
+}
+
+div {
+    user-select: none; /* standard syntax */
+    -webkit-user-select: none; /* webkit (safari, chrome) browsers */
+    -moz-user-select: none; /* mozilla browsers */
+    -khtml-user-select: none; /* webkit (konqueror) browsers */
+    -ms-user-select: none; /* IE10+ */
+}
+
+span {
+    display: inline-block;
+    width: 20px;
+}

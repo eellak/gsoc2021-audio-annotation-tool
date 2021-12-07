@@ -1,0 +1,19 @@
+body {
+    padding-bottom: 0%;
+}
+
+#welcomeDiv {
+    background: linear-gradient(65.45deg, #212631 16.77%, #2F1847 79%);
+    font-family: 'Lato';
+    font-style: normal;
+    color: #FCF7F8;
+    font-weight: 600;
+    font-size: 28px;
+}
+
+#signInText {
+    font-family: 'Lato';
+    /* font-style: normal; */
+    color: #FCF7F8;
+    font-size: 12px;
+}

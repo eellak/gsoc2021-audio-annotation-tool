@@ -13,7 +13,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 from pathlib import Path
 import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Build paths inside the project like this: BASE_DIR / 'subdir'
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -28,20 +28,28 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-#django-allauth settings
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
+
+# Django-allauth settings
 ACCOUNT_EMAIL_CONFIRMATION_EXPIRE_DAYS = 2
-ACCOUNT_EMAIL_REQUIRED = True # email adress must be verified in ordet to register
-ACCOUNT_EMAIL_VERIFICATION = "optional" # email should be verified in roder to log in
-ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 10 # login attempts in order to prevent brute force attacks
+ACCOUNT_EMAIL_REQUIRED = True  # Email adress must be verified in ordet to register
+ACCOUNT_EMAIL_VERIFICATION = "optional"  # Email should be verified in roder to log in
+ACCOUNT_LOGIN_ATTEMPTS_LIMIT = 10  # Login attempts in order to prevent brute force attacks
 ACCOUNT_LOGIN_ATTEMPTS_TIMEOUT = 5
 ACCOUNT_USERNAME_MIN_LENGTH = "4"
 ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
-ACCOUNT_SIGNUP_PASSWORD_VERIFICATION = False # confirmation password isnt needed
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' # on signup send messages to this email (print in terminal)
+ACCOUNT_SIGNUP_PASSWORD_VERIFICATION = False  # Confirmation password isnt needed
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # On signup send messages to this email (print in terminal)
 ACCOUNT_FORMS = {
-    'signup': 'users.forms.ExtendedSignUpForm'
+    'login': 'users.forms.ExtendedLogInForm',
+    'signup': 'users.forms.ExtendedSignUpForm',
+    'reset_password': 'users.forms.ExtendedResetPasswordForm',
 }
 
+# Password validation
+# https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -49,7 +57,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
         'OPTIONS': {
-            'min_length': 5,
+            'min_length': 8,
         },
     },
     {
@@ -57,6 +65,15 @@ AUTH_PASSWORD_VALIDATORS = [
     },
     {
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+    },
+    {
+        'NAME': 'users.password_validators.UppercaseValidator',
+    },
+    {
+        'NAME': 'users.password_validators.NumberValidator',
+    },
+    {
+        'NAME': 'users.password_validators.SymbolValidator',
     },
 ]
 
@@ -81,16 +98,18 @@ INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.sites',
     'django.contrib.contenttypes',
+    'django_extensions',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'debug_toolbar',
     'rest_framework',
-    #third party
+    # Third party
     'colorfield',
     'url_or_relative_url_field',
     'crispy_forms',
 
-    #own
+    # Own
     'users',
     'projects',
     'tasks',
@@ -98,6 +117,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -106,12 +126,29 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+DEBUG_TOOLBAR_PANELS = [
+    'debug_toolbar.panels.history.HistoryPanel',
+    'debug_toolbar.panels.versions.VersionsPanel',
+    'debug_toolbar.panels.timer.TimerPanel',
+    'debug_toolbar.panels.settings.SettingsPanel',
+    'debug_toolbar.panels.headers.HeadersPanel',
+    'debug_toolbar.panels.request.RequestPanel',
+    'debug_toolbar.panels.sql.SQLPanel',
+    'debug_toolbar.panels.staticfiles.StaticFilesPanel',
+    'debug_toolbar.panels.templates.TemplatesPanel',
+    'debug_toolbar.panels.cache.CachePanel',
+    'debug_toolbar.panels.signals.SignalsPanel',
+    'debug_toolbar.panels.logging.LoggingPanel',
+    'debug_toolbar.panels.redirects.RedirectsPanel',
+    'debug_toolbar.panels.profiling.ProfilingPanel',
+]
+
 ROOT_URLCONF = 'label_buddy.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, "templates"),],
+        'DIRS': [os.path.join(BASE_DIR, "templates"), ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -138,31 +175,8 @@ DATABASES = {
     }
 }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
-
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
-
-
-
 LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Europe/Athens'
 
@@ -191,12 +205,3 @@ STATICFILES_DIRS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
-
-
-try:
-    # keep a local_settings.py file for local overrides
-    from .local_settings import *
-except ImportError:
-    # local_settings not in use
-    pass
-

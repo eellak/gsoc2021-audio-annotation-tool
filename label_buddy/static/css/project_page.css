@@ -12,7 +12,7 @@
 }
 
 #export_div_json {
-    background-color: rgba(115, 223, 237, 0.3);
+    background-color: rgba(0, 123, 255, 0.3);
     margin-top: 5%;
     cursor: default;
 }
@@ -25,11 +25,11 @@
 }
 
 #export_approved_div:hover {
-    background-color: rgba(115, 223, 237, 0.3) !important;
+    background-color: rgba(0, 123, 255, 0.3) !important;
 }
 
 #import-file {
-    border: 1px solid #74deed;
+    border: 1px solid #007bff;
     /* border-radius: 5px; */
     padding: 2%;
     width: 60%;
@@ -37,7 +37,7 @@
 }
 
 #import-file:hover {
-    background-color: rgba(115, 223, 237, 0.3) !important;
+    background-color: rgba(0, 123, 255, 0.3) !important;
 }
 
 #annotate-link {
@@ -62,7 +62,7 @@
 }
 
 .export_div:hover {
-    background-color: rgba(115, 223, 237, 0.3) !important;
+    background-color: rgba(0, 123, 255, 0.3) !important;
 }
 
 
@@ -99,14 +99,14 @@ p {
     /* display: none; */
 
     border-radius: 5px;
-    border: 1px solid #74deed;
+    border: 1px solid rgb(0, 123, 255);
 }
 
 .progress-bar-fill {
     border-radius: 5px;
     height: 100%;
     width: 0%;
-    background: rgba(115, 223, 237, 0.3);
+    background: rgba(0, 123, 255, 0.3);
     display: flex;
     align-items: center;
     transition: width 0.25s;

@@ -1,25 +1,90 @@
 {% extends 'base.html' %}
 
-{% load crispy_forms_tags %}
+{% load static %}
+
+{% block head_files %}
+    {{ block.super }}
+    <link href="{% static 'css/signup_page.css' %}" rel="stylesheet" type="text/css">
+    <script src="{% static '/js/signup_page.js'%}" defer></script>
+{% endblock %}
 
 {% block title %} &#9702; Sign Up {% endblock %}
 
+{% block navbar %}{% endblock %}
+
 {% block content %}
   {{ block.super }}
-  <div class="container centered">
-    <div class="row justify-content-center">
-      <div class="user-form-wrap col-6">
-        <h2 class="form-headers">Sign Up</h2>
-        <hr class="mt-0 mb-4">
-        <p>Already have an account? Then please <a class="my-link" href="{{ login_url }}">sign in</a>.</p>
-        <form method="POST" action="{% url 'account_signup' %}">
-          {% csrf_token %}
-          {{ form | crispy }}
-          <button type="submit" class="btn my-button">Sign Up</button>
-        </form>
-      </div>
+  <div id="outerDiv" class="center-screen">
+    <a style="margin-bottom: 3%;" href="{% url 'account_login' %}" >
+      <img src="{% static '/images/favicons/new_logo.svg' %}" alt="Logo">
+    </a>
+    <div id="innerDiv">
+      <p class="accountHeaders">Sign up</p>
+      {% if form.errors %}
+        {% for error in form.non_field_errors %}
+          <div class="alert alert-danger">
+              <strong>{{ error|escape }}</strong>
+          </div>
+        {% endfor %}
+      {% endif %}
+      
+      <form method="POST" action="{% url 'account_signup' %}">
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="my-form-group">
+            <label class="forms-labels" for="{{ field.name }}">{{ field.label }}</label>
+              {% if field.name == "password1" %}
+                <div class="input-group mb-2">
+                  {{ field }}
+                  <div class="input-group-prepend">
+                    <div style="cursor: pointer;" id="eyeDiv" class="myInput">
+                      <span>
+                        <i style="cursor: pointer; color: #9B9B9B;" class="far fa-eye" id="togglePassword"></i>
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              {% else %}
+                {{ field }}
+              {% endif %}
+            {% if field.errors %}
+              {% for error in field.errors %}
+                <small class="form-text error-text">
+                  <i class="fas fa-times-circle"></i>
+                  {{ error }}
+                </small>
+              {% endfor %}
+            {% else %}
+              {% if field.name == "password1" %}
+                <small class="form-text password-validation">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Min 8 characters, at least one Capital letter, at least one number, at least one symbol (@, #, $, etc.)
+                </small>
+              {% endif %}
+            {% endif %}
+          </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary account-buttons">Sign Up</button>
+      </form>
+    </div>
+    <div id="underSignUp">
+      <a href="{% url 'account_reset_password' %}">
+        <p class="account-links">
+          Forgot your Password?
+        </p>
+      </a>
+      <p style="margin-left: 16px;" class="texts">
+        •
+      </p>
+      <p style="margin-left: 16px;" class="texts">
+        already have an account?
+      </p>
+      <a href="{% url 'account_login' %}">
+        <p class="account-links">
+          Sign In
+        </p>
+      </a>
     </div>
   </div>
-
 {% endblock %}
 

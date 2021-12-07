@@ -7,42 +7,55 @@ from django.db.models.signals import pre_save
 from django.dispatch import receiver
 from django.contrib.auth.models import AbstractUser
 
-# Create your models here.
+
+# Create your models here
 class User(AbstractUser):
+
     """
-    User class inherited from Django User model
+    User class inherited from Django User model.
     """
 
-    #remove unnecessary fields
-    # groups = None
-    # user_permissions = None
-
-    #additional fields
+    # Additional fields
     name = models.CharField(max_length=256, default="", db_index=True, help_text='Users full name')
     can_create_projects = models.BooleanField(default=False, help_text='True if the user can create projects (be a manager)')
     phone_number = models.CharField(max_length=256, blank=True, help_text="User's phone number")
     avatar = models.ImageField(upload_to='images', blank=True, help_text="User's avatar (image)")
 
-    #How to display projects in admin
     def __str__(self):
+
+        """
+        Display users by username.
+        """
+
         return '%s' % (self.username)
-        # if not self.name and not self.email:
-        #     return '%s' % (self.username)
-        # else:
-        #     if self.name and self.email:
-        #         return '%s - %s' % (self.name, self.email)
-        #     elif self.name:
-        #         return '%s' % (self.name)
-        #     else:
-        #         return '%s' % (self.email)
+        if not self.name and not self.email:
+            return '%s' % (self.username)
+        else:
+            if self.name and self.email:
+                return '%s - %s' % (self.name, self.email)
+            elif self.name:
+                return '%s' % (self.name)
+            else:
+                return '%s' % (self.email)
+
+    def save(self, *args, **kwargs):
+
+        """
+        Superusers will be able to create projects by default.
+        """
+
+        if self.is_superuser:
+            self.can_create_projects = True
+        super(User, self).save(*args, **kwargs)
+
 
 @receiver(pre_save, sender=User)
 def auto_delete_file_on_change(sender, instance, **kwargs):
+
     """
-    Deletes old file from filesystem
-    when corresponding user object is updated
-    with new file.
+    Deletes old file from filesystem when corresponding user object is updated with new file.
     """
+
     pk = instance.pk
     if not pk:
         return False
@@ -58,12 +71,14 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
             if os.path.isfile(old_avatar.path):
                 os.remove(old_avatar.path)
 
+
 @receiver(pre_save, sender=User)
 def set_users_avatar(sender, instance, **kwargs):
+
     """
-    If user's avatar is not specified
-    set it to the unknown icon user
+    If user's avatar is not specified set it to the unknown icon user.
     """
+
     if not instance.avatar:
         user_avatar = open(os.path.join(settings.BASE_DIR, 'static/images/user/user.jpg'), "rb")
         instance.avatar.save('user.jpg', File(user_avatar))

@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 :root {
-    --basic_color: #74deed;
+    --basic_color: #007bff;
 }
 
 body {
@@ -15,11 +15,19 @@ table
 }
 
 .footer-div {
-    background-color: rgb(245,245,245);
+    border-top: 1px solid white;
+    color: #9595A6;
 }
 
 .myAction {
-    margin-left: 55%;
+    /* border: 2px solid green; */
+    text-align: right;
+}
+
+.myAction:after {
+    content:'';
+    display:block; /* or whatever else than inline */
+    clear:both;
 }
 
 .user-form-wrap {
@@ -43,10 +51,118 @@ table
     background-color: var(--basic_color);
 }
 
+.accountHeaders {
+    /* border: 2px solid red; */
+    /* position: static; */
+    width: 100%;
+
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    align-items: center;
+    text-align: center;
+
+    /* Revised Colors/Dark Grey/650 */
+
+    color: #232337;
+}
+
+.forms-labels {
+    position: static;
+    height: 17px;
+
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 140%;
+    /* identical to box height, or 17px */
+
+
+    color: #5C666B;
+
+
+    /* Inside Auto Layout */
+
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    margin: 8px 0px;
+}
+
+.myInput {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 10px;
+
+    position: static;
+    height: 42px;
+
+    background: #FFFFFF;
+    border: 1px solid #CFD8DC;
+    box-sizing: border-box;
+    border-radius: 4px;
+
+    /* Inside Auto Layout */
+
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    margin: 4px 0px;
+}
+
+.account-buttons {
+    /* Auto Layout */
+
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    padding: 0px;
+
+    position: static;
+    width: 100%;
+    height: 46px;
+    border-radius: 4px;
+
+    /* Inside Auto Layout */
+
+    flex: none;
+    order: 2;
+    flex-grow: 0;
+    margin: 32px 0px;
+}
+
+.my-form-group {
+    text-align: left;
+}
+
+.account-links {
+    display: inline;
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    text-decoration-line: underline;
+    
+    color: #FF85A5;
+}
+
+.error-text {
+    font-family: Roboto;
+    padding-top: 2px;
+    font-size: 12px;
+    font-weight: 500;
+    color: #FF1744;
+}
+
 .headers-page {
     text-align: center;
-    font-family: 'Georama';
-    text-shadow: 2px 2px 2px #aaa;
+    font-family: 'Roboto';
+    /* text-shadow: 2px 2px 2px #aaa; */
 
     /* border: 2px solid blue; */
     margin-left: 1%;
@@ -75,7 +191,7 @@ table
     justify-content: center;
     align-items: center;
     text-align: center;
-    min-height: 70vh;
+    min-height: 100vh;
 }
 
 .table-div {
@@ -90,7 +206,34 @@ table
 }
 
 .my-table-header {
-    margin-right: 4%;
+
+    position: static;
+    
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 15px;
+    line-height: 16px;
+    
+    color: #5C666B;
+    
+    
+    /* Inside Auto Layout */
+    
+    flex: none;
+    order: 0;
+    flex-grow: 0;
+    margin: 0px 0px;
+}
+
+.my-table-text {
+
+    font-family: Roboto;
+    font-style: normal;
+    font-weight: normal;
+    font-size: 14px;
+
+    color: #1F282D;
 }
 
 .my-small-btn {
@@ -103,7 +246,7 @@ table
 }
 
 .table-hover tbody tr:hover td, .table-hover tbody tr:hover th {
-    background-color: var(--basic_color);
+    background-color: #E2EBF0 !important;
     cursor: pointer;
 
 }
@@ -134,8 +277,8 @@ table
 }
 
 .form-headers {
-    font-family: 'Georama';
-    text-shadow: 2px 2px 2px #aaa;
+    font-family: 'Roboto';
+    /* text-shadow: 2px 2px 2px #aaa; */
 
     white-space:nowrap;
     overflow:hidden;
@@ -148,9 +291,19 @@ a {
 
 
 #nprogress .bar {
-    background: #74deed !important;
+    background: #007bff !important;
 }
 
 .tooltip-icons {
     cursor: default;
 }
+
+.alert {
+    margin: 0;
+}
+
+.table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
+    background-color: #F3F6F8;
+ }
+
+

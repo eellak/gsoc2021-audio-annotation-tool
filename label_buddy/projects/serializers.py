@@ -1,7 +1,13 @@
 from rest_framework import serializers
 from .models import Project
 
+
 class ProjectSerializer(serializers.ModelSerializer):
+
+    """
+    Serializer for project API endpoint data.
+    """
+
     class Meta:
         model = Project
         read_only_fields = [
