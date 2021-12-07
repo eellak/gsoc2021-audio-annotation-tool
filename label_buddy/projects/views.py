@@ -133,7 +133,7 @@ def project_create_view(request):
             messages.add_message(request, messages.SUCCESS, "Successfully created project %s." % project.title)
             return HttpResponseRedirect("/")
         else:
-            raise forms.ValidationError("Something is wrong")
+            raise form.ValidationError("Something is wrong")
     else:
         # User creating project is manager of the project
         form.fields['managers'].queryset = User.objects.exclude(username=user.username)
