@@ -10,5 +10,6 @@ label_buddy/*.png
 extract_folder/
 
 # local settings and db ignonred
+label_buddy/.coverage
 label_buddy/db.sqlite3
 label_buddy/label_buddy/local_settings.py
