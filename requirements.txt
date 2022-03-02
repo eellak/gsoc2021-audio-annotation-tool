@@ -1,4 +1,4 @@
-﻿asgiref==3.3.4
+asgiref==3.3.4
 backcall==0.2.0
 beautifulsoup4==4.9.3
 certifi==2021.5.30
@@ -22,6 +22,7 @@ django-url-or-relative-url-field==0.1.2
 djangorestframework==3.12.4
 flake8==4.0.1
 future==0.18.2
+gunicorn==20.1.0
 idna==2.10
 importlib-metadata==4.6.4
 ipython==7.26.0
@@ -35,6 +36,7 @@ pexpect==4.8.0
 pickleshare==0.7.5
 Pillow==8.2.0
 prompt-toolkit==3.0.19
+psycopg2-binary==2.9.3
 ptyprocess==0.7.0
 pycodestyle==2.8.0
 pycparser==2.20
