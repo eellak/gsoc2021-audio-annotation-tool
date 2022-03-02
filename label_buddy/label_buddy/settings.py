@@ -26,7 +26,7 @@ SECRET_KEY = "django_key_long_random_key_here_12763523765&^!@$#%%^@#$%@#$"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['67.205.153.230']
 
 INTERNAL_IPS = [
     '127.0.0.1',
@@ -168,10 +168,22 @@ AUTH_USER_MODEL = "users.User"
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
+if DEGUG:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+else:
+    DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'label_buddy',
+        'USER': 'labelbuddy',
+        'PASSWORD': 'labelbuddy123',
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
 
@@ -194,6 +206,7 @@ STATIC_URL = "/static/"  # where js/css files are stored on the filesystem
 MEDIA_URL = '/media/'
 
 # Path where media is stored
+STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 STATICFILES_DIRS = [
