@@ -26,7 +26,7 @@ SECRET_KEY = "django_key_long_random_key_here_12763523765&^!@$#%%^@#$%@#$"
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['67.205.153.230']
+ALLOWED_HOSTS = ['67.205.153.230', '127.0.0.1']
 
 INTERNAL_IPS = [
     '127.0.0.1',
@@ -206,7 +206,6 @@ STATIC_URL = "/static/"  # where js/css files are stored on the filesystem
 MEDIA_URL = '/media/'
 
 # Path where media is stored
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 STATICFILES_DIRS = [
