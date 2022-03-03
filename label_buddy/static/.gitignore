@@ -1,0 +1,7 @@
+# exclude all files 
+*
+# Except this file and project static files
+!.gitignore
+!.css/
+!.js/
+!.images/
