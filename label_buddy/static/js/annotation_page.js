@@ -249,7 +249,7 @@ document.addEventListener('DOMContentLoaded', function() {
         wavesurfer.setPlaybackRate(1);
         wavesurfer.zoom(0); // initial zoom
         wavesurfer.setVolume(1); // initial volume
-        let result = annotation
+        let result = annotation;
         // if there is a result load regions of annotation
         if(result && result.length != 0) {
             loadRegions(result);
