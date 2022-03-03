@@ -22,7 +22,7 @@
         var annotation = JSON.parse("{{annotation_result|escapejs}}");
         var django_csrf_token = "{{ csrf_token }}";
     </script>
-    <script src="{% static '/js/review_page.js'%}"></script>
+    <script src="{% static '/js/review_page.js'%}" defer></script>
 {% endblock %}
 
 {% block title %} &#9702; Review{% endblock %}

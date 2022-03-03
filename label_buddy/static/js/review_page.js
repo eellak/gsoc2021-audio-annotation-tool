@@ -193,11 +193,6 @@ function add_region_to_section(region) {
 
 
 document.addEventListener('DOMContentLoaded', function() {
-
-    document.getElementById('zoom-slider').oninput = function () {
-        wavesurfer.zoom(Number(this.value));
-    };
-    
     // Init wavesurfer
     wavesurfer = WaveSurfer.create({
         container: '#waveform',
@@ -375,6 +370,9 @@ $('#play-region-btn').click( function(e) {
 //     toggleIcon(document.getElementById('play-pause-button'));
 // }
 
+document.getElementById('zoom-slider').oninput = function () {
+    wavesurfer.zoom(Number(this.value));
+};
 
 function toggleSoundIcon(slider){
     wavesurfer.setVolume(Number(slider.value));
