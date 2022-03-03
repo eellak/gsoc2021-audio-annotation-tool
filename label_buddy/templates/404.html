@@ -1,1 +1,19 @@
-You are lost!
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block head_files %}
+    {{ block.super }}
+    <link href="{% static 'css/welcome_page.css' %}" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block title %} &#9702; Welcome {% endblock %}
+
+{% block navbar %}{% endblock %}
+{% block content %}
+<div id="welcomeDiv" class="center-screen">
+    <img style="width: 20vw;" src="{% static '/images/favicons/new_logo.svg' %}" alt="Logo">
+    YOU ARE LOST!
+</div>
+{% endblock %}
+{% block footer %}{% endblock %}
