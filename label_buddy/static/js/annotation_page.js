@@ -212,6 +212,11 @@ function fixNumberOfRegions() {
 
 
 document.addEventListener('DOMContentLoaded', function() {
+
+    document.getElementById('zoom-slider').oninput = function () {
+        wavesurfer.zoom(Number(this.value));
+    };
+    
     // Init wavesurfer
     wavesurfer = WaveSurfer.create({
         container: '#waveform',
@@ -450,9 +455,7 @@ function backwardAudio() {
     toggleIcon(document.getElementById('play-pause-button'));
 }
 
-document.getElementById('zoom-slider').oninput = function () {
-    wavesurfer.zoom(Number(this.value));
-};
+
 
 function toggleSoundIcon(slider){
     wavesurfer.setVolume(Number(slider.value));
