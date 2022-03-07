@@ -168,7 +168,8 @@ AUTH_USER_MODEL = "users.User"
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-if DEBUG:
+# To Fix
+if True:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
@@ -206,6 +207,7 @@ STATIC_URL = "/static/"  # where js/css files are stored on the filesystem
 MEDIA_URL = '/media/'
 
 # Path where media is stored
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 STATICFILES_DIRS = [

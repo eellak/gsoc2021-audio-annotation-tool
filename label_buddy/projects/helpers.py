@@ -2,7 +2,6 @@
 import random
 from zipfile import ZipFile
 from rarfile import RarFile
-from json import dumps
 from itertools import chain
 
 from django.core.files import File
@@ -108,9 +107,9 @@ def get_annotation_result(task, project, user):
 
     try:
         annotation = Annotation.objects.get(task=task, project=project, user=user)
-        return dumps(annotation.result)
+        return annotation.result
     except Annotation.DoesNotExist:
-        return dumps([])
+        return []
 
 
 def get_annotation_review(user, annotation):

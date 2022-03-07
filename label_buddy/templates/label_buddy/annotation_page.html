@@ -15,13 +15,13 @@
     <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.regions.js"></script>
     <script src="https://unpkg.com/wavesurfer.js/dist/plugin/wavesurfer.cursor.js"></script>
 
-
+    {{ annotation_result|json_script:"mydata" }}
     <script type="text/javascript"> 
         var audio_url = "{{ task.file.url }}";
         var task_id = "{{ task.id }}";
         var project_id = "{{ project.id }}";
         var django_csrf_token = "{{ csrf_token }}";
-        var annotation = JSON.parse("{{annotation_result|escapejs}}");
+        var annotation = JSON.parse(document.getElementById('mydata').textContent);
     </script>
     <script src="{% static '/js/annotation_page.js'%}" defer></script>
 {% endblock %}

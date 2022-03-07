@@ -787,7 +787,7 @@ def review_annotation_view(request, pk, task_pk, annotation_pk):
         "labels": project.labels,
         "labels_count": project.labels.count(),
         "annotation": to_review_annotation,
-        "annotation_result": dumps(to_review_annotation.result),
+        "annotation_result": to_review_annotation.result,
         "project": project,
         "task": task,
     }
