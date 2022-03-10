@@ -348,8 +348,20 @@ document.addEventListener('DOMContentLoaded', function() {
     wavesurfer.on('region-update-end', function(region) {
         region.once('out', function() {
             wavesurfer.pause();
-            toggleIcon(document.getElementById('play-pause-button'));
         });
+    });
+
+    // when audio finishes, toggle play/pause button and hide scrollbar
+    wavesurfer.on('finish', function() {
+        wavesurfer.stop()
+    });
+
+    // on play or pause toggle play/pause button
+    wavesurfer.on('play', function() {
+        toggleIcon(document.getElementById('play-pause-button'));
+    });
+    wavesurfer.on('pause', function() {
+        toggleIcon(document.getElementById('play-pause-button'));
     });
 
 });
@@ -439,7 +451,6 @@ $('#play-region-btn').click( function(e) {
     e.preventDefault(); 
     if(selected_region){
         selected_region.play();
-        toggleIcon(document.getElementById('play-pause-button'));
     }
     return false; 
 } );
@@ -447,7 +458,6 @@ $('#play-region-btn').click( function(e) {
 // backwardAudio audio to start
 function backwardAudio() {
     wavesurfer.stop();
-    toggleIcon(document.getElementById('play-pause-button'));
 }
 
 document.getElementById('zoom-slider').oninput = function () {

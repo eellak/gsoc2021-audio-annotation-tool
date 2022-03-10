@@ -100,9 +100,6 @@
     height: 100px;
 }
 
-.play-pause-buttons {
-}
-
 .play-pause-buttons:focus {
     outline: none;
     box-shadow: none;

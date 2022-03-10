@@ -64,17 +64,17 @@
     <div style="text-align: center; margin-left: 1%; margin-right: 1%; margin-top: .5%;">
         {% if created_at %}
             {% if annotation_status == status_approved %}
-                <span style="cursor: default;" data-toggle="tooltip" data-placement="top" title="Annotation review status" class="badge badge-pill badge-success">Approved</span>
+                <span style="border: 1px solid black; cursor: default;" data-toggle="tooltip" data-placement="top" title="Annotation review status" class="badge badge-pill badge-success">Approved</span>
             {% elif annotation_status == status_rejected %}
-                <span style="cursor: default;" data-toggle="tooltip" data-placement="top" title="Annotation review status" class="badge badge-pill badge-danger">Rejected</span>
+                <span style="border: 1px solid black; cursor: default;" data-toggle="tooltip" data-placement="top" title="Annotation review status" class="badge badge-pill badge-danger">Rejected</span>
             {% else %}
                 <span style="border: 1px solid black; cursor: default;" data-toggle="tooltip" data-placement="top" title="Annotation review status" class="badge badge-pill badge-light">Unreviewed</span>
             {% endif %}
         {% endif %}
         {% if created_at %}
-            <span style="cursor: default;" data-toggle="tooltip" data-placement="top" title="Task status" class="badge badge-pill badge-success">Annotated</span>
+            <span style="border: 1px solid black; cursor: default;" data-toggle="tooltip" data-placement="top" title="Task status" class="badge badge-pill badge-success">Annotated</span>
         {% else %}
-            <span style="cursor: default;" data-toggle="tooltip" data-placement="top" title="Task status" class="badge badge-pill badge-danger">Not annotated</span>
+            <span style="border: 1px solid black; cursor: default;" data-toggle="tooltip" data-placement="top" title="Task status" class="badge badge-pill badge-danger">Not annotated</span>
         {% endif %}
         
         <h2 style="cursor: default; display: inline;" class="headers-page">
@@ -138,7 +138,7 @@
                 <div id="wave-timeline"></div>
                 <div id="waveform"></div>
                 <div id="play-pause-btn-div">
-                    <button title="Play/Pause audio" id="play-pause-button" class="btn btn-primary play-pause-buttons" onclick="wavesurfer.playPause(); toggleIcon(this);"> <i style="margin-right: 10%;" class="fas fa-play fa-sm"></i> Play</button>
+                    <button title="Play/Pause audio" id="play-pause-button" style="width: 100px;" class="btn btn-primary play-pause-buttons" onclick="wavesurfer.playPause(); toggleIcon(this);"> <i style="margin-right: 10%;" class="fas fa-play fa-sm"></i> Play</button>
                     {% comment %}
                         <button style="margin-left: 1%;" class="btn my-button play-pause-buttons" onclick="backwardAudio();"><i class="fas fa-backward"></i></button>
                     {% endcomment %}
@@ -146,7 +146,7 @@
                     <input style="width: 400px; margin-top: 1%; margin-left: .5%;" type="range" class="custom-range" min="0" max="200" step=1 value=0 id="zoom-slider">
                     <i style="margin-left: .5%;" class="fas fa-search-plus"></i>
                     <input style="width: 100px; margin-top: 1%; margin-left: .5%;" type="range" class="custom-range" oninput="toggleSoundIcon(this);" min="0" max="1" step=0.1 value=1 id="sound-slider">
-                    <a style="color: black;" title="Mute" href="" id="mute-unmute-btn"><i id="sound-slider-icon" style="margin-left: .5%;" class="fas fa-volume-up"></i></a>
+                    <a style="color: black;" title="Mute" href="" id="mute-unmute-btn"><i id="sound-slider-icon" style="margin-left: .5%;" class="fas fa-volume-up fa-fw"></i></a>
                     <select onchange="changeSpeed(this)" style="margin-left: 1%; width: 120px;" class="selectpicker">
                           <option value=0.5>Speed 0.5</option>
                           <option value=0.75>Speed 0.75</option>
