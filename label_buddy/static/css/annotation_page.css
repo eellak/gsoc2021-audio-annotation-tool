@@ -19,6 +19,7 @@
 }
 
 #annotation-btn-div {
+    width: 100%;
     text-align: center;
     margin-right: 1%; 
     margin-left: 1%;
@@ -27,22 +28,14 @@
 
 #commentDiv {
     /* border: 2px solid green; */
-    margin-top: 2%;
-    margin-left: 1%;
-    margin-right: 1%;
+    margin-top: 1%;
+    margin-left: 3%;
+    margin-right: 3%;
 }
 
 #commentArea {
     height: 80%;
     /* background-color: rgb(245,245,245); */
-}
-
-#review-btn-div {
-    text-align: center;
-    margin-top: 3%;
-    margin-left: .5%;
-    margin-right: 1%;
-    /* border: 2px solid palevioletred; */
 }
 
 #play-pause-btn-div {

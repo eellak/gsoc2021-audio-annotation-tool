@@ -17,7 +17,9 @@ document.addEventListener('DOMContentLoaded', function() {
     $('.tooltip-icons').data('title'); // "This is a test";
 
     $(function () {
-        $('[data-toggle="tooltip"]').tooltip()
+        $('[data-toggle="tooltip"]').tooltip({
+            trigger : 'hover'
+        }) 
     });
 
     $('form').on('submit',function(){
