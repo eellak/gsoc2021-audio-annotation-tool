@@ -301,7 +301,15 @@ document.addEventListener('DOMContentLoaded', function() {
         add_region_to_section(region);
     });
 
-    // when region plays, take audio to the beggining of the region
+    // when audio finishes, toggle play/pause button and hide scrollbar
+    wavesurfer.on('finish', function() {
+        wavesurfer.stop()
+    });
+
+    // on play or pause toggle play/pause button
+    wavesurfer.on('play', function() {
+        toggleIcon(document.getElementById('play-pause-button'));
+    });
     wavesurfer.on('pause', function() {
         toggleIcon(document.getElementById('play-pause-button'));
     });
@@ -359,16 +367,9 @@ $('#play-region-btn').click( function(e) {
     e.preventDefault(); 
     if(selected_region){
         selected_region.play();
-        toggleIcon(document.getElementById('play-pause-button'));
     }
     return false; 
 } );
-
-// backwardAudio audio to start
-// function backwardAudio() {
-//     wavesurfer.stop();
-//     toggleIcon(document.getElementById('play-pause-button'));
-// }
 
 document.getElementById('zoom-slider').oninput = function () {
     wavesurfer.zoom(Number(this.value));

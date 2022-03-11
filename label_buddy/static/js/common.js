@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
     $(function () {
         $('[data-toggle="tooltip"]').tooltip({
             trigger : 'hover'
-        }) 
+        })
     });
 
     $('form').on('submit',function(){

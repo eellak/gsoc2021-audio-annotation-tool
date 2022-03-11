@@ -304,6 +304,9 @@ a {
 
 .table-striped > tbody > tr:nth-child(2n+1) > td, .table-striped > tbody > tr:nth-child(2n+1) > th {
     background-color: #F3F6F8;
- }
+}
 
-
+.tooltip-body {
+    height: 10px;
+    overflow-y: auto;
+}
