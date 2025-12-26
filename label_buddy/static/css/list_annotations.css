@@ -25,3 +25,9 @@
     margin-right: 1%;
     margin-top: .5%;
 }
+/* Fix large JSON tooltip overflow */
+.tooltip-inner {
+    max-height: 300px;
+    overflow-y: auto;
+    text-align: left;
+}
