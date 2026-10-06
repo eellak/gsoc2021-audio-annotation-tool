@@ -42,7 +42,7 @@ pycodestyle==2.8.0
 pycparser==2.20
 pyflakes==2.4.0
 Pygments==2.10.0
-PyJWT==2.1.0
+PyJWT==2.15.0
 pynliner==0.8.0
 python3-openid==3.2.0
 pytz==2021.1
